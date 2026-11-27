@@ -5,7 +5,7 @@ compatibility_date = "2026-11-27"
 [[d1_databases]]
 binding = "DB"
 database_name = "hse-saas-db"
-database_id = "REPLACE_WITH_D1_DATABASE_ID"
+database_id = "7020778ab0a545cbaaa0d1abe3ba4061"
 
 [vars]
 AI_MODEL = "gpt-4o-mini"
