@@ -1,4 +1,4 @@
-name = "hse-multitenant-api"
+name = "ohs-management"
 main = "worker.js"
 compatibility_date = "2026-11-27"
 
@@ -6,10 +6,6 @@ compatibility_date = "2026-11-27"
 binding = "DB"
 database_name = "hse-saas-db"
 database_id = "REPLACE_WITH_D1_DATABASE_ID"
-
-[[r2_buckets]]
-binding = "FILES"
-bucket_name = "hse-company-files"
 
 [vars]
 AI_MODEL = "gpt-4o-mini"
