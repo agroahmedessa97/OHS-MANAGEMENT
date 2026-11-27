@@ -109,7 +109,7 @@
     .alert-ok { background: var(--emerald-50); border: 1px solid #a7f3d0; color: #065f46; }
     .alert-info { background: var(--blue-50); border: 1px solid #bfdbfe; color: #1e40af; }
 
-    /* ===== الهيكل الرئيسي بعد الدخول (نظيف وبدون تكرار) ===== */
+    /* ===== الهيكل الرئيسي بعد الدخول ===== */
     .topbar {
       background: #fff; border-bottom: 1px solid var(--border); padding: 12px 20px;
       position: sticky; top: 0; z-index: 30;
@@ -133,7 +133,7 @@
 
     .container { max-width: 1360px; margin: 0 auto; padding: 20px 18px 90px; }
 
-    /* القائمة الجانبية اليمنى لاختيار النماذج */
+    /* القائمة الجانبية اليمنى للتنقل بين جميع النماذج والتقارير الثابتة */
     .drawer-backdrop { position: fixed; inset: 0; background: rgba(6,17,43,0.5); z-index: 45; display: none; }
     .drawer-backdrop.open { display: block; }
     .right-drawer {
@@ -153,15 +153,15 @@
     .nav-item.active { background: var(--emerald-600); color: #fff; border-color: #34d399; }
     .nav-count { background: rgba(0,0,0,0.28); padding: 2px 8px; border-radius: 999px; font-size: 0.72rem; }
 
-    /* بطاقات النظرة العامة */
-    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-bottom: 20px; }
+    /* بطاقات الملخصات السريعة لنتائج التقارير */
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 20px; }
     .kpi-card {
       background: #fff; border: 1px solid var(--border); border-radius: 18px; padding: 16px 18px;
       cursor: pointer; transition: 0.15s; box-shadow: 0 2px 10px rgba(15,23,42,0.04);
     }
     .kpi-card:hover { border-color: var(--emerald-500); transform: translateY(-2px); }
     .kpi-top { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; font-weight: 800; color: var(--muted); }
-    .kpi-val { font-size: 1.75rem; font-weight: 900; color: var(--navy-900); margin: 4px 0; line-height: 1.2; }
+    .kpi-val { font-size: 1.55rem; font-weight: 900; color: var(--navy-900); margin: 4px 0; line-height: 1.25; }
     .kpi-sub { font-size: 0.75rem; font-weight: 700; }
 
     .panel { background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 20px; margin-bottom: 18px; box-shadow: 0 2px 10px rgba(15,23,42,0.04); }
@@ -234,7 +234,7 @@
           <h1 style="font-size:1.4rem;font-weight:900;margin-bottom:6px;">نظام إدارة السلامة والصحة المهنية</h1>
           <p style="font-size:0.84rem;color:#6ee7b7;font-weight:700;margin-bottom:14px;">منظومة تفاعلية متكاملة — قانون العمل 14 لسنة 2025</p>
           <p style="font-size:0.82rem;color:#cbd5e1;line-height:1.7;">
-            مصفوفة مخاطر 5×5 تفاعلية لحظية، تصاريح عمل ذكية، تفتيش يومي، مخالفات، حوادث، فحص طفايات، وامتثال قانوني.
+            ملخصات سريعة لنتائج التقارير، مصفوفة مخاطر 5×5 تفاعلية لحظية، تصاريح عمل ذكية، تفتيش يومي، مخالفات، حوادث، فحص طفايات، وامتثال قانوني.
           </p>
         </div>
         <div style="border-top:1px solid rgba(255,255,255,0.14);padding-top:14px;font-size:0.76rem;color:#cbd5e1;display:flex;flex-direction:column;gap:6px;">
@@ -352,8 +352,8 @@
 
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
         <div class="view-switcher">
-          <button type="button" id="tabOverviewBtn" class="view-tab active">📊 النظرة العامة والإحصائيات</button>
-          <button type="button" id="tabModuleBtn" class="view-tab">🛠️ النموذج المختار</button>
+          <button type="button" id="tabOverviewBtn" class="view-tab active">📊 ملخصات نتائج التقارير</button>
+          <button type="button" id="tabModuleBtn" class="view-tab">🛠️ النموذج المفتوح</button>
         </div>
         <button type="button" id="logoutBtn" class="btn btn-danger btn-sm"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
       </div>
@@ -362,25 +362,25 @@
     <main class="container">
       <div id="dashAlert" class="alert-box"></div>
 
-      <!-- 1) شاشة النظرة العامة المختصرة (بدون أي تكرار) -->
+      <!-- 1) شاشة الملخصات السريعة لنتائج التقارير -->
       <div id="overviewSection">
         <div style="background:linear-gradient(270deg,#06112b 0%,#0f295c 55%,#065f46 100%);color:#fff;border-radius:20px;padding:20px 22px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;">
           <div>
-            <div style="font-size:0.74rem;color:#6ee7b7;font-weight:800;">لوحة المؤشرات المجمعة</div>
-            <h2 style="font-size:1.18rem;font-weight:900;margin-top:2px;">ملخص حالة السلامة والصحة المهنية بالمنشأة</h2>
+            <div style="font-size:0.74rem;color:#6ee7b7;font-weight:800;">الواجهة الرئيسية — ملخصات سريعة لنتائج التقارير</div>
+            <h2 style="font-size:1.18rem;font-weight:900;margin-top:2px;">قراءة فورية لنتائج جميع التقارير والنماذج</h2>
             <p id="overviewHeroDesc" style="font-size:0.8rem;color:#cbd5e1;margin-top:3px;"></p>
           </div>
           <button type="button" id="quickOpenDrawerBtn" class="btn btn-primary btn-sm">
-            <i class="fa-solid fa-list-check"></i> اختر نموذجًا للعمل عليه
+            <i class="fa-solid fa-bars"></i> فتح قائمة النماذج
           </button>
         </div>
 
         <div class="kpi-grid" id="kpiGrid"></div>
 
-        <div class="panel" style="border-color:#fde68a;">
-          <div class="panel-title" style="color:#92400e;"><i class="fa-solid fa-triangle-exclamation" style="color:#f59e0b;"></i><span>المشاكل والملاحظات المبدئية التي تحتاج متابعة</span></div>
-          <div class="panel-sub">يتم تحديث هذه القائمة تلقائيًا من واقع السجلات المدخلة في كل نموذج</div>
-          <div id="issuesContainer" class="grid-2"></div>
+        <div class="panel">
+          <div class="panel-title"><i class="fa-solid fa-clipboard-check" style="color:var(--emerald-600);"></i><span>ملخص نتائج آخر التقارير المسجلة في كل قسم</span></div>
+          <div class="panel-sub">نتيجة مباشرة لكل تقرير — اضغط على أي سطر للانتقال إلى نموذجه وتحديث بياناته</div>
+          <div id="reportSummariesList" class="grid-2"></div>
         </div>
 
         <div class="panel" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;padding:14px 18px;">
@@ -395,18 +395,18 @@
         </div>
       </div>
 
-      <!-- 2) شاشة النموذج المختار (تتغير بالكامل حسب النموذج المختار من القائمة) -->
+      <!-- 2) شاشة النموذج المفتوح (جميع النماذج متاحة دائمًا من القائمة) -->
       <div id="moduleSection" class="hidden"></div>
     </main>
   </div>
 
-  <!-- القائمة الجانبية اليمنى لاختيار النموذج -->
+  <!-- القائمة الجانبية اليمنى (تعرض كل النماذج والتقارير مباشرة دون إخفاء أو تخصيص) -->
   <div id="drawerBackdrop" class="drawer-backdrop"></div>
   <aside id="rightDrawer" class="right-drawer">
     <div class="drawer-head">
       <div>
-        <div style="font-size:0.95rem;font-weight:900;">نماذج وسجلات النظام</div>
-        <div style="font-size:0.72rem;color:#6ee7b7;">اختر النموذج ليظهر أمامك وتعمل عليه مباشرة</div>
+        <div style="font-size:0.95rem;font-weight:900;">قايمة التقارير والنماذج</div>
+        <div style="font-size:0.72rem;color:#6ee7b7;">جميع النماذج متاحة مباشرة للعمل عليها</div>
       </div>
       <button type="button" id="closeDrawerBtn" class="btn btn-ghost btn-sm" style="padding:5px 9px;">✕</button>
     </div>
@@ -579,7 +579,7 @@
         activeView = "module";
         const def = MODULE_DEFS.find(m => m.id === modId);
         const tabBtn = document.getElementById("tabModuleBtn");
-        tabBtn.textContent = "🛠️ " + (def ? def.label : "النموذج المختار");
+        tabBtn.textContent = "🛠️ " + (def ? def.label : "النموذج المفتوح");
         document.getElementById("tabModuleBtn").classList.add("active");
         document.getElementById("tabOverviewBtn").classList.remove("active");
         document.getElementById("overviewSection").classList.add("hidden");
@@ -609,6 +609,7 @@
         });
       }
 
+      /* ===== 1. شاشة الملخصات السريعة لنتائج التقارير ===== */
       function renderOverview() {
         const d = loadData();
         const highRisksInit = d.risks.filter(r => r.iL * r.iS >= 10).length;
@@ -617,58 +618,93 @@
         const openViolations = d.violations.filter(v => v.status !== "مغلقة").length;
         const validExts = d.extinguishers.filter(e => e.status === "صالحة").length;
         const extPct = d.extinguishers.length ? Math.round((validExts / d.extinguishers.length) * 100) : 0;
-        const nonCompLegal = d.legal.filter(l => l.status !== "مكتمل").length;
+        const legalDone = d.legal.filter(l => l.status === "مكتمل").length;
+        const avgDaily = d.daily.length ? Math.round(d.daily.reduce((a, b) => a + Number(b.score || 0), 0) / d.daily.length) : 0;
+        const trainTotal = d.training.reduce((a, b) => a + Number(b.count || 0), 0);
 
         document.getElementById("overviewHeroDesc").innerHTML =
-          `المخاطر المرتفعة/الحرجة انخفضت من <strong style="color:#fca5a5;">${highRisksInit}</strong> إلى <strong style="color:#6ee7b7;">${highRisksRes}</strong> • جاهزية الطفايات: <strong style="color:#6ee7b7;">${extPct}%</strong> • تصاريح نشطة: <strong style="color:#fde68a;">${activePermits}</strong>.`;
+          `المخاطر المرتفعة/الحرجة: <strong>${highRisksInit} ← ${highRisksRes}</strong> • متوسط التفتيش اليومي: <strong>${avgDaily}%</strong> • جاهزية الطفايات: <strong>${extPct}%</strong> • تصاريح نشطة: <strong>${activePermits}</strong>.`;
 
-        const cards = [
-          { mod: "risks", title: "المخاطر الحرجة والمرتفعة", val: `${highRisksInit} ← ${highRisksRes}`, sub: `إجمالي المخاطر المقيمة: ${d.risks.length}`, color: "#dc2626", icon: "fa-table-cells" },
-          { mod: "permits", title: "تصاريح العمل (PTW)", val: activePermits, sub: `نشطة حالياً من أصل ${d.permits.length}`, color: "#1d4ed8", icon: "fa-file-signature" },
-          { mod: "daily", title: "التفتيش اليومي", val: d.daily.length, sub: `تقارير الورديات المسجلة`, color: "#059669", icon: "fa-clipboard-list" },
-          { mod: "violations", title: "المخالفات المفتوحة", val: openViolations, sub: `إجمالي المخالفات: ${d.violations.length}`, color: "#d97706", icon: "fa-triangle-exclamation" },
-          { mod: "incidents", title: "الحوادث والإصابات", val: d.incidents.length, sub: `إصابات وحوادث وشيكة`, color: "#dc2626", icon: "fa-kit-medical" },
-          { mod: "extinguishers", title: "جاهزية طفايات الحريق", val: `${extPct}%`, sub: `${validExts} صالحة من ${d.extinguishers.length}`, color: "#059669", icon: "fa-fire-extinguisher" },
-          { mod: "legal", title: "الامتثال القانوني (14/2025)", val: d.legal.length - nonCompLegal, sub: `بنود متبقية: ${nonCompLegal}`, color: "#0b1d42", icon: "fa-scale-balanced" },
-          { mod: "training", title: "التدريب والتوعية", val: d.training.reduce((a, b) => a + Number(b.count || 0), 0), sub: `متدرب في ${d.training.length} جلسة`, color: "#1d4ed8", icon: "fa-chalkboard-user" }
+        const kpis = [
+          { mod: "risks", title: "نتيجة المخاطر (5×5)", val: `${highRisksInit} ← ${highRisksRes}`, sub: `${d.risks.length} خطر مُقيّم`, color: "#dc2626", icon: "fa-table-cells" },
+          { mod: "daily", title: "نتيجة التفتيش اليومي", val: d.daily.length ? `${avgDaily}%` : "0", sub: `${d.daily.length} تقرير وردية`, color: "#059669", icon: "fa-clipboard-list" },
+          { mod: "permits", title: "نتيجة تصاريح العمل", val: `${activePermits} نشط`, sub: `${d.permits.length - activePermits} مكتمل من ${d.permits.length}`, color: "#1d4ed8", icon: "fa-file-signature" },
+          { mod: "violations", title: "نتيجة المخالفات", val: `${openViolations} مفتوحة`, sub: `${d.violations.length - openViolations} مغلقة من ${d.violations.length}`, color: "#d97706", icon: "fa-triangle-exclamation" },
+          { mod: "incidents", title: "نتيجة الحوادث والإصابات", val: `${d.incidents.length} بلاغ`, sub: `${d.incidents.filter(i => i.type === "إصابة عمل").length} إصابة عمل`, color: "#dc2626", icon: "fa-kit-medical" },
+          { mod: "extinguishers", title: "نتيجة فحص الطفايات", val: d.extinguishers.length ? `${extPct}%` : "0", sub: `${validExts} صالحة من ${d.extinguishers.length}`, color: "#059669", icon: "fa-fire-extinguisher" },
+          { mod: "legal", title: "نتيجة الامتثال القانوني", val: `${legalDone}/${d.legal.length}`, sub: `قانون 14/2025 والقرارات 248-250`, color: "#0b1d42", icon: "fa-scale-balanced" },
+          { mod: "training", title: "نتيجة التدريب والتوعية", val: `${trainTotal} متدرب`, sub: `${d.training.length} جلسة تدريبية`, color: "#1d4ed8", icon: "fa-chalkboard-user" }
         ];
 
         const grid = document.getElementById("kpiGrid");
-        grid.innerHTML = cards.map(c => `
-          <div class="kpi-card" data-open-mod="${c.mod}">
-            <div class="kpi-top"><span>${esc(c.title)}</span><i class="fa-solid ${c.icon}" style="color:${c.color};"></i></div>
-            <div class="kpi-val">${esc(c.val)}</div>
-            <div class="kpi-sub" style="color:${c.color};">${esc(c.sub)}</div>
+        grid.innerHTML = kpis.map(k => `
+          <div class="kpi-card" data-open-mod="${k.mod}">
+            <div class="kpi-top"><span>${esc(k.title)}</span><i class="fa-solid ${k.icon}" style="color:${k.color};"></i></div>
+            <div class="kpi-val">${esc(k.val)}</div>
+            <div class="kpi-sub" style="color:${k.color};">${esc(k.sub)}</div>
           </div>
         `).join("");
         grid.querySelectorAll(".kpi-card").forEach(el => {
           el.addEventListener("click", () => switchToModule(el.getAttribute("data-open-mod")));
         });
 
-        const issues = [];
-        if (highRisksRes > 0) issues.push({ mod: "risks", text: `يوجد ${highRisksRes} خطر ما زال في المستوى المرتفع أو الحرج بعد التحكم.` });
-        if (openViolations > 0) issues.push({ mod: "violations", text: `يوجد ${openViolations} مخالفة مفتوحة لم يتم إغلاقها بعد.` });
-        const badExts = d.extinguishers.filter(e => e.status !== "صالحة").length;
-        if (badExts > 0) issues.push({ mod: "extinguishers", text: `يوجد ${badExts} طفاية حريق تحتاج إعادة شحن أو صيانة.` });
-        if (activePermits > 0) issues.push({ mod: "permits", text: `يوجد ${activePermits} تصريح عمل مفتوح ولم يُسجل وقت انتهائه.` });
-        if (nonCompLegal > 0) issues.push({ mod: "legal", text: `يوجد ${nonCompLegal} بند قانوني (قانون 14/2025) غير مكتمل.` });
+        // ملخصات سريعة لنتائج آخر التقارير في كل قسم
+        const lastRisk = d.risks[0];
+        const lastDaily = d.daily[0];
+        const lastPermit = d.permits[0];
+        const lastViol = d.violations[0];
+        const lastInc = d.incidents[0];
+        const lastLegal = d.legal[0];
 
-        const ic = document.getElementById("issuesContainer");
-        if (issues.length === 0) {
-          ic.innerHTML = `<div style="grid-column:1/-1;background:var(--emerald-50);border:1px solid #a7f3d0;color:#065f46;padding:12px 14px;border-radius:12px;font-size:0.82rem;font-weight:800;">
-            <i class="fa-solid fa-circle-check"></i> لا توجد مشاكل مفتوحة حالياً. افتح أي نموذج من القائمة الجانبية لإضافة تقاريرك.
-          </div>`;
-        } else {
-          ic.innerHTML = issues.map(is => `
-            <div style="background:var(--amber-50);border:1px solid #fcd34d;padding:11px 13px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:0.8rem;font-weight:700;color:#78350f;">
-              <span>${esc(is.text)}</span>
-              <button type="button" class="btn btn-navy btn-sm" data-jump="${is.mod}">فتح</button>
+        const summaries = [
+          {
+            mod: "risks",
+            title: "تحليل المخاطر",
+            result: lastRisk ? `آخر خطر: ${lastRisk.haz} (${lastRisk.dept}) — قبل ${lastRisk.iL * lastRisk.iS} ← بعد ${lastRisk.rL * lastRisk.rS}` : "لا توجد تقارير مخاطر مسجلة بعد."
+          },
+          {
+            mod: "daily",
+            title: "التفتيش اليومي",
+            result: lastDaily ? `آخر تقرير (${lastDaily.shift}) بتاريخ ${lastDaily.date}: نسبة المطابقة ${lastDaily.score}%` : "لا توجد تقارير تفتيش يومي مسجلة بعد."
+          },
+          {
+            mod: "permits",
+            title: "تصاريح العمل",
+            result: lastPermit ? `آخر تصريح: ${lastPermit.type} في ${lastPermit.loc} (${lastPermit.endTime ? "منتهي" : "جارٍ العمل"})` : "لا توجد تصاريح عمل مسجلة بعد."
+          },
+          {
+            mod: "violations",
+            title: "المخالفات والوقائية",
+            result: lastViol ? `آخر مخالفة: ${lastViol.target} — ${lastViol.desc} (${lastViol.status})` : "لا توجد مخالفات مسجلة بعد."
+          },
+          {
+            mod: "incidents",
+            title: "الحوادث والإصابات",
+            result: lastInc ? `آخر بلاغ: ${lastInc.type} في ${lastInc.dept} — ${lastInc.desc}` : "لا توجد حوادث أو إصابات مسجلة بعد."
+          },
+          {
+            mod: "legal",
+            title: "النماذج القانونية",
+            result: lastLegal ? `آخر بند: ${lastLegal.title} (${lastLegal.ref}) — ${lastLegal.status}` : "لا توجد بنود قانونية مسجلة بعد."
+          }
+        ];
+
+        const sl = document.getElementById("reportSummariesList");
+        sl.innerHTML = summaries.map(s => `
+          <div style="background:#f8fafc;border:1px solid var(--border);border-radius:14px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;cursor:pointer;" data-sum-mod="${s.mod}">
+            <div>
+              <div style="font-size:0.84rem;font-weight:900;color:var(--navy-900);">${esc(s.title)}</div>
+              <div style="font-size:0.78rem;color:var(--muted);margin-top:2px;">${esc(s.result)}</div>
             </div>
-          `).join("");
-          ic.querySelectorAll("[data-jump]").forEach(b => b.addEventListener("click", () => switchToModule(b.getAttribute("data-jump"))));
-        }
+            <span class="badge b-blue">فتح</span>
+          </div>
+        `).join("");
+        sl.querySelectorAll("[data-sum-mod]").forEach(el => {
+          el.addEventListener("click", () => switchToModule(el.getAttribute("data-sum-mod")));
+        });
       }
 
+      /* ===== 2. شاشة النموذج المفتوح ===== */
       function renderActiveModule() {
         const box = document.getElementById("moduleSection");
         const d = loadData();
