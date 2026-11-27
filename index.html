@@ -39,7 +39,8 @@
 
     .container {
       width: 100%;
-      max-width: 780px;
+      max-width: 820px;
+      position: relative;
     }
 
     .header {
@@ -115,14 +116,14 @@
       align-items: center;
     }
 
-    input, select {
+    input, select, textarea {
       width: 100%;
       background: var(--surface-2);
       border: 1px solid var(--border);
       color: var(--text);
       padding: 11px 12px;
       border-radius: 10px;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       outline: none;
     }
 
@@ -142,7 +143,7 @@
       padding: 4px 6px;
     }
 
-    input:focus, select:focus {
+    input:focus, select:focus, textarea:focus {
       border-color: var(--primary);
     }
 
@@ -153,16 +154,18 @@
       margin: 10px 0 14px;
     }
 
-    .checkbox-row input {
+    .checkbox-row input[type="checkbox"] {
       width: 18px;
       height: 18px;
       accent-color: var(--primary);
+      cursor: pointer;
     }
 
     .checkbox-row label {
       margin: 0;
       font-size: 0.86rem;
       color: var(--muted);
+      cursor: pointer;
     }
 
     .btn {
@@ -170,9 +173,9 @@
       background: var(--primary);
       color: #fff;
       border: none;
-      padding: 12px;
+      padding: 11px 14px;
       border-radius: 10px;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       font-weight: 700;
       cursor: pointer;
       transition: 0.2s;
@@ -216,7 +219,7 @@
     }
 
     .btn-sm {
-      padding: 7px 10px;
+      padding: 7px 11px;
       font-size: 0.8rem;
       width: auto;
     }
@@ -330,6 +333,169 @@
       flex-wrap: wrap;
     }
 
+    .top-bar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .icon-menu-btn {
+      background: var(--surface-2);
+      border: 1px solid var(--primary);
+      color: #38bdf8;
+      border-radius: 10px;
+      padding: 7px 12px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: 0.18s;
+    }
+
+    .icon-menu-btn:hover, .icon-menu-btn.active {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    /* قائمة النماذج على الشمال تحت بعضها عند الضغط على الأيقونة */
+    .left-selector-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.55);
+      z-index: 9990;
+      display: none;
+    }
+
+    .left-selector-backdrop.open {
+      display: block;
+    }
+
+    .left-models-drawer {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      width: min(350px, calc(100vw - 32px));
+      max-height: calc(100vh - 32px);
+      background: #0f172a;
+      border: 1px solid #38bdf8;
+      border-radius: 16px;
+      box-shadow: 0 22px 50px rgba(2, 6, 23, 0.78);
+      z-index: 9995;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .left-models-drawer.open {
+      display: flex;
+    }
+
+    .left-drawer-head {
+      padding: 13px 14px;
+      background: linear-gradient(135deg, #091a2b 0%, #0f2942 100%);
+      border-bottom: 1px solid #1e293b;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .left-drawer-head h4 {
+      font-size: 0.92rem;
+      color: #38bdf8;
+    }
+
+    .left-drawer-head p {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .left-drawer-body {
+      padding: 12px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .model-pick-row {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 11px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      transition: 0.15s;
+    }
+
+    .model-pick-row.selected {
+      border-color: var(--primary);
+      background: rgba(14, 165, 233, 0.11);
+    }
+
+    .model-pick-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin: 0;
+      cursor: pointer;
+      flex: 1;
+    }
+
+    .model-pick-label input[type="checkbox"] {
+      width: 17px;
+      height: 17px;
+      margin-top: 2px;
+      accent-color: var(--primary);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .model-pick-title {
+      display: block;
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .model-pick-desc {
+      display: block;
+      font-size: 0.71rem;
+      color: var(--muted);
+    }
+
+    .model-solo-btn {
+      background: rgba(14, 165, 233, 0.16);
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      color: #7dd3fc;
+      border-radius: 7px;
+      padding: 4px 8px;
+      font-size: 0.71rem;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .model-solo-btn:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .left-drawer-foot {
+      padding: 10px 12px;
+      border-top: 1px solid #1e293b;
+      background: #0f172a;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
     .link-btn {
       background: none;
       border: none;
@@ -360,7 +526,7 @@
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 14px;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
     .stats-head {
@@ -383,6 +549,13 @@
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 11px;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+
+    .stat-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-1px);
     }
 
     .stat-card .stat-title {
@@ -402,6 +575,92 @@
       font-size: 0.72rem;
       color: #cbd5e1;
       margin-top: 4px;
+    }
+
+    /* منطقة النماذج المختارة للعمل عليها مباشرة على الواجهة */
+    .selected-workspace {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 18px;
+    }
+
+    .workspace-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .workspace-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 10px;
+    }
+
+    .active-model-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 13px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .active-model-card strong {
+      font-size: 0.92rem;
+      color: #38bdf8;
+      display: block;
+      margin-bottom: 3px;
+    }
+
+    .active-model-card p {
+      font-size: 0.76rem;
+      color: var(--muted);
+    }
+
+    .active-model-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(55, 65, 81, 0.7);
+    }
+
+    .open-model-link {
+      background: var(--primary);
+      color: #fff;
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .open-model-link:hover {
+      background: var(--primary-hover);
+    }
+
+    .remove-model-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 5px 8px;
+      border-radius: 8px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .remove-model-btn:hover {
+      border-color: var(--danger);
+      color: #fca5a5;
     }
 
     .filter-toolbar {
@@ -643,18 +902,43 @@
           <h3 id="dashUserName" style="font-size: 1rem;">مرحباً</h3>
           <p id="dashCompanyInfo" style="font-size: 0.8rem; color: var(--muted);"></p>
         </div>
-        <button type="button" id="logoutBtn" class="btn btn-danger btn-sm">تسجيل الخروج</button>
+        <div class="top-bar-actions">
+          <button type="button" id="openModelsDrawerBtn" class="icon-menu-btn" title="اختيار النماذج للعرض على الواجهة">
+            <span>☰</span>
+            <span>اختيار النماذج</span>
+          </button>
+          <button type="button" id="logoutBtn" class="btn btn-danger btn-sm">تسجيل الخروج</button>
+        </div>
       </div>
 
+      <!-- نظرة عامة وإحصائيات النماذج -->
       <div class="stats-section" id="mainStatsSection">
         <div class="stats-head">
           <div>
             <h4 style="font-size: 0.96rem; color: var(--primary);">نظرة عامة وإحصائيات النماذج</h4>
-            <p style="font-size: 0.76rem; color: var(--muted);">ملخص فوري للسجلات المخزنة في النظام عبر مختلف النماذج والأقسام</p>
+            <p style="font-size: 0.76rem; color: var(--muted);">ملخص فوري للسجلات المخزنة في النظام — اضغط على أي بطاقة لإظهار نموذجها للعمل عليه</p>
           </div>
           <button type="button" id="refreshStatsBtn" class="btn btn-secondary btn-sm" style="margin-top:0;">تحديث الإحصائيات</button>
         </div>
         <div class="stats-grid" id="mainStatsGrid"></div>
+      </div>
+
+      <!-- النماذج المختارة للعمل عليها مباشرة على الواجهة -->
+      <div class="selected-workspace" id="selectedWorkspaceSection">
+        <div class="workspace-head">
+          <div>
+            <h4 style="font-size: 0.96rem; color: var(--primary);">النماذج المختارة على الواجهة</h4>
+            <p id="workspaceCountHint" style="font-size: 0.76rem; color: var(--muted);">اختر النماذج التي تفضل العمل عليها من أيقونة القائمة على الشمال</p>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button type="button" id="workspacePickBtn" class="icon-menu-btn" style="padding:5px 10px;font-size:0.76rem;">
+              <span>☰</span>
+              <span>تخصيص المعروض</span>
+            </button>
+            <button type="button" id="workspaceClearBtn" class="remove-model-btn">إخفاء الكل</button>
+          </div>
+        </div>
+        <div class="workspace-cards" id="selectedWorkspaceCards"></div>
       </div>
 
       <div class="biometric-box">
@@ -671,7 +955,7 @@
       </div>
 
       <div style="margin-bottom: 18px;">
-        <h4 style="font-size: 0.95rem; margin-bottom: 4px; color: var(--primary);">وحدات وسجلات السلامة والصحة المهنية</h4>
+        <h4 style="font-size: 0.95rem; margin-bottom: 4px; color: var(--primary);">دليل جميع وحدات وسجلات السلامة والصحة المهنية</h4>
         <p style="font-size: 0.78rem; color: var(--muted);">ابحث أو صفِّ الوحدات ثم انتقل مباشرة إلى النموذج المطلوب:</p>
 
         <div class="filter-toolbar">
@@ -771,10 +1055,28 @@
     </div>
   </div>
 
+  <!-- قائمة اختيار النماذج على الشمال (تظهر تحت بعضها عند الضغط على الأيقونة) -->
+  <div id="leftModelsBackdrop" class="left-selector-backdrop"></div>
+  <aside id="leftModelsDrawer" class="left-models-drawer" aria-label="قائمة اختيار النماذج">
+    <div class="left-drawer-head">
+      <div>
+        <h4>اختيار النماذج للعمل عليها</h4>
+        <p>حدّد النماذج التي تريد ظهورها أمامك في الواجهة</p>
+      </div>
+      <button type="button" id="closeModelsDrawerBtn" class="remove-model-btn" title="إغلاق القائمة">✕</button>
+    </div>
+    <div class="left-drawer-body" id="leftModelsList"></div>
+    <div class="left-drawer-foot">
+      <button type="button" id="selectAllModelsBtn" class="btn btn-secondary btn-sm" style="margin-top:0;width:100%;">عرض الكل</button>
+      <button type="button" id="clearAllModelsBtn" class="btn btn-danger btn-sm" style="width:100%;">إلغاء الكل</button>
+    </div>
+  </aside>
+
   <script>
     (function () {
       const STORAGE_KEY = "ohs_system_state_v14";
       const BIOMETRIC_KEY = "ohs_biometric_credential_v1";
+      const SELECTED_MODELS_KEY = "ohs_selected_workspace_models_v1";
       const LEGACY_KEYS = [
         "ohs_system_state_v13",
         "ohs_system_state_v12",
@@ -784,6 +1086,81 @@
       ];
       const INACTIVITY_LIMIT_MS = 30 * 24 * 60 * 60 * 1000;
       const OTP_DURATION_SEC = 120;
+
+      const MODELS_CATALOG = [
+        {
+          id: "legal_forms",
+          title: "📋 النماذج القانونية",
+          desc: "قانون 14 لسنة 2025 والقرارات 248 و249 و250 لسنة 2026 + تصدير Excel",
+          href: "./النماذج القانونيه.html",
+          statTitle: "النماذج القانونية والطوارئ",
+          statSub: "قانون 14/2025 وقرارات 248-250",
+          keywords: ["legal", "law", "emergency", "14_2025", "قانون", "طوارئ"]
+        },
+        {
+          id: "safety_tasks",
+          title: "⚖️ مهام السلامة وتكرارها",
+          desc: "جدول مهام الأسبوع والإشعارات الدورية حسب القانون",
+          href: "./مهام السلامة ومعدل تكرارها.html",
+          statTitle: "التفتيش اليومي والمهام",
+          statSub: "سجلات التفتيش والمهام الدورية",
+          keywords: ["inspect", "inspection", "daily", "تفتيش", "task"]
+        },
+        {
+          id: "civil_defense",
+          title: "🚒 مخططات الدفاع المدني",
+          desc: "حساب المضخات والصناديق والرشاشات والكواشف والطفايات (الكود المصري وNFPA)",
+          href: "./مخططات الدفاع المدني.html",
+          statTitle: "الطفايات والحماية",
+          statSub: "فحص الطفايات ومعدات الحريق",
+          keywords: ["extinguisher", "fire", "طفاي", "حريق", "دفاع"]
+        },
+        {
+          id: "emergency_plan",
+          title: "🚨 خطة الطوارئ لـ 3 ورديات",
+          desc: "فرق الإخلاء والإطفاء والإسعاف والبدلاء وسجل التدريب",
+          href: "./خطة الطوارئ.html",
+          statTitle: "خطط الطوارئ",
+          statSub: "فرق الورديات الثلاث والإخلاء",
+          keywords: ["emergency", "طوارئ", "اخلاء"]
+        },
+        {
+          id: "sds_sheets",
+          title: "🧪 صحائف بيانات السلامة SDS",
+          desc: "تحليل واستخراج اسم المادة والاحتياطات ومهمات الوقاية بالذكاء الاصطناعي",
+          href: "./SDS.html",
+          statTitle: "صحائف SDS والمخاطر",
+          statSub: "المواد الكيميائية والمخاطر",
+          keywords: ["sds", "risk", "hazard", "مخاطر", "كيميائ"]
+        },
+        {
+          id: "five_s",
+          title: "🧹 تقييم منهجية 5S",
+          desc: "تقييم تفاعلي لحظي وحصر الفجوات وحفظ PDF",
+          href: "./5S.html",
+          statTitle: "تقييم منهجية 5S",
+          statSub: "الفجوات والتنظيم والنظافة",
+          keywords: ["5s", "تنظيم", "فجوات"]
+        },
+        {
+          id: "team_eval",
+          title: "⭐ تقييم فريق السلامة",
+          desc: "تقييم الأداء والمتوسط السنوي والزيادة السنوية",
+          href: "./تقييم فريق العمل.html",
+          statTitle: "تقييم الكفاءة",
+          statSub: "تقييم الأداء والزيادة السنوية",
+          keywords: ["competency", "eval", "كفاءة", "تقييم"]
+        },
+        {
+          id: "training_aware",
+          title: "🎓 التدريب والتوعية",
+          desc: "سجل جلسات التدريب والتوعية وعدد الحضور",
+          href: "./التدريب والتوعية.html",
+          statTitle: "التدريب والتوعية",
+          statSub: "الجلسات التدريبية والمشاركون",
+          keywords: ["training", "aware", "تدريب", "توعية"]
+        }
+      ];
 
       let memoryFallback = { managers: {}, members: [], session: null };
       let isSendingOtp = false;
@@ -825,6 +1202,143 @@
         try {
           if (typeof sessionStorage !== "undefined" && sessionStorage) sessionStorage.removeItem(key);
         } catch (e) {}
+      }
+
+      function getSelectedModelIds() {
+        const session = getActiveSession();
+        const tenantKey = session && session.tenantEmail ? ":" + session.tenantEmail : ":default";
+        try {
+          const raw = safeGetItem(SELECTED_MODELS_KEY + tenantKey);
+          if (raw) {
+            const arr = JSON.parse(raw);
+            if (Array.isArray(arr)) {
+              const validSet = new Set(MODELS_CATALOG.map((m) => m.id));
+              return arr.filter((id) => validSet.has(id));
+            }
+          }
+        } catch (e) {}
+        return ["legal_forms", "sds_sheets", "five_s", "emergency_plan"];
+      }
+
+      function setSelectedModelIds(ids) {
+        const session = getActiveSession();
+        const tenantKey = session && session.tenantEmail ? ":" + session.tenantEmail : ":default";
+        const unique = Array.from(new Set(Array.isArray(ids) ? ids : []));
+        safeSetItem(SELECTED_MODELS_KEY + tenantKey, JSON.stringify(unique));
+        renderModelsDrawer();
+        renderSelectedWorkspace();
+      }
+
+      function toggleModelSelection(modelId, forceChecked) {
+        const current = getSelectedModelIds();
+        const exists = current.includes(modelId);
+        const shouldSelect = typeof forceChecked === "boolean" ? forceChecked : !exists;
+        if (shouldSelect && !exists) {
+          current.push(modelId);
+        } else if (!shouldSelect && exists) {
+          const idx = current.indexOf(modelId);
+          current.splice(idx, 1);
+        }
+        setSelectedModelIds(current);
+      }
+
+      function openModelsDrawer() {
+        if (!getActiveSession()) return;
+        renderModelsDrawer();
+        document.getElementById("leftModelsDrawer")?.classList.add("open");
+        document.getElementById("leftModelsBackdrop")?.classList.add("open");
+        document.getElementById("openModelsDrawerBtn")?.classList.add("active");
+      }
+
+      function closeModelsDrawer() {
+        document.getElementById("leftModelsDrawer")?.classList.remove("open");
+        document.getElementById("leftModelsBackdrop")?.classList.remove("open");
+        document.getElementById("openModelsDrawerBtn")?.classList.remove("active");
+      }
+
+      function renderModelsDrawer() {
+        const listEl = document.getElementById("leftModelsList");
+        if (!listEl) return;
+        const selected = getSelectedModelIds();
+
+        listEl.innerHTML = MODELS_CATALOG.map((m) => {
+          const isChecked = selected.includes(m.id);
+          return (
+            `<div class="model-pick-row ${isChecked ? "selected" : ""}">` +
+            `<label class="model-pick-label">` +
+            `<input type="checkbox" class="model-pick-checkbox" data-model-id="${escapeHtml(m.id)}" ${isChecked ? "checked" : ""} />` +
+            `<span>` +
+            `<span class="model-pick-title">${escapeHtml(m.title)}</span>` +
+            `<span class="model-pick-desc">${escapeHtml(m.desc)}</span>` +
+            `</span>` +
+            `</label>` +
+            `<button type="button" class="model-solo-btn" data-solo-id="${escapeHtml(m.id)}">هذا فقط</button>` +
+            `</div>`
+          );
+        }).join("");
+
+        listEl.querySelectorAll(".model-pick-checkbox").forEach((chk) => {
+          chk.addEventListener("change", () => {
+            const id = chk.getAttribute("data-model-id");
+            if (id) toggleModelSelection(id, chk.checked);
+          });
+        });
+
+        listEl.querySelectorAll(".model-solo-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const id = btn.getAttribute("data-solo-id");
+            if (id) {
+              setSelectedModelIds([id]);
+              closeModelsDrawer();
+            }
+          });
+        });
+      }
+
+      function renderSelectedWorkspace() {
+        const cardsEl = document.getElementById("selectedWorkspaceCards");
+        const hintEl = document.getElementById("workspaceCountHint");
+        if (!cardsEl) return;
+
+        const selectedIds = getSelectedModelIds();
+        const chosenModels = MODELS_CATALOG.filter((m) => selectedIds.includes(m.id));
+
+        if (hintEl) {
+          hintEl.textContent = chosenModels.length
+            ? `ظاهر أمامك الآن (${chosenModels.length}) من أصل (${MODELS_CATALOG.length}) نماذج`
+            : "لم يتم تحديد نماذج للعرض حاليًا — افتح القائمة على الشمال لاختيار ما تفضل العمل عليه";
+        }
+
+        if (chosenModels.length === 0) {
+          cardsEl.innerHTML =
+            `<div style="grid-column:1/-1;background:var(--surface-2);border:1px dashed var(--border);border-radius:10px;padding:14px;text-align:center;font-size:0.82rem;color:var(--muted);">` +
+            `لا توجد نماذج ظاهرة حاليًا. اضغط على <strong>اختيار النماذج</strong> على الشمال لتحديد النماذج التي تريد العمل عليها.` +
+            `</div>`;
+          return;
+        }
+
+        cardsEl.innerHTML = chosenModels.map((m) => {
+          const encodedHref = "./" + encodeURIComponent(decodeURIComponent(m.href.replace(/^\.\//, "")));
+          return (
+            `<div class="active-model-card" data-workspace-id="${escapeHtml(m.id)}">` +
+            `<div>` +
+            `<strong>${escapeHtml(m.title)}</strong>` +
+            `<p>${escapeHtml(m.desc)}</p>` +
+            `</div>` +
+            `<div class="active-model-actions">` +
+            `<a href="${encodedHref}" class="open-model-link">فتح النموذج</a>` +
+            `<button type="button" class="remove-model-btn" data-remove-id="${escapeHtml(m.id)}">إخفاء</button>` +
+            `</div>` +
+            `</div>`
+          );
+        }).join("");
+
+        cardsEl.querySelectorAll(".remove-model-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const id = btn.getAttribute("data-remove-id");
+            if (id) toggleModelSelection(id, false);
+          });
+        });
       }
 
       function migrateLegacyStorage() {
@@ -922,7 +1436,7 @@
           if (typeof localStorage === "undefined" || !localStorage) return 0;
           for (let i = 0; i < localStorage.length; i++) {
             const k = localStorage.key(i);
-            if (!k || k === STORAGE_KEY || k === BIOMETRIC_KEY) continue;
+            if (!k || k === STORAGE_KEY || k === BIOMETRIC_KEY || k.startsWith(SELECTED_MODELS_KEY)) continue;
             const kl = k.toLowerCase();
             if (!keywords.some((kw) => kl.includes(kw))) continue;
             const raw = localStorage.getItem(k);
@@ -950,64 +1464,42 @@
           ? store.members.filter((m) => m.tenantEmail === session.tenantEmail).length
           : store.members.length;
 
-        const cards = [
-          {
-            title: "التفتيش اليومي",
-            num: countRecordsFromStorage(["inspect", "inspection", "daily", "تفتيش"]),
-            sub: "سجلات التفتيش والملاحظات"
-          },
-          {
-            title: "مصفوفة المخاطر",
-            num: countRecordsFromStorage(["risk", "hazard", "مخاطر"]),
-            sub: "المخاطر المقيّمة والتحكم"
-          },
-          {
-            title: "تصاريح العمل",
-            num: countRecordsFromStorage(["permit", "ptw", "تصريح", "تصاريح"]),
-            sub: "التصاريح والنشطة والمعلقة"
-          },
-          {
-            title: "المخالفات والوقائية",
-            num: countRecordsFromStorage(["violation", "preventive", "مخالف", "وقائي"]),
-            sub: "مخالفات وملاحظات وقائية"
-          },
-          {
-            title: "الحوادث والإصابات",
-            num: countRecordsFromStorage(["incident", "accident", "injury", "حادث", "اصاب"]),
-            sub: "الحوادث والتحقيقات"
-          },
-          {
-            title: "التدريب والتوعية",
-            num: countRecordsFromStorage(["training", "aware", "تدريب", "توعية"]),
-            sub: "الجلسات والمشاركون"
-          },
-          {
-            title: "النماذج القانونية والطوارئ",
-            num: countRecordsFromStorage(["legal", "law", "emergency", "14_2025", "قانون", "طوارئ"]),
-            sub: "قانون 14/2025 وقرارات 248-250"
-          },
-          {
-            title: "الطفايات و5S والكفاءة",
-            num: countRecordsFromStorage(["extinguisher", "5s", "competency", "طفاي", "كفاءة"]),
-            sub: "فحص الطفايات و5S والتقييم"
-          },
-          {
-            title: "أعضاء فريق السلامة",
-            num: teamCount,
-            sub: "الحسابات النشطة بالمنشأة"
-          }
-        ];
+        const modelStatCards = MODELS_CATALOG.map((m) => ({
+          modelId: m.id,
+          title: m.statTitle,
+          num: countRecordsFromStorage(m.keywords),
+          sub: m.statSub
+        }));
 
-        grid.innerHTML = cards
+        modelStatCards.push({
+          modelId: null,
+          title: "أعضاء فريق السلامة",
+          num: teamCount,
+          sub: "الحسابات النشطة بالمنشأة"
+        });
+
+        grid.innerHTML = modelStatCards
           .map(
             (c) =>
-              `<div class="stat-card">` +
+              `<div class="stat-card" ${c.modelId ? `data-focus-model="${escapeHtml(c.modelId)}"` : ""}>` +
               `<div class="stat-title">${escapeHtml(c.title)}</div>` +
               `<div class="stat-num">${c.num}</div>` +
               `<div class="stat-sub">${escapeHtml(c.sub)}</div>` +
               `</div>`
           )
           .join("");
+
+        grid.querySelectorAll(".stat-card[data-focus-model]").forEach((card) => {
+          card.addEventListener("click", () => {
+            const modelId = card.getAttribute("data-focus-model");
+            if (!modelId) return;
+            const current = getSelectedModelIds();
+            if (!current.includes(modelId)) {
+              setSelectedModelIds([...current, modelId]);
+            }
+            document.getElementById("selectedWorkspaceSection")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          });
+        });
       }
 
       function applyModuleFilter() {
@@ -1265,6 +1757,24 @@
         });
       });
 
+      onButtonTap(document.getElementById("openModelsDrawerBtn"), () => {
+        const drawer = document.getElementById("leftModelsDrawer");
+        if (drawer && drawer.classList.contains("open")) closeModelsDrawer();
+        else openModelsDrawer();
+      });
+      onButtonTap(document.getElementById("workspacePickBtn"), openModelsDrawer);
+      onButtonTap(document.getElementById("closeModelsDrawerBtn"), closeModelsDrawer);
+      onButtonTap(document.getElementById("leftModelsBackdrop"), closeModelsDrawer);
+      onButtonTap(document.getElementById("selectAllModelsBtn"), () => {
+        setSelectedModelIds(MODELS_CATALOG.map((m) => m.id));
+      });
+      onButtonTap(document.getElementById("clearAllModelsBtn"), () => {
+        setSelectedModelIds([]);
+      });
+      onButtonTap(document.getElementById("workspaceClearBtn"), () => {
+        setSelectedModelIds([]);
+      });
+
       const moduleFilterInput = document.getElementById("moduleFilterInput");
       if (moduleFilterInput) {
         moduleFilterInput.addEventListener("input", applyModuleFilter);
@@ -1345,6 +1855,7 @@
 
       onButtonTap(document.getElementById("logoutBtn"), () => {
         hideAlert();
+        closeModelsDrawer();
         const state = readStore();
         state.session = null;
         writeStore(state);
@@ -1848,6 +2359,7 @@
         const dashView = document.getElementById("dashboardView");
 
         if (!session) {
+          closeModelsDrawer();
           authView.classList.remove("hidden");
           dashView.classList.add("hidden");
           updateBiometricUI();
@@ -1857,6 +2369,7 @@
 
         const state = readStore();
         if (!state.managers[session.tenantEmail]) {
+          closeModelsDrawer();
           state.session = null;
           writeStore(state);
           safeRemoveSession("ohs_temp_session");
@@ -1883,6 +2396,8 @@
         document.getElementById("memberOnlySection").classList.toggle("hidden", isMgr);
         updateBiometricUI();
         renderMainDashboardStats();
+        renderModelsDrawer();
+        renderSelectedWorkspace();
         applyModuleFilter();
         syncAssistantVisibility();
         if (isMgr) {
@@ -2131,10 +2646,7 @@
         .filter(el => el.type !== "password" && el.type !== "file" && el.id !== "ohs-ai-input" && el.value && String(el.value).trim())
         .slice(0, 12)
         .map(el => (el.name || el.id || "حقل") + ": " + String(el.value).trim().slice(0, 60));
-      return "الصفحة المفتوحة حالياً: " + title + (inputs.length ? ("
-بيانات مدخلة حالياً:
-- " + inputs.join("
-- ")) : "");
+      return "الصفحة المفتوحة حالياً: " + title + (inputs.length ? ("\nبيانات مدخلة حالياً:\n- " + inputs.join("\n- ")) : "");
     }
 
     function loadMessages() {
@@ -2148,12 +2660,7 @@
       return [
         {
           role: "bot",
-          text: "أهلاً بك! أنا مساعد السلامة والصحة المهنية الذكي.
-يمكنني مساعدتك في:
-• شرح وتطبيق قانون العمل 14 لسنة 2025 والقرارات 248 و249 و250 لسنة 2026.
-• تعبئة النماذج القانونية وحساب معدلات التكرار والشدة.
-• حسابات الدفاع المدني والحماية من الحريق (الكود المصري وNFPA).
-• خطط الطوارئ، تقييم 5S، تحليل صحائف SDS، وتقييم فريق العمل."
+          text: "أهلاً بك! أنا مساعد السلامة والصحة المهنية الذكي.\nيمكنني مساعدتك في:\n• شرح وتطبيق قانون العمل 14 لسنة 2025 والقرارات 248 و249 و250 لسنة 2026.\n• تعبئة النماذج القانونية وحساب معدلات التكرار والشدة.\n• حسابات الدفاع المدني والحماية من الحريق (الكود المصري وNFPA).\n• خطط الطوارئ، تقييم 5S، تحليل صحائف SDS، وتقييم فريق العمل."
         }
       ];
     }
@@ -2180,41 +2687,21 @@
     function localFallbackReply(question) {
       const q = String(question || "").toLowerCase();
       if (q.includes("14") || q.includes("248") || q.includes("249") || q.includes("250") || q.includes("قانون")) {
-        return "ملخص الالتزامات وفق قانون العمل 14 لسنة 2025 والقرارات الوزارية 248 و249 و250 لسنة 2026:
-1) الإخطار الفوري بالحوادث الجسيمة (نموذج 1) خلال 24 ساعة داخل المنشأة و48 ساعة خارجها (قرار 248).
-2) تشكيل جهاز ولجنة السلامة وتصنيف الأخصائيين وفق حجم العمالة وطبيعة النشاط (قرار 249).
-3) تقييم المخاطر الدورية (فيزيائية، ميكانيكية، كيميائية، بيولوجية) والالتزام بحدود الأمان وخطط الطوارئ (قرار 250).
-4) تقديم الإحصائيات النصف سنوية للأمراض والإصابات والحوادث (النماذج 3 إلى 7).";
+        return "ملخص الالتزامات وفق قانون العمل 14 لسنة 2025 والقرارات الوزارية 248 و249 و250 لسنة 2026:\n1) الإخطار الفوري بالحوادث الجسيمة (نموذج 1) خلال 24 ساعة داخل المنشأة و48 ساعة خارجها (قرار 248).\n2) تشكيل جهاز ولجنة السلامة وتصنيف الأخصائيين وفق حجم العمالة وطبيعة النشاط (قرار 249).\n3) تقييم المخاطر الدورية (فيزيائية، ميكانيكية، كيميائية، بيولوجية) والالتزام بحدود الأمان وخطط الطوارئ (قرار 250).\n4) تقديم الإحصائيات النصف سنوية للأمراض والإصابات والحوادث (النماذج 3 إلى 7).";
       }
       if (q.includes("تكرار") || q.includes("شدة") || q.includes("نموذج 7") || q.includes("اصابات")) {
-        return "معادلات إصابات العمل (نموذج رقم 7):
-• معدل تكرار الإصابة = (عدد الإصابات × 200,000) ÷ (إجمالي ساعات العمل الفعلية لجميع العاملين خلال الفترة).
-• معدل شدة الإصابة = (إجمالي أيام الانقطاع × 200,000) ÷ (إجمالي ساعات العمل الفعلية).
-• ساعات العمل الفعلية = عدد العاملين × ساعات العمل اليومية × أيام العمل الفعلية.";
+        return "معادلات إصابات العمل (نموذج رقم 7):\n• معدل تكرار الإصابة = (عدد الإصابات × 200,000) ÷ (إجمالي ساعات العمل الفعلية لجميع العاملين خلال الفترة).\n• معدل شدة الإصابة = (إجمالي أيام الانقطاع × 200,000) ÷ (إجمالي ساعات العمل الفعلية).\n• ساعات العمل الفعلية = عدد العاملين × ساعات العمل اليومية × أيام العمل الفعلية.";
       }
       if (q.includes("طوارئ") || q.includes("اخلاء") || q.includes("اطفاء") || q.includes("اسعاف")) {
-        return "هيكل خطة الطوارئ المرنة لثلاث ورديات:
-• تتكون كل وردية من 3 فرق مستقلة (فريق الإخلاء، فريق الإطفاء، فريق الإسعاف) ولكل فريق قائده.
-• الحد الأدنى هو فرد واحد لكل فريق (3 أفراد بالوردية) مع تحديد بديل داخل الوردية وبديل من الوردية التالية.
-• عند الحريق: يتدخل فريق الإطفاء للسيطرة المبدئية الآمنة، ويقود فريق الإخلاء التوجه لنقطة التجمع وحصر الأعداد، ويجهز فريق الإسعاف حقيبة الإسعاف الأولي.";
+        return "هيكل خطة الطوارئ المرنة لثلاث ورديات:\n• تتكون كل وردية من 3 فرق مستقلة (فريق الإخلاء، فريق الإطفاء، فريق الإسعاف) ولكل فريق قائده.\n• الحد الأدنى هو فرد واحد لكل فريق (3 أفراد بالوردية) مع تحديد بديل داخل الوردية وبديل من الوردية التالية.\n• عند الحريق: يتدخل فريق الإطفاء للسيطرة المبدئية الآمنة، ويقود فريق الإخلاء التوجه لنقطة التجمع وحصر الأعداد، ويجهز فريق الإسعاف حقيبة الإسعاف الأولي.";
       }
       if (q.includes("دفاع") || q.includes("مضخ") || q.includes("رشاش") || q.includes("طفاي") || q.includes("nfpa")) {
-        return "إرشادات الدفاع المدني والحماية من الحريق (الكود المصري وNFPA):
-• منظومة المضخات (NFPA 20): مضخة كهربائية رئيسية + مضخة ديزل احتياطية بنفس القدرة + مضخة جوكي (Jockey) للحفاظ على ضغط الشبكة.
-• صناديق الحريق والروايزر (NFPA 14): تغطية شاملة بمسافة وصول حتى ~30 متر.
-• الكواشف والرشاشات (NFPA 72 / NFPA 13): تباعد الكواشف عادة 7.5–9 م والرشاشات 3–4.2 م حسب درجة الخطورة وارتفاع السقف.";
+        return "إرشادات الدفاع المدني والحماية من الحريق (الكود المصري وNFPA):\n• منظومة المضخات (NFPA 20): مضخة كهربائية رئيسية + مضخة ديزل احتياطية بنفس القدرة + مضخة جوكي (Jockey) للحفاظ على ضغط الشبكة.\n• صناديق الحريق والروايزر (NFPA 14): تغطية شاملة بمسافة وصول حتى ~30 متر.\n• الكواشف والرشاشات (NFPA 72 / NFPA 13): تباعد الكواشف عادة 7.5–9 م والرشاشات 3–4.2 م حسب درجة الخطورة وارتفاع السقف.";
       }
       if (q.includes("5s")) {
-        return "منهجية 5S للتنظيم والنظافة الصناعية:
-1) التصنيف (Seiri): فرز الضروري وعزل الراكد والتالف.
-2) الترتيب (Seiton): تحديد مكان واضح ومُعرّف لكل أداة وخامة مع إخلاء الممرات.
-3) التنظيف (Seiso): نظافة مستمرة ومعالجة مصادر التسريب.
-4) التوحيد (Seiketsu): علامات أرضية وتعليمات فحص موحدة.
-5) الاستدامة (Shitsuke): الالتزام والتدقيق الدوري وإغلاق الفجوات.";
+        return "منهجية 5S للتنظيم والنظافة الصناعية:\n1) التصنيف (Seiri): فرز الضروري وعزل الراكد والتالف.\n2) الترتيب (Seiton): تحديد مكان واضح ومُعرّف لكل أداة وخامة مع إخلاء الممرات.\n3) التنظيف (Seiso): نظافة مستمرة ومعالجة مصادر التسريب.\n4) التوحيد (Seiketsu): علامات أرضية وتعليمات فحص موحدة.\n5) الاستدامة (Shitsuke): الالتزام والتدقيق الدوري وإغلاق الفجوات.";
       }
-      return "تم استلام استفسارك بنجاح.
-بناءً على بيانات الصفحة الحالية (" + (document.title || "إدارة السلامة") + "):
-تأكد من استيفاء الحقول الأساسية، وتوثيق الإجراءات التصحيحية والمسؤول وموعد التنفيذ، وحفظ نسخة PDF أو Excel للمراجعة والاعتماد الرسمي. إذا أردت شرحاً لنموذج أو بند محدد اكتب اسمه وسأوضح لك خطواته بالتفصيل.";
+      return "تم استلام استفسارك بنجاح.\nبناءً على بيانات الصفحة الحالية (" + (document.title || "إدارة السلامة") + "):\nتأكد من استيفاء الحقول الأساسية، وتوثيق الإجراءات التصحيحية والمسؤول وموعد التنفيذ، وحفظ نسخة PDF أو Excel للمراجعة والاعتماد الرسمي. إذا أردت شرحاً لنموذج أو بند محدد اكتب اسمه وسأوضح لك خطواته بالتفصيل.";
     }
 
     async function askAssistant(question) {
@@ -2241,8 +2728,7 @@
         "مرجعياتك: قانون العمل المصري رقم 14 لسنة 2025، والقرارات الوزارية 248 و249 و250 لسنة 2026، والكود المصري للحريق، ومعايير NFPA وOSHA.",
         "أجب دائماً باللغة العربية الواضحة والعملية في نقاط منظمة ومباشرة دون مقدمات مطولة.",
         getPageContextSummary()
-      ].join("
-");
+      ].join("\n");
 
       try {
         const res = await fetch("/api/assistant", {
