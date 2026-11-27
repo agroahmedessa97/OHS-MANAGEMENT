@@ -39,7 +39,7 @@
 
     .container {
       width: 100%;
-      max-width: 820px;
+      max-width: 860px;
       position: relative;
     }
 
@@ -99,12 +99,12 @@
     }
 
     .form-group {
-      margin-bottom: 13px;
+      margin-bottom: 12px;
     }
 
     label {
       display: block;
-      font-size: 0.85rem;
+      font-size: 0.84rem;
       font-weight: 600;
       margin-bottom: 5px;
       color: #e5e7eb;
@@ -121,10 +121,15 @@
       background: var(--surface-2);
       border: 1px solid var(--border);
       color: var(--text);
-      padding: 11px 12px;
+      padding: 10px 12px;
       border-radius: 10px;
-      font-size: 0.92rem;
+      font-size: 0.9rem;
       outline: none;
+    }
+
+    textarea {
+      min-height: 76px;
+      resize: vertical;
     }
 
     .input-wrap input {
@@ -206,10 +211,6 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-    }
-
-    .btn-biometric:hover:not(:disabled) {
-      background: linear-gradient(135deg, #047857 0%, #0f766e 100%);
     }
 
     .btn-danger {
@@ -294,32 +295,25 @@
       display: inline-block;
       padding: 3px 9px;
       border-radius: 999px;
-      font-size: 0.75rem;
+      font-size: 0.74rem;
       font-weight: 700;
       background: rgba(14, 165, 233, 0.18);
       color: #7dd3fc;
     }
 
-    .member-item {
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px;
-      margin-top: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
+    .badge-warn {
+      background: rgba(245, 158, 11, 0.18);
+      color: #fcd34d;
     }
 
-    .member-info h4 {
-      font-size: 0.92rem;
-      margin-bottom: 2px;
+    .badge-danger {
+      background: rgba(239, 68, 68, 0.18);
+      color: #fca5a5;
     }
 
-    .member-info p {
-      font-size: 0.78rem;
-      color: var(--muted);
+    .badge-ok {
+      background: rgba(16, 185, 129, 0.18);
+      color: #6ee7b7;
     }
 
     .top-bar {
@@ -333,67 +327,65 @@
       flex-wrap: wrap;
     }
 
-    .top-bar-actions {
+    .top-bar-right-actions {
       display: flex;
       align-items: center;
       gap: 8px;
       flex-wrap: wrap;
     }
 
-    .icon-menu-btn {
-      background: var(--surface-2);
-      border: 1px solid var(--primary);
-      color: #38bdf8;
+    /* أيقونة القائمة العلوية اليمنى ودرج النماذج */
+    .right-menu-trigger {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      border: 1px solid #38bdf8;
+      color: #fff;
       border-radius: 10px;
-      padding: 7px 12px;
-      font-size: 0.82rem;
+      padding: 8px 13px;
+      font-size: 0.84rem;
       font-weight: 800;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: 0.18s;
     }
 
-    .icon-menu-btn:hover, .icon-menu-btn.active {
-      background: var(--primary);
-      color: #fff;
+    .right-menu-trigger:hover {
+      background: var(--primary-hover);
     }
 
-    /* قائمة النماذج على الشمال تحت بعضها عند الضغط على الأيقونة */
-    .left-selector-backdrop {
+    .right-drawer-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(2, 6, 23, 0.55);
+      background: rgba(2, 6, 23, 0.6);
       z-index: 9990;
       display: none;
     }
 
-    .left-selector-backdrop.open {
+    .right-drawer-backdrop.open {
       display: block;
     }
 
-    .left-models-drawer {
+    .right-models-drawer {
       position: fixed;
       top: 16px;
-      left: 16px;
-      width: min(350px, calc(100vw - 32px));
+      right: 16px;
+      width: min(360px, calc(100vw - 32px));
       max-height: calc(100vh - 32px);
       background: #0f172a;
       border: 1px solid #38bdf8;
       border-radius: 16px;
-      box-shadow: 0 22px 50px rgba(2, 6, 23, 0.78);
+      box-shadow: 0 22px 50px rgba(2, 6, 23, 0.82);
       z-index: 9995;
       display: none;
       flex-direction: column;
       overflow: hidden;
     }
 
-    .left-models-drawer.open {
+    .right-models-drawer.open {
       display: flex;
     }
 
-    .left-drawer-head {
+    .drawer-head {
       padding: 13px 14px;
       background: linear-gradient(135deg, #091a2b 0%, #0f2942 100%);
       border-bottom: 1px solid #1e293b;
@@ -403,17 +395,17 @@
       gap: 8px;
     }
 
-    .left-drawer-head h4 {
+    .drawer-head h4 {
       font-size: 0.92rem;
       color: #38bdf8;
     }
 
-    .left-drawer-head p {
+    .drawer-head p {
       font-size: 0.72rem;
       color: var(--muted);
     }
 
-    .left-drawer-body {
+    .drawer-body {
       padding: 12px;
       overflow-y: auto;
       display: flex;
@@ -422,24 +414,29 @@
       flex: 1;
     }
 
-    .model-pick-row {
+    .model-choice-item {
       background: var(--surface-2);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 9px 11px;
+      padding: 10px 11px;
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .model-choice-item.active-model {
+      border-color: var(--primary);
+      background: rgba(14, 165, 233, 0.12);
+    }
+
+    .model-choice-top {
+      display: flex;
+      align-items: flex-start;
       justify-content: space-between;
       gap: 8px;
-      transition: 0.15s;
     }
 
-    .model-pick-row.selected {
-      border-color: var(--primary);
-      background: rgba(14, 165, 233, 0.11);
-    }
-
-    .model-pick-label {
+    .model-check-label {
       display: flex;
       align-items: flex-start;
       gap: 8px;
@@ -448,7 +445,7 @@
       flex: 1;
     }
 
-    .model-pick-label input[type="checkbox"] {
+    .model-check-label input[type="checkbox"] {
       width: 17px;
       height: 17px;
       margin-top: 2px;
@@ -457,37 +454,29 @@
       flex-shrink: 0;
     }
 
-    .model-pick-title {
-      display: block;
-      font-size: 0.84rem;
-      font-weight: 700;
-      color: var(--text);
+    .model-choice-actions {
+      display: flex;
+      gap: 6px;
+      justify-content: flex-end;
     }
 
-    .model-pick-desc {
-      display: block;
-      font-size: 0.71rem;
-      color: var(--muted);
-    }
-
-    .model-solo-btn {
+    .mini-action-btn {
       background: rgba(14, 165, 233, 0.16);
       border: 1px solid rgba(56, 189, 248, 0.45);
-      color: #7dd3fc;
+      color: #bae6fd;
       border-radius: 7px;
-      padding: 4px 8px;
-      font-size: 0.71rem;
+      padding: 4px 9px;
+      font-size: 0.72rem;
       font-weight: 700;
       cursor: pointer;
-      flex-shrink: 0;
     }
 
-    .model-solo-btn:hover {
+    .mini-action-btn:hover, .mini-action-btn.primary {
       background: var(--primary);
       color: #fff;
     }
 
-    .left-drawer-foot {
+    .drawer-foot {
       padding: 10px 12px;
       border-top: 1px solid #1e293b;
       background: #0f172a;
@@ -496,52 +485,19 @@
       gap: 8px;
     }
 
-    .link-btn {
-      background: none;
-      border: none;
-      color: var(--primary);
-      font-size: 0.86rem;
-      font-weight: 700;
-      cursor: pointer;
-      text-decoration: underline;
-      margin-top: 12px;
-      display: inline-block;
-    }
-
-    .biometric-box {
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(52, 211, 153, 0.45);
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 16px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
     .stats-section {
-      background: rgba(15, 23, 42, 0.75);
+      background: rgba(15, 23, 42, 0.8);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 14px;
-      margin-bottom: 16px;
-    }
-
-    .stats-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
+      margin-bottom: 14px;
     }
 
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
       gap: 10px;
+      margin-top: 10px;
     }
 
     .stat-card {
@@ -555,13 +511,12 @@
 
     .stat-card:hover {
       border-color: var(--primary);
-      transform: translateY(-1px);
     }
 
     .stat-card .stat-title {
-      font-size: 0.75rem;
+      font-size: 0.74rem;
       color: var(--muted);
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
 
     .stat-card .stat-num {
@@ -572,162 +527,132 @@
     }
 
     .stat-card .stat-sub {
-      font-size: 0.72rem;
+      font-size: 0.71rem;
       color: #cbd5e1;
       margin-top: 4px;
     }
 
-    /* منطقة النماذج المختارة للعمل عليها مباشرة على الواجهة */
-    .selected-workspace {
+    .issues-box {
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      border-radius: 12px;
+      padding: 13px;
+      margin-bottom: 16px;
+    }
+
+    .issues-list {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .issue-item {
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.8rem;
+      color: #fde68a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .workspace-section {
       background: rgba(15, 23, 42, 0.85);
       border: 1px solid rgba(56, 189, 248, 0.35);
       border-radius: 12px;
       padding: 14px;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
-    .workspace-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-    }
-
-    .workspace-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-      gap: 10px;
-    }
-
-    .active-model-card {
+    .active-model-panel {
       background: var(--surface-2);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 13px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .active-model-card strong {
-      font-size: 0.92rem;
-      color: #38bdf8;
-      display: block;
-      margin-bottom: 3px;
-    }
-
-    .active-model-card p {
-      font-size: 0.76rem;
-      color: var(--muted);
-    }
-
-    .active-model-actions {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-      padding-top: 8px;
-      border-top: 1px solid rgba(55, 65, 81, 0.7);
-    }
-
-    .open-model-link {
-      background: var(--primary);
-      color: #fff;
-      text-decoration: none;
-      padding: 6px 10px;
-      border-radius: 8px;
-      font-size: 0.78rem;
-      font-weight: 700;
-    }
-
-    .open-model-link:hover {
-      background: var(--primary-hover);
-    }
-
-    .remove-model-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 5px 8px;
-      border-radius: 8px;
-      font-size: 0.74rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .remove-model-btn:hover {
-      border-color: var(--danger);
-      color: #fca5a5;
-    }
-
-    .filter-toolbar {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin: 10px 0 12px;
-    }
-
-    .filter-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .filter-pill {
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 6px 11px;
-      border-radius: 999px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .filter-pill.active {
-      background: var(--primary);
-      border-color: var(--primary);
-      color: #fff;
-    }
-
-    .modules-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-      gap: 10px;
+      padding: 14px;
       margin-top: 10px;
     }
 
-    .module-link {
+    .panel-header {
       display: flex;
-      flex-direction: column;
       justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+    }
+
+    .record-row {
+      background: #111827;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .record-row strong {
+      font-size: 0.88rem;
+      color: #e5e7eb;
+      display: block;
+    }
+
+    .record-row p {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .member-item {
       background: var(--surface-2);
       border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px;
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .biometric-box {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(52, 211, 153, 0.45);
       border-radius: 12px;
-      padding: 13px;
-      color: var(--text);
-      text-decoration: none;
-      transition: 0.18s;
+      padding: 12px;
+      margin-bottom: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
     }
 
-    .module-link:hover {
-      border-color: var(--primary);
-      background: #1e293b;
-      transform: translateY(-2px);
-    }
-
-    .module-link strong {
-      font-size: 0.9rem;
-      color: #38bdf8;
-      margin-bottom: 4px;
-    }
-
-    .module-link span {
-      font-size: 0.76rem;
-      color: var(--muted);
+    .link-btn {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-size: 0.86rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: underline;
+      margin-top: 10px;
+      display: inline-block;
     }
 
     .diag-box {
@@ -740,21 +665,18 @@
       color: #cbd5e1;
       line-height: 1.6;
     }
-
-    .diag-box strong {
-      color: var(--warning);
-    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
       <h1>إدارة السلامة والصحة المهنية</h1>
-      <p>منظومة موحدة على Cloudflare + Resend — الحسابات، البصمة، الاستعادة عبر البريد، وجميع الوحدات</p>
+      <p>منظومة متكاملة — نظرة عامة على التقارير والمشاكل وإدارة النماذج المختارة</p>
     </div>
 
     <div id="globalAlert" class="alert"></div>
 
+    <!-- شاشة الدخول والتسجيل والاستعادة (تختفي بالكامل بعد تسجيل الدخول) -->
     <div id="authView" class="card">
       <div class="tabs" id="authTabs">
         <button type="button" class="tab-btn active" data-tab="loginTab">دخول المدير</button>
@@ -768,9 +690,6 @@
             <span>👆</span>
             <span id="biometricLoginLabel">تسجيل الدخول السريع بالبصمة</span>
           </button>
-          <p style="font-size:0.75rem;color:var(--muted);text-align:center;margin-top:5px;">
-            البصمة مفعلة على هذا الجهاز للحساب المسجل مسبقاً
-          </p>
         </div>
 
         <div class="form-group">
@@ -807,7 +726,7 @@
           <input type="text" id="regCompany" placeholder="اسم المنشأة" />
         </div>
         <div class="form-group">
-          <label for="regEmail">البريد الإلكتروني المرجعي للمدير (يُستخدم لاستعادة كلمة المرور)</label>
+          <label for="regEmail">البريد الإلكتروني المرجعي للمدير</label>
           <input type="email" id="regEmail" placeholder="manager@company.com" dir="ltr" />
         </div>
         <div class="form-group">
@@ -848,7 +767,6 @@
 
       <div id="recoveryPanel" class="hidden">
         <h3 style="font-size: 1.05rem; margin-bottom: 10px; color: var(--primary);">استعادة كلمة مرور المدير عبر البريد الإلكتروني</h3>
-
         <div id="recStep1">
           <div class="form-group">
             <label for="recEmail">البريد الإلكتروني المسجل للمدير</label>
@@ -856,24 +774,19 @@
           </div>
           <button type="button" id="sendOtpBtn" class="btn">إرسال كود التحقق (6 أرقام) إلى البريد</button>
         </div>
-
-        <div id="relayDiagBox" class="diag-box hidden">
-          <div id="relayDiagText"></div>
-        </div>
-
+        <div id="relayDiagBox" class="diag-box hidden"><div id="relayDiagText"></div></div>
         <div id="recStep2" class="hidden">
           <div class="otp-timer">
             <span>الوقت المتبقي لصلاحية الكود:</span>
             <span id="timerDisplay" class="timer-badge">02:00</span>
           </div>
           <div class="form-group">
-            <label for="otpInput">أدخل الكود المكون من 6 أرقام المرسل لبريدك</label>
+            <label for="otpInput">أدخل الكود المكون من 6 أرقام</label>
             <input type="text" id="otpInput" class="otp-input" maxlength="6" inputmode="numeric" placeholder="000000" />
           </div>
           <button type="button" id="verifyOtpBtn" class="btn">تحقق من الكود</button>
           <button type="button" id="resendOtpBtn" class="btn btn-secondary hidden">إعادة إرسال كود جديد</button>
         </div>
-
         <div id="recStep3" class="hidden">
           <div class="form-group">
             <label for="newPass1">كلمة المرور الجديدة</label>
@@ -891,62 +804,61 @@
           </div>
           <button type="button" id="saveNewPassBtn" class="btn">حفظ كلمة المرور الجديدة</button>
         </div>
-
         <button type="button" id="backToLoginBtn" class="btn btn-secondary">العودة لتسجيل الدخول</button>
       </div>
     </div>
 
+    <!-- الواجهة الرئيسية بعد تسجيل الدخول -->
     <div id="dashboardView" class="card hidden">
       <div class="top-bar">
         <div>
           <h3 id="dashUserName" style="font-size: 1rem;">مرحباً</h3>
-          <p id="dashCompanyInfo" style="font-size: 0.8rem; color: var(--muted);"></p>
+          <p id="dashCompanyInfo" style="font-size: 0.78rem; color: var(--muted);"></p>
         </div>
-        <div class="top-bar-actions">
-          <button type="button" id="openModelsDrawerBtn" class="icon-menu-btn" title="اختيار النماذج للعرض على الواجهة">
+        <div class="top-bar-right-actions">
+          <button type="button" id="openRightDrawerBtn" class="right-menu-trigger" title="فتح قائمة النماذج">
             <span>☰</span>
-            <span>اختيار النماذج</span>
+            <span>قائمة النماذج</span>
           </button>
           <button type="button" id="logoutBtn" class="btn btn-danger btn-sm">تسجيل الخروج</button>
         </div>
       </div>
 
-      <!-- نظرة عامة وإحصائيات النماذج -->
-      <div class="stats-section" id="mainStatsSection">
-        <div class="stats-head">
+      <!-- إحصائيات مجمعة لكل التقارير -->
+      <div class="stats-section">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;">
           <div>
-            <h4 style="font-size: 0.96rem; color: var(--primary);">نظرة عامة وإحصائيات النماذج</h4>
-            <p style="font-size: 0.76rem; color: var(--muted);">ملخص فوري للسجلات المخزنة في النظام — اضغط على أي بطاقة لإظهار نموذجها للعمل عليه</p>
+            <h4 style="font-size: 0.96rem; color: var(--primary);">ملخص إحصائيات التقارير والنماذج</h4>
+            <p style="font-size: 0.75rem; color: var(--muted);">نظرة عامة على السجلات الحالية — اضغط على أي بطاقة لفتح النموذج والعمل عليه</p>
           </div>
-          <button type="button" id="refreshStatsBtn" class="btn btn-secondary btn-sm" style="margin-top:0;">تحديث الإحصائيات</button>
+          <button type="button" id="refreshOverviewBtn" class="btn btn-secondary btn-sm" style="margin-top:0;">تحديث الملخص</button>
         </div>
-        <div class="stats-grid" id="mainStatsGrid"></div>
+        <div class="stats-grid" id="overviewStatsGrid"></div>
       </div>
 
-      <!-- النماذج المختارة للعمل عليها مباشرة على الواجهة -->
-      <div class="selected-workspace" id="selectedWorkspaceSection">
-        <div class="workspace-head">
-          <div>
-            <h4 style="font-size: 0.96rem; color: var(--primary);">النماذج المختارة على الواجهة</h4>
-            <p id="workspaceCountHint" style="font-size: 0.76rem; color: var(--muted);">اختر النماذج التي تفضل العمل عليها من أيقونة القائمة على الشمال</p>
-          </div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;">
-            <button type="button" id="workspacePickBtn" class="icon-menu-btn" style="padding:5px 10px;font-size:0.76rem;">
-              <span>☰</span>
-              <span>تخصيص المعروض</span>
-            </button>
-            <button type="button" id="workspaceClearBtn" class="remove-model-btn">إخفاء الكل</button>
-          </div>
-        </div>
-        <div class="workspace-cards" id="selectedWorkspaceCards"></div>
+      <!-- ملخص المشاكل المبدئية المكتشفة من التقارير -->
+      <div class="issues-box">
+        <h4 style="font-size: 0.92rem; color: #fbbf24;">⚠️ مؤشرات المشاكل والملاحظات المبدئية في النظام</h4>
+        <div class="issues-list" id="preliminaryIssuesList"></div>
       </div>
 
+      <!-- مساحة العمل للنماذج المختارة -->
+      <div class="workspace-section">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+          <div>
+            <h4 style="font-size: 0.96rem; color: var(--primary);">النماذج النشطة أمامك للعمل</h4>
+            <p id="activeModelsBarText" style="font-size: 0.75rem; color: var(--muted);"></p>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;" id="activeModelTabsBar"></div>
+        </div>
+        <div id="activeModelsWorkspace"></div>
+      </div>
+
+      <!-- البصمة -->
       <div class="biometric-box">
         <div>
-          <div style="font-size:0.88rem;font-weight:800;color:#6ee7b7;">👆 الدخول السريع بالبصمة (WebAuthn / بصمة الجهاز)</div>
-          <div id="biometricStatusText" style="font-size:0.78rem;color:#cbd5e1;margin-top:2px;">
-            فعّل البصمة الآن لتتمكن من فتح النظام مباشرة ببصمة الإصبع في المرات القادمة.
-          </div>
+          <div style="font-size:0.86rem;font-weight:800;color:#6ee7b7;">👆 الدخول السريع بالبصمة (WebAuthn)</div>
+          <div id="biometricStatusText" style="font-size:0.76rem;color:#cbd5e1;margin-top:2px;"></div>
         </div>
         <div style="display:flex;gap:6px;flex-wrap:wrap;">
           <button type="button" id="enableBiometricBtn" class="btn btn-biometric btn-sm" style="margin-top:0;">تفعيل البصمة</button>
@@ -954,62 +866,10 @@
         </div>
       </div>
 
-      <div style="margin-bottom: 18px;">
-        <h4 style="font-size: 0.95rem; margin-bottom: 4px; color: var(--primary);">دليل جميع وحدات وسجلات السلامة والصحة المهنية</h4>
-        <p style="font-size: 0.78rem; color: var(--muted);">ابحث أو صفِّ الوحدات ثم انتقل مباشرة إلى النموذج المطلوب:</p>
-
-        <div class="filter-toolbar">
-          <input type="search" id="moduleFilterInput" placeholder="ابحث باسم النموذج أو القانون أو الميزة (مثال: 14، 5S، طوارئ، SDS، دفاع مدني)..." />
-          <div class="filter-pills" id="moduleFilterPills">
-            <button type="button" class="filter-pill active" data-cat="all">الكل</button>
-            <button type="button" class="filter-pill" data-cat="law">القوانين والخطط</button>
-            <button type="button" class="filter-pill" data-cat="inspect">الفحص والتقييم</button>
-            <button type="button" class="filter-pill" data-cat="train">التدريب والصحائف</button>
-          </div>
-        </div>
-
-        <div class="modules-grid" id="modulesGrid">
-          <a href="./النماذج القانونيه.html" class="module-link" data-cat="law" data-keywords="قانون 14 2025 248 249 250 النماذج القانونية اكسل">
-            <strong>📋 النماذج القانونية</strong>
-            <span>قانون 14 لسنة 2025 والقرارات 248 و249 و250 لسنة 2026 + تصدير Excel</span>
-          </a>
-          <a href="./مهام السلامة ومعدل تكرارها.html" class="module-link" data-cat="law" data-keywords="مهام السلامة تكرار اسبوعي دوري اشعارات قانون">
-            <strong>⚖️ مهام السلامة وتكرارها</strong>
-            <span>جدول مهام الأسبوع والإشعارات الدورية حسب القانون</span>
-          </a>
-          <a href="./مخططات الدفاع المدني.html" class="module-link" data-cat="law" data-keywords="دفاع مدني حريق مضخات رشاشات كواشف طفايات nfpa">
-            <strong>🚒 مخططات الدفاع المدني</strong>
-            <span>حساب المضخات والصناديق والرشاشات والكواشف والطفايات (الكود المصري وNFPA)</span>
-          </a>
-          <a href="./خطة الطوارئ.html" class="module-link" data-cat="law" data-keywords="طوارئ اخلاء اطفاء اسعاف ورديات تدريب">
-            <strong>🚨 خطة الطوارئ لـ 3 ورديات</strong>
-            <span>فرق الإخلاء والإطفاء والإسعاف والبدلاء وسجل التدريب</span>
-          </a>
-          <a href="./SDS.html" class="module-link" data-cat="train" data-keywords="sds صحائف بيانات السلامة مواد كيميائية ذكاء اصطناعي">
-            <strong>🧪 صحائف بيانات السلامة SDS</strong>
-            <span>تحليل واستخراج اسم المادة والاحتياطات ومهمات الوقاية بالذكاء الاصطناعي</span>
-          </a>
-          <a href="./5S.html" class="module-link" data-cat="inspect" data-keywords="5s تنظيم نظافة فجوات pdf تقييم">
-            <strong>🧹 تقييم منهجية 5S</strong>
-            <span>تقييم تفاعلي لحظي وحصر الفجوات وحفظ PDF</span>
-          </a>
-          <a href="./تقييم فريق العمل.html" class="module-link" data-cat="inspect" data-keywords="تقييم فريق السلامة اداء سنوي كفاءة">
-            <strong>⭐ تقييم فريق السلامة</strong>
-            <span>تقييم الأداء والمتوسط السنوي والزيادة السنوية</span>
-          </a>
-          <a href="./التدريب والتوعية.html" class="module-link" data-cat="train" data-keywords="تدريب توعية حضور جلسات">
-            <strong>🎓 التدريب والتوعية</strong>
-            <span>سجل جلسات التدريب والتوعية وعدد الحضور</span>
-          </a>
-        </div>
-        <p id="noModulesMsg" class="hidden" style="font-size:0.82rem;color:var(--muted);margin-top:10px;">
-          لا توجد وحدات مطابقة للبحث أو الفلتر الحالي.
-        </p>
-      </div>
-
+      <!-- إدارة فريق العمل للمدير -->
       <div id="managerOnlySection">
-        <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: var(--primary);">إضافة عضو جديد لفريق السلامة</h4>
-        <div id="addMemberForm">
+        <h4 style="font-size: 0.94rem; margin-bottom: 8px; color: var(--primary);">إدارة فريق السلامة</h4>
+        <div class="grid-2">
           <div class="form-group">
             <label for="memberName">الاسم الكامل</label>
             <input type="text" id="memberName" placeholder="اسم العضو" />
@@ -1024,8 +884,8 @@
             </select>
           </div>
           <div class="form-group">
-            <label for="memberUser">اسم المستخدم للدخول</label>
-            <input type="text" id="memberUser" placeholder="مثال: ahmed_safety" dir="ltr" />
+            <label for="memberUser">اسم المستخدم</label>
+            <input type="text" id="memberUser" placeholder="username" dir="ltr" />
           </div>
           <div class="form-group">
             <label for="memberPass">كلمة المرور</label>
@@ -1034,339 +894,115 @@
               <button type="button" class="toggle-pass" data-target="memberPass">إظهار</button>
             </div>
           </div>
-          <button type="button" id="addMemberBtn" class="btn">إضافة العضو للفريق</button>
         </div>
-
-        <div style="margin-top: 18px;">
-          <h4 style="font-size: 0.95rem; margin-bottom: 6px;">أعضاء الفريق المسجلون تحت إشرافك</h4>
-          <p style="font-size: 0.78rem; color: var(--muted); margin-bottom: 8px;">تُحذف بيانات الحساب تلقائياً عند عدم النشاط لمدة 30 يوماً.</p>
-          <div class="form-group" style="margin-bottom: 8px;">
-            <input type="search" id="teamFilterInput" placeholder="فلترة أعضاء الفريق بالاسم أو الدور أو اسم المستخدم..." />
-          </div>
-          <div id="membersList"></div>
-        </div>
-      </div>
-
-      <div id="memberOnlySection" class="hidden">
-        <div class="alert alert-info show">
-          تم تسجيل دخولك كعضو في فريق السلامة والصحة المهنية تحت إشراف البريد المرجعي للمدير.
-        </div>
+        <button type="button" id="addMemberBtn" class="btn btn-sm">إضافة العضو للفريق</button>
+        <div id="membersList"></div>
       </div>
     </div>
   </div>
 
-  <!-- قائمة اختيار النماذج على الشمال (تظهر تحت بعضها عند الضغط على الأيقونة) -->
-  <div id="leftModelsBackdrop" class="left-selector-backdrop"></div>
-  <aside id="leftModelsDrawer" class="left-models-drawer" aria-label="قائمة اختيار النماذج">
-    <div class="left-drawer-head">
+  <!-- قائمة النماذج على اليمين فوق عند الضغط على الأيقونة -->
+  <div id="rightDrawerBackdrop" class="right-drawer-backdrop"></div>
+  <aside id="rightModelsDrawer" class="right-models-drawer" aria-label="قائمة النماذج">
+    <div class="drawer-head">
       <div>
-        <h4>اختيار النماذج للعمل عليها</h4>
-        <p>حدّد النماذج التي تريد ظهورها أمامك في الواجهة</p>
+        <h4>قائمة نماذج وملفات السلامة</h4>
+        <p>اختر النماذج التي تريد ظهورها والعمل عليها أمامك</p>
       </div>
-      <button type="button" id="closeModelsDrawerBtn" class="remove-model-btn" title="إغلاق القائمة">✕</button>
+      <button type="button" id="closeRightDrawerBtn" class="mini-action-btn">✕</button>
     </div>
-    <div class="left-drawer-body" id="leftModelsList"></div>
-    <div class="left-drawer-foot">
-      <button type="button" id="selectAllModelsBtn" class="btn btn-secondary btn-sm" style="margin-top:0;width:100%;">عرض الكل</button>
-      <button type="button" id="clearAllModelsBtn" class="btn btn-danger btn-sm" style="width:100%;">إلغاء الكل</button>
+    <div class="drawer-body" id="rightModelsDrawerList"></div>
+    <div class="drawer-foot">
+      <button type="button" id="selectAllDrawerBtn" class="btn btn-secondary btn-sm" style="margin-top:0;width:100%;">إظهار الكل</button>
+      <button type="button" id="clearAllDrawerBtn" class="btn btn-danger btn-sm" style="width:100%;">إخفاء الكل</button>
     </div>
   </aside>
 
   <script>
     (function () {
-      const STORAGE_KEY = "ohs_system_state_v14";
+      const STORAGE_KEY = "ohs_system_state_v15";
       const BIOMETRIC_KEY = "ohs_biometric_credential_v1";
-      const SELECTED_MODELS_KEY = "ohs_selected_workspace_models_v1";
-      const LEGACY_KEYS = [
-        "ohs_system_state_v13",
-        "ohs_system_state_v12",
-        "ohs_system_state_v11",
-        "ohs_system_state_v10",
-        "ohs_system_state_v9"
-      ];
+      const LEGACY_AUTH_KEYS = ["ohs_system_state_v14", "ohs_system_state_v13", "ohs_system_state_v12"];
+      const REPORTS_KEY_PREFIX = "ohs_reports_v1_";
+      const SELECTED_MODELS_PREFIX = "ohs_active_models_v1_";
       const INACTIVITY_LIMIT_MS = 30 * 24 * 60 * 60 * 1000;
       const OTP_DURATION_SEC = 120;
 
-      const MODELS_CATALOG = [
+      const MODELS = [
         {
-          id: "legal_forms",
-          title: "📋 النماذج القانونية",
-          desc: "قانون 14 لسنة 2025 والقرارات 248 و249 و250 لسنة 2026 + تصدير Excel",
-          href: "./النماذج القانونيه.html",
-          statTitle: "النماذج القانونية والطوارئ",
-          statSub: "قانون 14/2025 وقرارات 248-250",
-          keywords: ["legal", "law", "emergency", "14_2025", "قانون", "طوارئ"]
+          id: "inspection",
+          title: "📋 التفتيش اليومي والملاحظات",
+          shortTitle: "التفتيش اليومي",
+          desc: "رصد الملاحظات الميدانية حسب الوردية وتحديد حالة التصحيح",
+          issueLabel: "ملاحظات تفتيش غير مغلقة"
         },
         {
-          id: "safety_tasks",
-          title: "⚖️ مهام السلامة وتكرارها",
-          desc: "جدول مهام الأسبوع والإشعارات الدورية حسب القانون",
-          href: "./مهام السلامة ومعدل تكرارها.html",
-          statTitle: "التفتيش اليومي والمهام",
-          statSub: "سجلات التفتيش والمهام الدورية",
-          keywords: ["inspect", "inspection", "daily", "تفتيش", "task"]
+          id: "risks",
+          title: "⚠️ مصفوفة المخاطر والسيطرة",
+          shortTitle: "مصفوفة المخاطر",
+          desc: "تقييم المخاطر (مرتفع / متوسط / منخفض) ومتابعة إجراءات التحكم",
+          issueLabel: "مخاطر ذات خطورة مرتفعة"
         },
         {
-          id: "civil_defense",
-          title: "🚒 مخططات الدفاع المدني",
-          desc: "حساب المضخات والصناديق والرشاشات والكواشف والطفايات (الكود المصري وNFPA)",
-          href: "./مخططات الدفاع المدني.html",
-          statTitle: "الطفايات والحماية",
-          statSub: "فحص الطفايات ومعدات الحريق",
-          keywords: ["extinguisher", "fire", "طفاي", "حريق", "دفاع"]
+          id: "permits",
+          title: "🪪 تصاريح العمل الآمن (PTW)",
+          shortTitle: "تصاريح العمل",
+          desc: "إصدار ومتابعة تصاريح العمل الساخن والبارد والمغلق والارتفاعات",
+          issueLabel: "تصاريح عمل قيد التنفيذ/المراجعة"
         },
         {
-          id: "emergency_plan",
-          title: "🚨 خطة الطوارئ لـ 3 ورديات",
-          desc: "فرق الإخلاء والإطفاء والإسعاف والبدلاء وسجل التدريب",
-          href: "./خطة الطوارئ.html",
-          statTitle: "خطط الطوارئ",
-          statSub: "فرق الورديات الثلاث والإخلاء",
-          keywords: ["emergency", "طوارئ", "اخلاء"]
+          id: "violations",
+          title: "🚫 المخالفات والملاحظات الوقائية",
+          shortTitle: "المخالفات",
+          desc: "تسجيل المخالفات الفردية أو القسمية وتكرارها والسبب الجذري",
+          issueLabel: "مخالفات تتطلب إجراءً تصحيحيًا"
         },
         {
-          id: "sds_sheets",
-          title: "🧪 صحائف بيانات السلامة SDS",
-          desc: "تحليل واستخراج اسم المادة والاحتياطات ومهمات الوقاية بالذكاء الاصطناعي",
-          href: "./SDS.html",
-          statTitle: "صحائف SDS والمخاطر",
-          statSub: "المواد الكيميائية والمخاطر",
-          keywords: ["sds", "risk", "hazard", "مخاطر", "كيميائ"]
+          id: "incidents",
+          title: "🚑 الحوادث والإصابات والتحقيق",
+          shortTitle: "الحوادث والإصابات",
+          desc: "توثيق الإصابات والأنواع والجزء المصاب والتحقيق والسبب الجذري",
+          issueLabel: "حوادث/إصابات مسجلة للمتابعة"
         },
         {
-          id: "five_s",
-          title: "🧹 تقييم منهجية 5S",
-          desc: "تقييم تفاعلي لحظي وحصر الفجوات وحفظ PDF",
-          href: "./5S.html",
-          statTitle: "تقييم منهجية 5S",
-          statSub: "الفجوات والتنظيم والنظافة",
-          keywords: ["5s", "تنظيم", "فجوات"]
+          id: "legal",
+          title: "⚖️ النماذج القانونية (14/2025 والقرارات 248-250)",
+          shortTitle: "النماذج القانونية",
+          desc: "متابعة الالتزام بقانون العمل 14 لسنة 2025 والقرارات 248 و249 و250 لسنة 2026",
+          issueLabel: "بنود قانونية غير مكتملة"
         },
         {
-          id: "team_eval",
-          title: "⭐ تقييم فريق السلامة",
-          desc: "تقييم الأداء والمتوسط السنوي والزيادة السنوية",
-          href: "./تقييم فريق العمل.html",
-          statTitle: "تقييم الكفاءة",
-          statSub: "تقييم الأداء والزيادة السنوية",
-          keywords: ["competency", "eval", "كفاءة", "تقييم"]
-        },
-        {
-          id: "training_aware",
-          title: "🎓 التدريب والتوعية",
-          desc: "سجل جلسات التدريب والتوعية وعدد الحضور",
-          href: "./التدريب والتوعية.html",
-          statTitle: "التدريب والتوعية",
-          statSub: "الجلسات التدريبية والمشاركون",
-          keywords: ["training", "aware", "تدريب", "توعية"]
+          id: "fire_5s",
+          title: "🚒 الدفاع المدني، الطفايات و5S",
+          shortTitle: "الدفاع المدني و5S",
+          desc: "حالة الطفايات ومعدات الإطفاء وتقييم 5S والتدريب",
+          issueLabel: "ملاحظات إطفاء أو 5S تحتاج معالجة"
         }
       ];
 
       let memoryFallback = { managers: {}, members: [], session: null };
       let isSendingOtp = false;
-      let activeModuleCategory = "all";
+      let focusedModelId = "inspection";
 
-      function safeGetItem(key) {
-        try {
-          if (typeof localStorage !== "undefined" && localStorage) return localStorage.getItem(key);
-        } catch (e) {}
-        return null;
-      }
+      function safeGetItem(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+      function safeSetItem(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+      function safeRemoveItem(k) { try { localStorage.removeItem(k); } catch (e) {} }
+      function safeGetSession(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }
+      function safeSetSession(k, v) { try { sessionStorage.setItem(k, v); } catch (e) {} }
+      function safeRemoveSession(k) { try { sessionStorage.removeItem(k); } catch (e) {} }
 
-      function safeSetItem(key, val) {
-        try {
-          if (typeof localStorage !== "undefined" && localStorage) localStorage.setItem(key, val);
-        } catch (e) {}
-      }
-
-      function safeRemoveItem(key) {
-        try {
-          if (typeof localStorage !== "undefined" && localStorage) localStorage.removeItem(key);
-        } catch (e) {}
-      }
-
-      function safeGetSession(key) {
-        try {
-          if (typeof sessionStorage !== "undefined" && sessionStorage) return sessionStorage.getItem(key);
-        } catch (e) {}
-        return null;
-      }
-
-      function safeSetSession(key, val) {
-        try {
-          if (typeof sessionStorage !== "undefined" && sessionStorage) sessionStorage.setItem(key, val);
-        } catch (e) {}
-      }
-
-      function safeRemoveSession(key) {
-        try {
-          if (typeof sessionStorage !== "undefined" && sessionStorage) sessionStorage.removeItem(key);
-        } catch (e) {}
-      }
-
-      function getSelectedModelIds() {
-        const session = getActiveSession();
-        const tenantKey = session && session.tenantEmail ? ":" + session.tenantEmail : ":default";
-        try {
-          const raw = safeGetItem(SELECTED_MODELS_KEY + tenantKey);
-          if (raw) {
-            const arr = JSON.parse(raw);
-            if (Array.isArray(arr)) {
-              const validSet = new Set(MODELS_CATALOG.map((m) => m.id));
-              return arr.filter((id) => validSet.has(id));
-            }
-          }
-        } catch (e) {}
-        return ["legal_forms", "sds_sheets", "five_s", "emergency_plan"];
-      }
-
-      function setSelectedModelIds(ids) {
-        const session = getActiveSession();
-        const tenantKey = session && session.tenantEmail ? ":" + session.tenantEmail : ":default";
-        const unique = Array.from(new Set(Array.isArray(ids) ? ids : []));
-        safeSetItem(SELECTED_MODELS_KEY + tenantKey, JSON.stringify(unique));
-        renderModelsDrawer();
-        renderSelectedWorkspace();
-      }
-
-      function toggleModelSelection(modelId, forceChecked) {
-        const current = getSelectedModelIds();
-        const exists = current.includes(modelId);
-        const shouldSelect = typeof forceChecked === "boolean" ? forceChecked : !exists;
-        if (shouldSelect && !exists) {
-          current.push(modelId);
-        } else if (!shouldSelect && exists) {
-          const idx = current.indexOf(modelId);
-          current.splice(idx, 1);
-        }
-        setSelectedModelIds(current);
-      }
-
-      function openModelsDrawer() {
-        if (!getActiveSession()) return;
-        renderModelsDrawer();
-        document.getElementById("leftModelsDrawer")?.classList.add("open");
-        document.getElementById("leftModelsBackdrop")?.classList.add("open");
-        document.getElementById("openModelsDrawerBtn")?.classList.add("active");
-      }
-
-      function closeModelsDrawer() {
-        document.getElementById("leftModelsDrawer")?.classList.remove("open");
-        document.getElementById("leftModelsBackdrop")?.classList.remove("open");
-        document.getElementById("openModelsDrawerBtn")?.classList.remove("active");
-      }
-
-      function renderModelsDrawer() {
-        const listEl = document.getElementById("leftModelsList");
-        if (!listEl) return;
-        const selected = getSelectedModelIds();
-
-        listEl.innerHTML = MODELS_CATALOG.map((m) => {
-          const isChecked = selected.includes(m.id);
-          return (
-            `<div class="model-pick-row ${isChecked ? "selected" : ""}">` +
-            `<label class="model-pick-label">` +
-            `<input type="checkbox" class="model-pick-checkbox" data-model-id="${escapeHtml(m.id)}" ${isChecked ? "checked" : ""} />` +
-            `<span>` +
-            `<span class="model-pick-title">${escapeHtml(m.title)}</span>` +
-            `<span class="model-pick-desc">${escapeHtml(m.desc)}</span>` +
-            `</span>` +
-            `</label>` +
-            `<button type="button" class="model-solo-btn" data-solo-id="${escapeHtml(m.id)}">هذا فقط</button>` +
-            `</div>`
-          );
-        }).join("");
-
-        listEl.querySelectorAll(".model-pick-checkbox").forEach((chk) => {
-          chk.addEventListener("change", () => {
-            const id = chk.getAttribute("data-model-id");
-            if (id) toggleModelSelection(id, chk.checked);
-          });
-        });
-
-        listEl.querySelectorAll(".model-solo-btn").forEach((btn) => {
-          btn.addEventListener("click", () => {
-            const id = btn.getAttribute("data-solo-id");
-            if (id) {
-              setSelectedModelIds([id]);
-              closeModelsDrawer();
-            }
-          });
-        });
-      }
-
-      function renderSelectedWorkspace() {
-        const cardsEl = document.getElementById("selectedWorkspaceCards");
-        const hintEl = document.getElementById("workspaceCountHint");
-        if (!cardsEl) return;
-
-        const selectedIds = getSelectedModelIds();
-        const chosenModels = MODELS_CATALOG.filter((m) => selectedIds.includes(m.id));
-
-        if (hintEl) {
-          hintEl.textContent = chosenModels.length
-            ? `ظاهر أمامك الآن (${chosenModels.length}) من أصل (${MODELS_CATALOG.length}) نماذج`
-            : "لم يتم تحديد نماذج للعرض حاليًا — افتح القائمة على الشمال لاختيار ما تفضل العمل عليه";
-        }
-
-        if (chosenModels.length === 0) {
-          cardsEl.innerHTML =
-            `<div style="grid-column:1/-1;background:var(--surface-2);border:1px dashed var(--border);border-radius:10px;padding:14px;text-align:center;font-size:0.82rem;color:var(--muted);">` +
-            `لا توجد نماذج ظاهرة حاليًا. اضغط على <strong>اختيار النماذج</strong> على الشمال لتحديد النماذج التي تريد العمل عليها.` +
-            `</div>`;
-          return;
-        }
-
-        cardsEl.innerHTML = chosenModels.map((m) => {
-          const encodedHref = "./" + encodeURIComponent(decodeURIComponent(m.href.replace(/^\.\//, "")));
-          return (
-            `<div class="active-model-card" data-workspace-id="${escapeHtml(m.id)}">` +
-            `<div>` +
-            `<strong>${escapeHtml(m.title)}</strong>` +
-            `<p>${escapeHtml(m.desc)}</p>` +
-            `</div>` +
-            `<div class="active-model-actions">` +
-            `<a href="${encodedHref}" class="open-model-link">فتح النموذج</a>` +
-            `<button type="button" class="remove-model-btn" data-remove-id="${escapeHtml(m.id)}">إخفاء</button>` +
-            `</div>` +
-            `</div>`
-          );
-        }).join("");
-
-        cardsEl.querySelectorAll(".remove-model-btn").forEach((btn) => {
-          btn.addEventListener("click", () => {
-            const id = btn.getAttribute("data-remove-id");
-            if (id) toggleModelSelection(id, false);
-          });
-        });
-      }
-
-      function migrateLegacyStorage() {
-        try {
-          if (safeGetItem(STORAGE_KEY)) return;
-          for (let i = 0; i < LEGACY_KEYS.length; i++) {
-            const oldRaw = safeGetItem(LEGACY_KEYS[i]);
-            if (oldRaw) {
-              const parsed = JSON.parse(oldRaw);
-              if (parsed && typeof parsed === "object" && parsed.managers && Object.keys(parsed.managers).length > 0) {
-                const migrated = {
-                  managers: parsed.managers || {},
-                  members: Array.isArray(parsed.members) ? parsed.members : [],
-                  session: parsed.session || null
-                };
-                memoryFallback = JSON.parse(JSON.stringify(migrated));
-                safeSetItem(STORAGE_KEY, JSON.stringify(migrated));
-                break;
-              }
-            }
-          }
-        } catch (e) {}
+      function escapeHtml(str) {
+        return String(str || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
       }
 
       function normalizeArabicDigits(str) {
         return String(str || "")
           .replace(/[٠-٩]/g, (d) => String("٠١٢٣٤٥٦٧٨٩".indexOf(d)))
-          .replace(/[۰-۹]/g, (d) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d)));
+          .replace(/[۰-۹]/g, (d) => String("۰۱۲۳۴۵۶۷٨۹".indexOf(d)));
       }
 
       function cleanEmail(val) {
@@ -1377,15 +1013,36 @@
         return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
       }
 
+      function migrateLegacyAuth() {
+        if (safeGetItem(STORAGE_KEY)) return;
+        for (let i = 0; i < LEGACY_AUTH_KEYS.length; i++) {
+          const raw = safeGetItem(LEGACY_AUTH_KEYS[i]);
+          if (!raw) continue;
+          try {
+            const p = JSON.parse(raw);
+            if (p && typeof p === "object" && p.managers) {
+              const migrated = {
+                managers: p.managers || {},
+                members: Array.isArray(p.members) ? p.members : [],
+                session: p.session || null
+              };
+              memoryFallback = JSON.parse(JSON.stringify(migrated));
+              safeSetItem(STORAGE_KEY, JSON.stringify(migrated));
+              break;
+            }
+          } catch (e) {}
+        }
+      }
+
       function readStore() {
         try {
           const raw = safeGetItem(STORAGE_KEY);
           if (!raw) return JSON.parse(JSON.stringify(memoryFallback));
-          const parsed = JSON.parse(raw);
+          const p = JSON.parse(raw);
           const clean = {
-            managers: parsed && typeof parsed.managers === "object" && parsed.managers !== null ? parsed.managers : {},
-            members: Array.isArray(parsed && parsed.members) ? parsed.members : [],
-            session: parsed && parsed.session ? parsed.session : null
+            managers: p && typeof p.managers === "object" && p.managers !== null ? p.managers : {},
+            members: Array.isArray(p && p.members) ? p.members : [],
+            session: p && p.session ? p.session : null
           };
           memoryFallback = JSON.parse(JSON.stringify(clean));
           return clean;
@@ -1403,7 +1060,6 @@
         const state = readStore();
         const now = Date.now();
         let changed = false;
-
         Object.keys(state.managers).forEach((email) => {
           const mgr = state.managers[email];
           if (!mgr) return;
@@ -1411,13 +1067,10 @@
           if (now - lastActive >= INACTIVITY_LIMIT_MS) {
             delete state.managers[email];
             state.members = state.members.filter((m) => m.tenantEmail !== email);
-            if (state.session && state.session.tenantEmail === email) {
-              state.session = null;
-            }
+            if (state.session && state.session.tenantEmail === email) state.session = null;
             changed = true;
           }
         });
-
         if (changed) writeStore(state);
       }
 
@@ -1430,285 +1083,362 @@
         }
       }
 
-      function countRecordsFromStorage(keywords) {
-        let total = 0;
+      function getActiveSession() {
+        const state = readStore();
+        if (state.session) return state.session;
         try {
-          if (typeof localStorage === "undefined" || !localStorage) return 0;
-          for (let i = 0; i < localStorage.length; i++) {
-            const k = localStorage.key(i);
-            if (!k || k === STORAGE_KEY || k === BIOMETRIC_KEY || k.startsWith(SELECTED_MODELS_KEY)) continue;
-            const kl = k.toLowerCase();
-            if (!keywords.some((kw) => kl.includes(kw))) continue;
-            const raw = localStorage.getItem(k);
-            if (!raw) continue;
-            try {
-              const parsed = JSON.parse(raw);
-              if (Array.isArray(parsed)) total += parsed.length;
-              else if (parsed && typeof parsed === "object") {
-                const arrProp = Object.values(parsed).find((v) => Array.isArray(v));
-                total += arrProp ? arrProp.length : 1;
-              }
-            } catch (e) {}
+          const temp = safeGetSession("ohs_temp_session");
+          if (temp) return JSON.parse(temp);
+        } catch (e) {}
+        return null;
+      }
+
+      function getTenantReportsKey() {
+        const s = getActiveSession();
+        return REPORTS_KEY_PREFIX + (s && s.tenantEmail ? s.tenantEmail : "default");
+      }
+
+      function loadTenantReports() {
+        const empty = {};
+        MODELS.forEach((m) => { empty[m.id] = []; });
+        try {
+          const raw = safeGetItem(getTenantReportsKey());
+          if (!raw) return empty;
+          const parsed = JSON.parse(raw);
+          MODELS.forEach((m) => {
+            empty[m.id] = Array.isArray(parsed[m.id]) ? parsed[m.id] : [];
+          });
+        } catch (e) {}
+        return empty;
+      }
+
+      function saveTenantReports(reportsObj) {
+        safeSetItem(getTenantReportsKey(), JSON.stringify(reportsObj));
+      }
+
+      function getSelectedModels() {
+        const s = getActiveSession();
+        const key = SELECTED_MODELS_PREFIX + (s && s.tenantEmail ? s.tenantEmail : "default");
+        const validIds = new Set(MODELS.map((m) => m.id));
+        try {
+          const raw = safeGetItem(key);
+          if (raw) {
+            const arr = JSON.parse(raw);
+            if (Array.isArray(arr)) return arr.filter((id) => validIds.has(id));
           }
         } catch (e) {}
-        return total;
+        return ["inspection", "risks", "legal"];
       }
 
-      function renderMainDashboardStats() {
-        const grid = document.getElementById("mainStatsGrid");
-        if (!grid) return;
+      function setSelectedModels(ids) {
+        const s = getActiveSession();
+        const key = SELECTED_MODELS_PREFIX + (s && s.tenantEmail ? s.tenantEmail : "default");
+        const unique = Array.from(new Set(ids));
+        safeSetItem(key, JSON.stringify(unique));
+        if (unique.length && !unique.includes(focusedModelId)) {
+          focusedModelId = unique[0];
+        }
+        renderRightDrawer();
+        renderActiveWorkspace();
+      }
 
-        const store = readStore();
-        const session = getActiveSession();
-        const teamCount = session
-          ? store.members.filter((m) => m.tenantEmail === session.tenantEmail).length
-          : store.members.length;
+      function toggleModelChecked(modelId, checked) {
+        const cur = getSelectedModels();
+        const idx = cur.indexOf(modelId);
+        if (checked && idx === -1) cur.push(modelId);
+        if (!checked && idx !== -1) cur.splice(idx, 1);
+        if (checked) focusedModelId = modelId;
+        setSelectedModels(cur);
+      }
 
-        const modelStatCards = MODELS_CATALOG.map((m) => ({
-          modelId: m.id,
-          title: m.statTitle,
-          num: countRecordsFromStorage(m.keywords),
-          sub: m.statSub
-        }));
+      function openRightDrawer() {
+        if (!getActiveSession()) return;
+        renderRightDrawer();
+        document.getElementById("rightModelsDrawer")?.classList.add("open");
+        document.getElementById("rightDrawerBackdrop")?.classList.add("open");
+      }
 
-        modelStatCards.push({
-          modelId: null,
-          title: "أعضاء فريق السلامة",
-          num: teamCount,
-          sub: "الحسابات النشطة بالمنشأة"
+      function closeRightDrawer() {
+        document.getElementById("rightModelsDrawer")?.classList.remove("open");
+        document.getElementById("rightDrawerBackdrop")?.classList.remove("open");
+      }
+
+      function renderRightDrawer() {
+        const listEl = document.getElementById("rightModelsDrawerList");
+        if (!listEl) return;
+        const selected = getSelectedModels();
+        listEl.innerHTML = MODELS.map((m) => {
+          const isChecked = selected.includes(m.id);
+          const isFocused = focusedModelId === m.id && isChecked;
+          return (
+            `<div class="model-choice-item ${isFocused ? "active-model" : ""}">` +
+            `<div class="model-choice-top">` +
+            `<label class="model-check-label">` +
+            `<input type="checkbox" class="drawer-model-chk" data-id="${escapeHtml(m.id)}" ${isChecked ? "checked" : ""} />` +
+            `<span>` +
+            `<strong style="font-size:0.84rem;color:#f9fafb;display:block;">${escapeHtml(m.title)}</strong>` +
+            `<span style="font-size:0.71rem;color:var(--muted);display:block;">${escapeHtml(m.desc)}</span>` +
+            `</span>` +
+            `</label>` +
+            `</div>` +
+            `<div class="model-choice-actions">` +
+            `<button type="button" class="mini-action-btn primary drawer-focus-btn" data-id="${escapeHtml(m.id)}">فتح والعمل</button>` +
+            `<button type="button" class="mini-action-btn drawer-only-btn" data-id="${escapeHtml(m.id)}">هذا فقط</button>` +
+            `</div>` +
+            `</div>`
+          );
+        }).join("");
+
+        listEl.querySelectorAll(".drawer-model-chk").forEach((chk) => {
+          chk.addEventListener("change", () => {
+            const id = chk.getAttribute("data-id");
+            if (id) toggleModelChecked(id, chk.checked);
+          });
         });
 
-        grid.innerHTML = modelStatCards
-          .map(
-            (c) =>
-              `<div class="stat-card" ${c.modelId ? `data-focus-model="${escapeHtml(c.modelId)}"` : ""}>` +
-              `<div class="stat-title">${escapeHtml(c.title)}</div>` +
-              `<div class="stat-num">${c.num}</div>` +
-              `<div class="stat-sub">${escapeHtml(c.sub)}</div>` +
-              `</div>`
-          )
-          .join("");
+        listEl.querySelectorAll(".drawer-focus-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const id = btn.getAttribute("data-id");
+            if (!id) return;
+            const cur = getSelectedModels();
+            if (!cur.includes(id)) cur.push(id);
+            focusedModelId = id;
+            setSelectedModels(cur);
+            closeRightDrawer();
+          });
+        });
 
-        grid.querySelectorAll(".stat-card[data-focus-model]").forEach((card) => {
+        listEl.querySelectorAll(".drawer-only-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const id = btn.getAttribute("data-id");
+            if (!id) return;
+            focusedModelId = id;
+            setSelectedModels([id]);
+            closeRightDrawer();
+          });
+        });
+      }
+
+      function renderOverviewAndIssues() {
+        const reports = loadTenantReports();
+        const statsGrid = document.getElementById("overviewStatsGrid");
+        const issuesList = document.getElementById("preliminaryIssuesList");
+        if (!statsGrid || !issuesList) return;
+
+        let totalRecords = 0;
+        const issueRows = [];
+
+        statsGrid.innerHTML = MODELS.map((m) => {
+          const items = reports[m.id] || [];
+          totalRecords += items.length;
+          const openItems = items.filter((r) => r.status !== "مغلق" && r.status !== "منفذ").length;
+          const highItems = items.filter((r) => r.severity === "مرتفع" || r.severity === "عالي").length;
+
+          if (openItems > 0 || highItems > 0) {
+            issueRows.push({
+              modelId: m.id,
+              text: `${m.shortTitle}: ${openItems > 0 ? openItems + " سجل بانتظار الإغلاق" : ""}${openItems > 0 && highItems > 0 ? " • " : ""}${highItems > 0 ? highItems + " مستوى مرتفع" : ""}`
+            });
+          }
+
+          return (
+            `<div class="stat-card" data-stat-model="${escapeHtml(m.id)}">` +
+            `<div class="stat-title">${escapeHtml(m.shortTitle)}</div>` +
+            `<div class="stat-num">${items.length}</div>` +
+            `<div class="stat-sub">بانتظار المتابعة: ${openItems}</div>` +
+            `</div>`
+          );
+        }).join("");
+
+        statsGrid.querySelectorAll(".stat-card[data-stat-model]").forEach((card) => {
           card.addEventListener("click", () => {
-            const modelId = card.getAttribute("data-focus-model");
-            if (!modelId) return;
-            const current = getSelectedModelIds();
-            if (!current.includes(modelId)) {
-              setSelectedModelIds([...current, modelId]);
-            }
-            document.getElementById("selectedWorkspaceSection")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+            const id = card.getAttribute("data-stat-model");
+            if (!id) return;
+            const cur = getSelectedModels();
+            if (!cur.includes(id)) cur.push(id);
+            focusedModelId = id;
+            setSelectedModels(cur);
+          });
+        });
+
+        if (totalRecords === 0) {
+          issuesList.innerHTML =
+            `<div class="issue-item">` +
+            `<span>لم يتم إدخال تقارير بعد في النظام. ابدأ بإضافة سجلات من <strong>قائمة النماذج</strong> أعلى اليمين لرصد المشاكل والملاحظات تلقائيًا.</span>` +
+            `<button type="button" class="mini-action-btn primary" id="openDrawerFromIssueBtn">فتح القائمة</button>` +
+            `</div>`;
+          document.getElementById("openDrawerFromIssueBtn")?.addEventListener("click", openRightDrawer);
+          return;
+        }
+
+        if (issueRows.length === 0) {
+          issuesList.innerHTML =
+            `<div class="issue-item" style="border-color:rgba(16,185,129,0.4);color:#a7f3d0;">` +
+            `<span>جميع السجلات المسجلة (${totalRecords} سجل) مغلقة أو لا توجد بها حالات خطورة مرتفعة حاليًا.</span>` +
+            `</div>`;
+          return;
+        }
+
+        issuesList.innerHTML = issueRows.map((row) =>
+          `<div class="issue-item">` +
+          `<span>${escapeHtml(row.text)}</span>` +
+          `<button type="button" class="mini-action-btn jump-issue-btn" data-id="${escapeHtml(row.modelId)}">معالجة</button>` +
+          `</div>`
+        ).join("");
+
+        issuesList.querySelectorAll(".jump-issue-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const id = btn.getAttribute("data-id");
+            if (!id) return;
+            const cur = getSelectedModels();
+            if (!cur.includes(id)) cur.push(id);
+            focusedModelId = id;
+            setSelectedModels(cur);
           });
         });
       }
 
-      function applyModuleFilter() {
-        const query = normalizeArabicDigits(document.getElementById("moduleFilterInput")?.value || "")
-          .trim()
-          .toLowerCase();
-        const links = Array.from(document.querySelectorAll("#modulesGrid .module-link"));
-        let visibleCount = 0;
+      function renderActiveWorkspace() {
+        const tabsBar = document.getElementById("activeModelTabsBar");
+        const workspace = document.getElementById("activeModelsWorkspace");
+        const barText = document.getElementById("activeModelsBarText");
+        if (!tabsBar || !workspace) return;
 
-        links.forEach((link) => {
-          const rawHref = link.getAttribute("href") || "";
-          if (rawHref.startsWith("./")) {
-            const parts = rawHref.split("/");
-            const fileName = decodeURIComponent(parts.pop() || "");
-            link.setAttribute("href", "./" + encodeURIComponent(fileName));
-          }
-          const cat = link.getAttribute("data-cat") || "all";
-          const kw = String(link.getAttribute("data-keywords") || "").toLowerCase();
-          const txt = String(link.textContent || "").toLowerCase();
-          const matchesCat = activeModuleCategory === "all" || cat === activeModuleCategory;
-          const matchesQuery = !query || kw.includes(query) || txt.includes(query);
-          const show = matchesCat && matchesQuery;
-          link.classList.toggle("hidden", !show);
-          if (show) visibleCount++;
+        const selectedIds = getSelectedModels();
+        const activeModels = MODELS.filter((m) => selectedIds.includes(m.id));
+        const reports = loadTenantReports();
+
+        if (barText) {
+          barText.textContent = activeModels.length
+            ? `المختار للعرض: ${activeModels.length} نموذج — يمكنك التبديل بينها أو إضافة سجلات مباشرة`
+            : "لم يتم اختيار نماذج للعرض — اضغط على (قائمة النماذج) أعلى اليمين لاختيار ما تريد العمل عليه";
+        }
+
+        if (activeModels.length === 0) {
+          tabsBar.innerHTML = "";
+          workspace.innerHTML =
+            `<div class="active-model-panel" style="text-align:center;color:var(--muted);font-size:0.84rem;">` +
+            `لا توجد نماذج ظاهرة حاليًا. اضغط على <strong>☰ قائمة النماذج</strong> أعلى اليمين لتحديد النماذج التي تريد فتحها.` +
+            `</div>`;
+          return;
+        }
+
+        if (!activeModels.some((m) => m.id === focusedModelId)) {
+          focusedModelId = activeModels[0].id;
+        }
+
+        tabsBar.innerHTML = activeModels.map((m) => {
+          const isCurrent = m.id === focusedModelId;
+          return `<button type="button" class="mini-action-btn ${isCurrent ? "primary" : ""}" data-tab-model="${escapeHtml(m.id)}">${escapeHtml(m.shortTitle)}</button>`;
+        }).join("");
+
+        tabsBar.querySelectorAll("[data-tab-model]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            focusedModelId = btn.getAttribute("data-tab-model");
+            renderActiveWorkspace();
+          });
         });
 
-        const noMsg = document.getElementById("noModulesMsg");
-        if (noMsg) noMsg.classList.toggle("hidden", visibleCount > 0);
-      }
+        const currentModel = activeModels.find((m) => m.id === focusedModelId) || activeModels[0];
+        const items = reports[currentModel.id] || [];
 
-      function syncAssistantVisibility() {
-        const session = getActiveSession();
-        const isAuthenticated = Boolean(session && session.tenantEmail);
-        const fab = document.getElementById("ohs-ai-fab");
-        const drawer = document.getElementById("ohs-ai-drawer");
-        if (fab) fab.classList.toggle("hidden", !isAuthenticated);
-        if (drawer && !isAuthenticated) drawer.classList.remove("open");
-      }
+        workspace.innerHTML =
+          `<div class="active-model-panel">` +
+          `<div class="panel-header">` +
+          `<div>` +
+          `<h4 style="font-size:0.95rem;color:#38bdf8;">${escapeHtml(currentModel.title)}</h4>` +
+          `<p style="font-size:0.75rem;color:var(--muted);">${escapeHtml(currentModel.desc)}</p>` +
+          `</div>` +
+          `<button type="button" class="mini-action-btn" id="hideFocusedModelBtn">إخفاء هذا النموذج</button>` +
+          `</div>` +
+          `<div class="grid-2">` +
+          `<div class="form-group"><label>الموقع / القسم / البند</label><input type="text" id="wfLocation" placeholder="مثال: خط الإنتاج / المستودع / بند 4" /></div>` +
+          `<div class="form-group"><label>المستوى / الأولوية</label>` +
+          `<select id="wfSeverity"><option value="منخفض">منخفض</option><option value="متوسط" selected>متوسط</option><option value="مرتفع">مرتفع</option></select></div>` +
+          `<div class="form-group"><label>الحالة</label>` +
+          `<select id="wfStatus"><option value="قيد المتابعة">قيد المتابعة</option><option value="مغلق">مغلق</option><option value="منفذ">منفذ</option></select></div>` +
+          `<div class="form-group"><label>المسؤول عن التنفيذ</label><input type="text" id="wfOwner" placeholder="اسم المسؤول أو القسم" /></div>` +
+          `</div>` +
+          `<div class="form-group"><label>تفاصيل الملاحظة / الإجراء التصحيحي</label><textarea id="wfNotes" placeholder="اكتب تفاصيل التقرير أو المخالفة أو الإجراء المطلوب..."></textarea></div>` +
+          `<button type="button" class="btn btn-sm" id="wfSaveRecordBtn">حفظ السجل في ${escapeHtml(currentModel.shortTitle)}</button>` +
+          `<div style="margin-top:12px;">` +
+          `<h5 style="font-size:0.86rem;color:#e5e7eb;">السجلات المحفوظة (${items.length})</h5>` +
+          (items.length === 0
+            ? `<p style="font-size:0.78rem;color:var(--muted);margin-top:6px;">لا توجد سجلات محفوظة في هذا النموذج بعد.</p>`
+            : items.map((r) => {
+              const badgeCls = r.severity === "مرتفع" ? "badge-danger" : (r.severity === "متوسط" ? "badge-warn" : "badge-ok");
+              return (
+                `<div class="record-row">` +
+                `<div>` +
+                `<strong>${escapeHtml(r.location || "بدون موقع")} <span class="badge ${badgeCls}">${escapeHtml(r.severity || "متوسط")}</span> <span class="badge">${escapeHtml(r.status || "قيد المتابعة")}</span></strong>` +
+                `<p>${escapeHtml(r.notes || "")}</p>` +
+                `<p>المسؤول: ${escapeHtml(r.owner || "غير محدد")} • التاريخ: ${escapeHtml(r.date || "")}</p>` +
+                `</div>` +
+                `<div style="display:flex;flex-direction:column;gap:5px;">` +
+                `<button type="button" class="mini-action-btn toggle-status-rec" data-rec-id="${escapeHtml(r.id)}">${r.status === "مغلق" ? "إعادة فتح" : "إغلاق"}</button>` +
+                `<button type="button" class="btn btn-danger btn-sm del-rec-btn" data-rec-id="${escapeHtml(r.id)}">حذف</button>` +
+                `</div>` +
+                `</div>`
+              );
+            }).join("")) +
+          `</div>` +
+          `</div>`;
 
-      function bufToBase64Url(buf) {
-        const bytes = new Uint8Array(buf);
-        let binary = "";
-        for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
-        return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-      }
+        document.getElementById("hideFocusedModelBtn")?.addEventListener("click", () => {
+          toggleModelChecked(currentModel.id, false);
+        });
 
-      function base64UrlToBuf(b64url) {
-        const b64 = b64url.replace(/-/g, "+").replace(/_/g, "/");
-        const pad = b64.length % 4 ? "=".repeat(4 - (b64.length % 4)) : "";
-        const binary = atob(b64 + pad);
-        const bytes = new Uint8Array(binary.length);
-        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-        return bytes.buffer;
-      }
+        document.getElementById("wfSaveRecordBtn")?.addEventListener("click", () => {
+          const loc = document.getElementById("wfLocation")?.value.trim() || "";
+          const sev = document.getElementById("wfSeverity")?.value || "متوسط";
+          const st = document.getElementById("wfStatus")?.value || "قيد المتابعة";
+          const own = document.getElementById("wfOwner")?.value.trim() || "";
+          const nts = document.getElementById("wfNotes")?.value.trim() || "";
 
-      function readBiometricConfig() {
-        try {
-          const raw = safeGetItem(BIOMETRIC_KEY);
-          if (!raw) return null;
-          const parsed = JSON.parse(raw);
-          return parsed && parsed.tenantEmail ? parsed : null;
-        } catch (e) {
-          return null;
-        }
-      }
-
-      async function registerBiometricForSession(session) {
-        if (!session || session.role !== "Manager") {
-          showAlert("تفعيل البصمة متاح لحساب المدير بعد تسجيل الدخول.", "error");
-          return;
-        }
-        if (!window.PublicKeyCredential || !navigator.credentials || !window.isSecureContext) {
-          showAlert("تأكد من فتح الموقع عبر رابط HTTPS وتفعيل بصمة الجهاز.", "error");
-          return;
-        }
-
-        try {
-          const challenge = new Uint8Array(32);
-          crypto.getRandomValues(challenge);
-          const userId = new TextEncoder().encode(session.tenantEmail);
-
-          const cred = await navigator.credentials.create({
-            publicKey: {
-              challenge,
-              rp: {
-                name: "إدارة السلامة والصحة المهنية",
-                id: location.hostname
-              },
-              user: {
-                id: userId,
-                name: session.tenantEmail,
-                displayName: session.name || session.tenantEmail
-              },
-              pubKeyCredParams: [
-                { type: "public-key", alg: -7 },
-                { type: "public-key", alg: -257 }
-              ],
-              authenticatorSelection: {
-                authenticatorAttachment: "platform",
-                userVerification: "required"
-              },
-              timeout: 60000
-            }
-          });
-
-          if (!cred || !cred.rawId) throw new Error("لم يتم استلام بصمة الجهاز.");
-
-          safeSetItem(BIOMETRIC_KEY, JSON.stringify({
-            credentialId: bufToBase64Url(cred.rawId),
-            tenantEmail: session.tenantEmail,
-            name: session.name,
-            company: session.company,
-            enabledAt: Date.now()
-          }));
-
-          updateBiometricUI();
-          showAlert("تم تفعيل الدخول بالبصمة بنجاح! يمكنك الآن تسجيل الدخول ببصمة الإصبع في المرات القادمة.", "success");
-        } catch (err) {
-          showAlert("تعذر تفعيل البصمة: " + (err && err.message ? err.message : "تم إلغاء العملية."), "error");
-        }
-      }
-
-      async function loginWithBiometric() {
-        hideAlert();
-        const bio = readBiometricConfig();
-        if (!bio || !bio.credentialId || !bio.tenantEmail) {
-          showAlert("لا توجد بصمة مفعلة على هذا الجهاز. سجّل الدخول بكلمة المرور أولاً ثم فعّل البصمة.", "error");
-          return;
-        }
-
-        purgeInactiveTenants();
-        const state = readStore();
-        const mgr = state.managers[bio.tenantEmail];
-        if (!mgr) {
-          safeRemoveItem(BIOMETRIC_KEY);
-          updateBiometricUI();
-          showAlert("الحساب المرتبط بالبصمة غير موجود أو انتهت صلاحيته لعدم النشاط لمدة 30 يوماً.", "error");
-          return;
-        }
-
-        if (!window.PublicKeyCredential || !navigator.credentials || !window.isSecureContext) {
-          showAlert("يرجى فتح الموقع عبر رابط HTTPS لتشغيل التحقق بالبصمة.", "error");
-          return;
-        }
-
-        try {
-          const challenge = new Uint8Array(32);
-          crypto.getRandomValues(challenge);
-
-          const assertion = await navigator.credentials.get({
-            publicKey: {
-              challenge,
-              rpId: location.hostname,
-              allowCredentials: [
-                {
-                  type: "public-key",
-                  id: base64UrlToBuf(bio.credentialId)
-                }
-              ],
-              userVerification: "required",
-              timeout: 60000
-            }
-          });
-
-          if (!assertion) throw new Error("فشل التحقق من البصمة.");
-
-          mgr.lastActiveAt = Date.now();
-          state.session = {
-            role: "Manager",
-            tenantEmail: bio.tenantEmail,
-            name: mgr.name,
-            company: mgr.company,
-            remember: true
-          };
-          writeStore(state);
-          renderApp();
-          showAlert("تم تسجيل الدخول بالبصمة بنجاح.", "success");
-        } catch (err) {
-          showAlert("لم تكتمل عملية الدخول بالبصمة: " + (err && err.message ? err.message : "تم إلغاء التحقق."), "error");
-        }
-      }
-
-      function updateBiometricUI() {
-        const bio = readBiometricConfig();
-        const state = readStore();
-        const validBio = bio && state.managers && state.managers[bio.tenantEmail];
-
-        const quickWrap = document.getElementById("biometricQuickLoginWrap");
-        const quickLabel = document.getElementById("biometricLoginLabel");
-        if (quickWrap) {
-          quickWrap.classList.toggle("hidden", !validBio);
-          if (validBio && quickLabel) {
-            quickLabel.textContent = "الدخول بالبصمة (" + (bio.name || bio.tenantEmail) + ")";
+          if (!loc && !nts) {
+            showAlert("يرجى إدخال الموقع/البند أو تفاصيل التقرير قبل الحفظ.", "error");
+            return;
           }
-        }
 
-        const enableBtn = document.getElementById("enableBiometricBtn");
-        const disableBtn = document.getElementById("disableBiometricBtn");
-        const statusTxt = document.getElementById("biometricStatusText");
-        const session = getActiveSession();
+          const all = loadTenantReports();
+          all[currentModel.id].unshift({
+            id: "rec_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
+            location: loc || currentModel.shortTitle,
+            severity: sev,
+            status: st,
+            owner: own,
+            notes: nts,
+            date: new Date().toLocaleDateString("ar-EG")
+          });
+          saveTenantReports(all);
+          renderActiveWorkspace();
+          renderOverviewAndIssues();
+          showAlert("تم حفظ السجل وتحديث الإحصائيات والمشاكل المبدئية.", "success");
+        });
 
-        if (enableBtn && disableBtn && statusTxt && session) {
-          const isLinkedToCurrent = validBio && bio.tenantEmail === session.tenantEmail;
-          enableBtn.textContent = isLinkedToCurrent ? "إعادة ضبط البصمة" : "تفعيل البصمة";
-          disableBtn.classList.toggle("hidden", !isLinkedToCurrent);
-          statusTxt.textContent = isLinkedToCurrent
-            ? "البصمة مفعلة حالياً لهذا الحساب على هذا الجهاز."
-            : "فعّل البصمة الآن لتتمكن من فتح النظام مباشرة ببصمة الإصبع في المرات القادمة.";
-        }
+        workspace.querySelectorAll(".toggle-status-rec").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const recId = btn.getAttribute("data-rec-id");
+            const all = loadTenantReports();
+            all[currentModel.id] = all[currentModel.id].map((r) =>
+              r.id === recId ? { ...r, status: r.status === "مغلق" ? "قيد المتابعة" : "مغلق" } : r
+            );
+            saveTenantReports(all);
+            renderActiveWorkspace();
+            renderOverviewAndIssues();
+          });
+        });
+
+        workspace.querySelectorAll(".del-rec-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const recId = btn.getAttribute("data-rec-id");
+            const all = loadTenantReports();
+            all[currentModel.id] = all[currentModel.id].filter((r) => r.id !== recId);
+            saveTenantReports(all);
+            renderActiveWorkspace();
+            renderOverviewAndIssues();
+          });
+        });
       }
 
       const globalAlert = document.getElementById("globalAlert");
@@ -1721,31 +1451,144 @@
         globalAlert.textContent = "";
       }
 
-      function onButtonTap(el, fn) {
-        if (!el) return;
-        let lastRun = 0;
-        const handler = function (ev) {
-          const now = Date.now();
-          if (now - lastRun < 250) return;
-          lastRun = now;
-          fn(ev);
-        };
-        el.addEventListener("click", handler);
+      function bufToBase64Url(buf) {
+        const bytes = new Uint8Array(buf);
+        let bin = "";
+        for (let i = 0; i < bytes.byteLength; i++) bin += String.fromCharCode(bytes[i]);
+        return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+      }
+
+      function base64UrlToBuf(b64url) {
+        const b64 = b64url.replace(/-/g, "+").replace(/_/g, "/");
+        const pad = b64.length % 4 ? "=".repeat(4 - (b64.length % 4)) : "";
+        const bin = atob(b64 + pad);
+        const bytes = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        return bytes.buffer;
+      }
+
+      function readBiometricConfig() {
+        try {
+          const raw = safeGetItem(BIOMETRIC_KEY);
+          if (!raw) return null;
+          const p = JSON.parse(raw);
+          return p && p.tenantEmail ? p : null;
+        } catch (e) { return null; }
+      }
+
+      function updateBiometricUI() {
+        const bio = readBiometricConfig();
+        const state = readStore();
+        const validBio = bio && state.managers && state.managers[bio.tenantEmail];
+
+        const quickWrap = document.getElementById("biometricQuickLoginWrap");
+        const quickLabel = document.getElementById("biometricLoginLabel");
+        if (quickWrap) {
+          quickWrap.classList.toggle("hidden", !validBio);
+          if (validBio && quickLabel) quickLabel.textContent = "الدخول بالبصمة (" + (bio.name || bio.tenantEmail) + ")";
+        }
+
+        const enableBtn = document.getElementById("enableBiometricBtn");
+        const disableBtn = document.getElementById("disableBiometricBtn");
+        const statusTxt = document.getElementById("biometricStatusText");
+        const session = getActiveSession();
+        if (enableBtn && disableBtn && statusTxt && session) {
+          const linked = validBio && bio.tenantEmail === session.tenantEmail;
+          enableBtn.textContent = linked ? "إعادة ضبط البصمة" : "تفعيل البصمة";
+          disableBtn.classList.toggle("hidden", !linked);
+          statusTxt.textContent = linked
+            ? "البصمة مفعلة لهذا الحساب على هذا الجهاز."
+            : "فعّل البصمة للدخول السريع في المرات القادمة.";
+        }
+      }
+
+      async function registerBiometricForSession(session) {
+        if (!session || session.role !== "Manager") {
+          showAlert("تفعيل البصمة متاح لحساب المدير.", "error");
+          return;
+        }
+        if (!window.PublicKeyCredential || !navigator.credentials || !window.isSecureContext) {
+          showAlert("يلزم فتح الموقع عبر رابط HTTPS مدعوم للبصمة.", "error");
+          return;
+        }
+        try {
+          const challenge = new Uint8Array(32);
+          crypto.getRandomValues(challenge);
+          const cred = await navigator.credentials.create({
+            publicKey: {
+              challenge,
+              rp: { name: "إدارة السلامة والصحة المهنية", id: location.hostname },
+              user: { id: new TextEncoder().encode(session.tenantEmail), name: session.tenantEmail, displayName: session.name || session.tenantEmail },
+              pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
+              authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
+              timeout: 60000
+            }
+          });
+          if (!cred || !cred.rawId) throw new Error("لم يتم استلام البصمة.");
+          safeSetItem(BIOMETRIC_KEY, JSON.stringify({
+            credentialId: bufToBase64Url(cred.rawId),
+            tenantEmail: session.tenantEmail,
+            name: session.name,
+            company: session.company
+          }));
+          updateBiometricUI();
+          showAlert("تم تفعيل الدخول بالبصمة بنجاح.", "success");
+        } catch (err) {
+          showAlert("تعذر تفعيل البصمة: " + (err && err.message ? err.message : "تم الإلغاء."), "error");
+        }
+      }
+
+      async function loginWithBiometric() {
+        hideAlert();
+        const bio = readBiometricConfig();
+        if (!bio || !bio.credentialId || !bio.tenantEmail) {
+          showAlert("لا توجد بصمة مفعلة على هذا الجهاز.", "error");
+          return;
+        }
+        purgeInactiveTenants();
+        const state = readStore();
+        const mgr = state.managers[bio.tenantEmail];
+        if (!mgr) {
+          safeRemoveItem(BIOMETRIC_KEY);
+          updateBiometricUI();
+          showAlert("الحساب المرتبط بالبصمة غير موجود.", "error");
+          return;
+        }
+        try {
+          const challenge = new Uint8Array(32);
+          crypto.getRandomValues(challenge);
+          const assertion = await navigator.credentials.get({
+            publicKey: {
+              challenge,
+              rpId: location.hostname,
+              allowCredentials: [{ type: "public-key", id: base64UrlToBuf(bio.credentialId) }],
+              userVerification: "required",
+              timeout: 60000
+            }
+          });
+          if (!assertion) throw new Error("فشل التحقق من البصمة.");
+          mgr.lastActiveAt = Date.now();
+          state.session = { role: "Manager", tenantEmail: bio.tenantEmail, name: mgr.name, company: mgr.company, remember: true };
+          writeStore(state);
+          renderApp();
+          showAlert("تم تسجيل الدخول بالبصمة بنجاح.", "success");
+        } catch (err) {
+          showAlert("لم تكتمل عملية الدخول بالبصمة: " + (err && err.message ? err.message : "تم الإلغاء."), "error");
+        }
       }
 
       document.querySelectorAll(".toggle-pass").forEach((btn) => {
-        onButtonTap(btn, () => {
-          const targetId = btn.getAttribute("data-target");
-          const input = document.getElementById(targetId);
-          if (!input) return;
-          const show = input.type === "password";
-          input.type = show ? "text" : "password";
+        btn.addEventListener("click", () => {
+          const inp = document.getElementById(btn.getAttribute("data-target"));
+          if (!inp) return;
+          const show = inp.type === "password";
+          inp.type = show ? "text" : "password";
           btn.textContent = show ? "إخفاء" : "إظهار";
         });
       });
 
       document.querySelectorAll(".tab-btn").forEach((btn) => {
-        onButtonTap(btn, () => {
+        btn.addEventListener("click", () => {
           hideAlert();
           document.getElementById("recoveryPanel").classList.add("hidden");
           document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
@@ -1757,626 +1600,283 @@
         });
       });
 
-      onButtonTap(document.getElementById("openModelsDrawerBtn"), () => {
-        const drawer = document.getElementById("leftModelsDrawer");
-        if (drawer && drawer.classList.contains("open")) closeModelsDrawer();
-        else openModelsDrawer();
-      });
-      onButtonTap(document.getElementById("workspacePickBtn"), openModelsDrawer);
-      onButtonTap(document.getElementById("closeModelsDrawerBtn"), closeModelsDrawer);
-      onButtonTap(document.getElementById("leftModelsBackdrop"), closeModelsDrawer);
-      onButtonTap(document.getElementById("selectAllModelsBtn"), () => {
-        setSelectedModelIds(MODELS_CATALOG.map((m) => m.id));
-      });
-      onButtonTap(document.getElementById("clearAllModelsBtn"), () => {
-        setSelectedModelIds([]);
-      });
-      onButtonTap(document.getElementById("workspaceClearBtn"), () => {
-        setSelectedModelIds([]);
+      document.getElementById("openRightDrawerBtn")?.addEventListener("click", openRightDrawer);
+      document.getElementById("closeRightDrawerBtn")?.addEventListener("click", closeRightDrawer);
+      document.getElementById("rightDrawerBackdrop")?.addEventListener("click", closeRightDrawer);
+      document.getElementById("selectAllDrawerBtn")?.addEventListener("click", () => setSelectedModels(MODELS.map((m) => m.id)));
+      document.getElementById("clearAllDrawerBtn")?.addEventListener("click", () => setSelectedModels([]));
+      document.getElementById("refreshOverviewBtn")?.addEventListener("click", () => {
+        renderOverviewAndIssues();
+        showAlert("تم تحديث الملخص والإحصائيات.", "info");
       });
 
-      const moduleFilterInput = document.getElementById("moduleFilterInput");
-      if (moduleFilterInput) {
-        moduleFilterInput.addEventListener("input", applyModuleFilter);
-        moduleFilterInput.addEventListener("change", applyModuleFilter);
-      }
-
-      document.querySelectorAll("#moduleFilterPills .filter-pill").forEach((pill) => {
-        onButtonTap(pill, () => {
-          activeModuleCategory = pill.getAttribute("data-cat") || "all";
-          document.querySelectorAll("#moduleFilterPills .filter-pill").forEach((p) => {
-            p.classList.toggle("active", p === pill);
-          });
-          applyModuleFilter();
-        });
-      });
-
-      const teamFilterInput = document.getElementById("teamFilterInput");
-      if (teamFilterInput) {
-        teamFilterInput.addEventListener("input", () => {
-          const session = getActiveSession();
-          if (session && session.role === "Manager") {
-            renderMembers(session.tenantEmail);
-          }
-        });
-      }
-
-      onButtonTap(document.getElementById("refreshStatsBtn"), () => {
-        renderMainDashboardStats();
-        showAlert("تم تحديث إحصائيات النماذج.", "info");
-      });
-
-      const otpField = document.getElementById("otpInput");
-      otpField.addEventListener("input", () => {
-        otpField.value = normalizeArabicDigits(otpField.value).replace(/\D/g, "").slice(0, 6);
-      });
-
-      onButtonTap(document.getElementById("loginSubmitBtn"), handleLoginSubmit);
-      onButtonTap(document.getElementById("registerSubmitBtn"), handleRegisterSubmit);
-      onButtonTap(document.getElementById("teamLoginSubmitBtn"), handleTeamLoginSubmit);
-      onButtonTap(document.getElementById("biometricLoginBtn"), loginWithBiometric);
-      onButtonTap(document.getElementById("enableBiometricBtn"), () => registerBiometricForSession(getActiveSession()));
-      onButtonTap(document.getElementById("disableBiometricBtn"), () => {
-        safeRemoveItem(BIOMETRIC_KEY);
-        updateBiometricUI();
-        showAlert("تم إلغاء ربط البصمة من هذا الجهاز.", "info");
-      });
-
-      onButtonTap(document.getElementById("openRecoveryBtn"), () => {
+      document.getElementById("loginSubmitBtn")?.addEventListener("click", () => {
         hideAlert();
-        resetRecoveryFlow();
-        const typedLoginEmail = cleanEmail(document.getElementById("loginEmail").value);
-        if (typedLoginEmail) {
-          document.getElementById("recEmail").value = typedLoginEmail;
-        }
-        ["loginTab", "registerTab", "teamLoginTab"].forEach((tid) => {
-          document.getElementById(tid).classList.add("hidden");
-        });
-        document.getElementById("authTabs").classList.add("hidden");
-        document.getElementById("recoveryPanel").classList.remove("hidden");
-      });
-
-      onButtonTap(document.getElementById("backToLoginBtn"), () => {
-        hideAlert();
-        resetRecoveryFlow();
-        document.getElementById("recoveryPanel").classList.add("hidden");
-        document.getElementById("authTabs").classList.remove("hidden");
-        document.getElementById("loginTab").classList.remove("hidden");
-      });
-
-      onButtonTap(document.getElementById("sendOtpBtn"), handleRecStep1Submit);
-      onButtonTap(document.getElementById("resendOtpBtn"), () => {
-        hideAlert();
-        if (recoveryState.email) sendOtpToEmail(recoveryState.email);
-      });
-      onButtonTap(document.getElementById("verifyOtpBtn"), handleRecStep2Submit);
-      onButtonTap(document.getElementById("saveNewPassBtn"), handleRecStep3Submit);
-      onButtonTap(document.getElementById("addMemberBtn"), handleAddMemberSubmit);
-
-      onButtonTap(document.getElementById("logoutBtn"), () => {
-        hideAlert();
-        closeModelsDrawer();
+        const email = cleanEmail(document.getElementById("loginEmail").value);
+        const pass = document.getElementById("loginPassword").value;
+        const remember = document.getElementById("rememberMe").checked;
+        if (!email || !pass) { showAlert("يرجى إدخال البريد الإلكتروني وكلمة المرور.", "error"); return; }
+        purgeInactiveTenants();
         const state = readStore();
-        state.session = null;
-        writeStore(state);
+        const mgr = state.managers[email];
+        if (!mgr || mgr.password !== pass) { showAlert("بيانات الدخول غير صحيحة.", "error"); return; }
+        mgr.lastActiveAt = Date.now();
+        const sess = { role: "Manager", tenantEmail: email, name: mgr.name, company: mgr.company, remember };
         safeRemoveSession("ohs_temp_session");
+        if (remember) { state.session = sess; writeStore(state); }
+        else { state.session = null; writeStore(state); safeSetSession("ohs_temp_session", JSON.stringify(sess)); }
         renderApp();
-        showAlert("تم تسجيل الخروج بنجاح. يمكنك الدخول مرة أخرى بالبصمة أو كلمة المرور.", "info");
       });
 
-      function handleRegisterSubmit() {
+      document.getElementById("registerSubmitBtn")?.addEventListener("click", () => {
         hideAlert();
         const name = document.getElementById("regName").value.trim();
         const company = document.getElementById("regCompany").value.trim();
         const email = cleanEmail(document.getElementById("regEmail").value);
         const pass = document.getElementById("regPassword").value;
-        const confirmPass = document.getElementById("regPasswordConfirm").value;
-
-        if (!name || !company || !email) {
-          showAlert("يرجى استكمال جميع بيانات المدير والمنشأة.", "error");
-          return;
-        }
-        if (!isValidEmail(email)) {
-          showAlert("يرجى إدخال بريد إلكتروني صحيح.", "error");
-          return;
-        }
-        if (pass.length < 6) {
-          showAlert("يجب ألا تقل كلمة المرور عن 6 أحرف أو أرقام.", "error");
-          return;
-        }
-        if (pass !== confirmPass) {
-          showAlert("كلمتا المرور غير متطابقتين.", "error");
-          return;
-        }
-
+        const pass2 = document.getElementById("regPasswordConfirm").value;
+        if (!name || !company || !email) { showAlert("يرجى استكمال بيانات المدير والمنشأة.", "error"); return; }
+        if (!isValidEmail(email)) { showAlert("يرجى إدخال بريد إلكتروني صحيح.", "error"); return; }
+        if (pass.length < 6) { showAlert("كلمة المرور يجب ألا تقل عن 6 أحرف/أرقام.", "error"); return; }
+        if (pass !== pass2) { showAlert("كلمتا المرور غير متطابقتين.", "error"); return; }
         purgeInactiveTenants();
         const state = readStore();
-        if (state.managers[email]) {
-          showAlert("هذا البريد الإلكتروني مسجل بالفعل كمدير.", "error");
-          return;
-        }
-
+        if (state.managers[email]) { showAlert("هذا البريد مسجل بالفعل.", "error"); return; }
         const now = Date.now();
-        state.managers[email] = {
-          name,
-          company,
-          email,
-          password: pass,
-          createdAt: now,
-          lastActiveAt: now
-        };
-        state.session = {
-          role: "Manager",
-          tenantEmail: email,
-          name,
-          company,
-          remember: true
-        };
+        state.managers[email] = { name, company, email, password: pass, createdAt: now, lastActiveAt: now };
+        state.session = { role: "Manager", tenantEmail: email, name, company, remember: true };
         writeStore(state);
-        document.getElementById("regName").value = "";
-        document.getElementById("regCompany").value = "";
-        document.getElementById("regEmail").value = "";
-        document.getElementById("regPassword").value = "";
-        document.getElementById("regPasswordConfirm").value = "";
         renderApp();
-        showAlert("تم إنشاء حساب المدير وتسجيل الدخول بنجاح. يمكنك الآن تفعيل البصمة من الأعلى.", "success");
-      }
+        showAlert("تم إنشاء حساب المدير وتسجيل الدخول بنجاح.", "success");
+      });
 
-      function handleLoginSubmit() {
-        hideAlert();
-        const email = cleanEmail(document.getElementById("loginEmail").value);
-        const pass = document.getElementById("loginPassword").value;
-        const remember = document.getElementById("rememberMe").checked;
-
-        if (!email || !pass) {
-          showAlert("يرجى إدخال البريد الإلكتروني وكلمة المرور.", "error");
-          return;
-        }
-
-        purgeInactiveTenants();
-        const state = readStore();
-        const mgr = state.managers[email];
-        if (!mgr || mgr.password !== pass) {
-          showAlert("البريد الإلكتروني أو كلمة المرور غير صحيحة أو تم حذف الحساب لعدم النشاط لمدة 30 يوماً.", "error");
-          return;
-        }
-
-        mgr.lastActiveAt = Date.now();
-        const activeSession = {
-          role: "Manager",
-          tenantEmail: email,
-          name: mgr.name,
-          company: mgr.company,
-          remember
-        };
-
-        safeRemoveSession("ohs_temp_session");
-
-        if (remember) {
-          state.session = activeSession;
-          writeStore(state);
-        } else {
-          state.session = null;
-          writeStore(state);
-          safeSetSession("ohs_temp_session", JSON.stringify(activeSession));
-          if (!getActiveSession()) {
-            const fallbackState = readStore();
-            fallbackState.session = activeSession;
-            writeStore(fallbackState);
-          }
-        }
-        renderApp();
-      }
-
-      function handleTeamLoginSubmit() {
+      document.getElementById("teamLoginSubmitBtn")?.addEventListener("click", () => {
         hideAlert();
         const tenantEmail = cleanEmail(document.getElementById("teamTenantEmail").value);
         const username = document.getElementById("teamUsername").value.trim().toLowerCase();
         const password = document.getElementById("teamPassword").value;
-
-        if (!tenantEmail || !username || !password) {
-          showAlert("يرجى استكمال جميع بيانات دخول عضو الفريق.", "error");
-          return;
-        }
-
+        if (!tenantEmail || !username || !password) { showAlert("يرجى استكمال بيانات دخول العضو.", "error"); return; }
         purgeInactiveTenants();
         const state = readStore();
         const mgr = state.managers[tenantEmail];
-        if (!mgr) {
-          showAlert("البريد المرجعي للمدير غير موجود أو انتهت صلاحيته لعدم النشاط.", "error");
-          return;
-        }
-
-        const member = state.members.find(
-          (m) => m.tenantEmail === tenantEmail && m.username.toLowerCase() === username && m.password === password
-        );
-
-        if (!member) {
-          showAlert("بيانات دخول عضو الفريق غير صحيحة.", "error");
-          return;
-        }
-
+        if (!mgr) { showAlert("البريد المرجعي للمدير غير موجود.", "error"); return; }
+        const member = state.members.find((m) => m.tenantEmail === tenantEmail && m.username.toLowerCase() === username && m.password === password);
+        if (!member) { showAlert("بيانات دخول العضو غير صحيحة.", "error"); return; }
         touchTenant(tenantEmail);
-        const sess = {
-          role: member.role,
-          tenantEmail,
-          name: member.name,
-          company: mgr.company,
-          remember: true
-        };
         const updated = readStore();
-        updated.session = sess;
+        updated.session = { role: member.role, tenantEmail, name: member.name, company: mgr.company, remember: true };
         writeStore(updated);
         renderApp();
-      }
+      });
 
-      let recoveryState = {
-        email: "",
-        code: null,
-        expiresAt: 0,
-        verified: false,
-        resetToken: null,
-        attempts: 0,
-        timerId: null
-      };
+      document.getElementById("biometricLoginBtn")?.addEventListener("click", loginWithBiometric);
+      document.getElementById("enableBiometricBtn")?.addEventListener("click", () => registerBiometricForSession(getActiveSession()));
+      document.getElementById("disableBiometricBtn")?.addEventListener("click", () => {
+        safeRemoveItem(BIOMETRIC_KEY);
+        updateBiometricUI();
+        showAlert("تم إلغاء ربط البصمة.", "info");
+      });
 
-      function clearRecoveryTimer() {
-        if (recoveryState.timerId) {
-          clearInterval(recoveryState.timerId);
-          recoveryState.timerId = null;
-        }
-      }
-
-      function resetRecoveryFlow() {
-        clearRecoveryTimer();
-        recoveryState = {
-          email: "",
-          code: null,
-          expiresAt: 0,
-          verified: false,
-          resetToken: null,
-          attempts: 0,
-          timerId: null
-        };
+      let recoveryState = { email: "", expiresAt: 0, verified: false, resetToken: null, timerId: null };
+      function clearRecTimer() { if (recoveryState.timerId) { clearInterval(recoveryState.timerId); recoveryState.timerId = null; } }
+      function resetRecFlow() {
+        clearRecTimer();
+        recoveryState = { email: "", expiresAt: 0, verified: false, resetToken: null, timerId: null };
         document.getElementById("recStep1").classList.remove("hidden");
         document.getElementById("recStep2").classList.add("hidden");
         document.getElementById("recStep3").classList.add("hidden");
         document.getElementById("resendOtpBtn").classList.add("hidden");
         document.getElementById("relayDiagBox").classList.add("hidden");
         document.getElementById("otpInput").value = "";
-        document.getElementById("otpInput").disabled = false;
-        document.getElementById("verifyOtpBtn").disabled = false;
-      }
-
-      function startCountdown() {
-        clearRecoveryTimer();
-        const timerDisplay = document.getElementById("timerDisplay");
-        const otpInput = document.getElementById("otpInput");
-        const verifyBtn = document.getElementById("verifyOtpBtn");
-        const resendBtn = document.getElementById("resendOtpBtn");
-
-        timerDisplay.classList.remove("expired");
-        otpInput.disabled = false;
-        verifyBtn.disabled = false;
-        resendBtn.classList.add("hidden");
-
-        function updateTick() {
-          const remaining = Math.max(0, Math.ceil((recoveryState.expiresAt - Date.now()) / 1000));
-          const mins = String(Math.floor(remaining / 60)).padStart(2, "0");
-          const secs = String(remaining % 60).padStart(2, "0");
-          timerDisplay.textContent = mins + ":" + secs;
-
-          if (remaining <= 0) {
-            clearRecoveryTimer();
-            recoveryState.code = null;
-            timerDisplay.textContent = "00:00";
-            timerDisplay.classList.add("expired");
-            otpInput.disabled = true;
-            verifyBtn.disabled = true;
-            resendBtn.classList.remove("hidden");
-            showAlert("انتهت صلاحية الكود (دقيقتان). اطلب كوداً جديداً للمتابعة.", "error");
-          }
-        }
-
-        updateTick();
-        recoveryState.timerId = setInterval(updateTick, 500);
       }
 
       async function recoveryApi(path, payload) {
-        if (!location || !/^https?:$/.test(location.protocol)) {
-          throw new Error("افتح النظام من رابط HTTPS المنشور على Cloudflare، وليس من ملف HTML محلي.");
-        }
-        const response = await fetch(path, {
+        const res = await fetch(path, {
           method: "POST",
           credentials: "same-origin",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload || {})
         });
-        const data = await response.json().catch(() => ({}));
-        if (!response.ok || !data.ok) {
-          throw new Error(data.error || ("فشل طلب الاستعادة (" + response.status + ")"));
-        }
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.ok) throw new Error(data.error || ("HTTP " + res.status));
         return data;
-      }
-
-      function showDiagnostics(reasonMsg) {
-        const diagBox = document.getElementById("relayDiagBox");
-        const diagText = document.getElementById("relayDiagText");
-        const isFetchErr = /failed to fetch/i.test(String(reasonMsg || ""));
-        const extraHint = isFetchErr
-          ? "<div style='margin-top:6px;color:#fcd34d;'>تحقق من فتح الموقع من رابط HTTPS المنشور وليس من ملف محلي content://، ثم تأكد من صحة عنوان Worker وإعداد CORS واستجابة المسار /api/send-otp.</div>"
-          : "";
-        diagText.innerHTML =
-          "<div><strong>سبب التوقف:</strong> " + escapeHtml(reasonMsg) + "</div>" +
-          extraHint +
-          "<div style='margin-top:6px;'>يجب فتح الموقع من رابط HTTPS المنشور، مع ضبط Secret باسم <code>RESEND_API_KEY</code> ومتغير <code>FROM_EMAIL</code> وربط KV باسم <code>OTP_KV</code> على نفس Cloudflare Worker.</div>";
-        diagBox.classList.remove("hidden");
       }
 
       async function sendOtpToEmail(email) {
         if (isSendingOtp) return;
         isSendingOtp = true;
-
-        const sendBtn = document.getElementById("sendOtpBtn");
-        const resendBtn = document.getElementById("resendOtpBtn");
-        sendBtn.disabled = true;
-        resendBtn.disabled = true;
-        sendBtn.textContent = "جاري إرسال الكود عبر Cloudflare وResend...";
-        document.getElementById("relayDiagBox").classList.add("hidden");
-
+        const btn = document.getElementById("sendOtpBtn");
+        btn.disabled = true;
         try {
-          await recoveryApi("/api/send-otp", { email: email });
-
+          await recoveryApi("/api/send-otp", { email });
           recoveryState.email = email;
-          recoveryState.code = null;
-          recoveryState.resetToken = null;
           recoveryState.expiresAt = Date.now() + OTP_DURATION_SEC * 1000;
           recoveryState.verified = false;
-          recoveryState.attempts = 0;
-
           document.getElementById("recStep1").classList.add("hidden");
           document.getElementById("recStep2").classList.remove("hidden");
-          document.getElementById("otpInput").value = "";
-          showAlert("تم إرسال كود التحقق المكون من 6 أرقام إلى بريدك الإلكتروني بنجاح عبر Cloudflare وResend. أدخله خلال دقيقتين.", "success");
-          startCountdown();
+          const td = document.getElementById("timerDisplay");
+          clearRecTimer();
+          recoveryState.timerId = setInterval(() => {
+            const rem = Math.max(0, Math.ceil((recoveryState.expiresAt - Date.now()) / 1000));
+            td.textContent = String(Math.floor(rem / 60)).padStart(2, "0") + ":" + String(rem % 60).padStart(2, "0");
+            if (rem <= 0) { clearRecTimer(); document.getElementById("resendOtpBtn").classList.remove("hidden"); }
+          }, 500);
+          showAlert("تم إرسال كود التحقق (6 أرقام) إلى بريدك الإلكتروني.", "success");
         } catch (err) {
-          recoveryState.code = null;
-          recoveryState.resetToken = null;
-          const reasonMsg = err && err.message ? err.message : "خطأ في الاتصال";
-          showAlert("تعذر إرسال كود الاستعادة: " + reasonMsg, "error");
-          showDiagnostics(reasonMsg);
+          showAlert("تعذر إرسال الكود: " + (err.message || ""), "error");
         } finally {
           isSendingOtp = false;
-          sendBtn.disabled = false;
-          resendBtn.disabled = false;
-          sendBtn.textContent = "إرسال كود التحقق (6 أرقام) إلى البريد";
+          btn.disabled = false;
         }
       }
 
-      async function handleRecStep1Submit() {
-        hideAlert();
-        purgeInactiveTenants();
-        const email = cleanEmail(document.getElementById("recEmail").value);
-        if (!email || !isValidEmail(email)) {
-          showAlert("يرجى إدخال بريد إلكتروني صحيح.", "error");
-          return;
-        }
+      document.getElementById("openRecoveryBtn")?.addEventListener("click", () => {
+        hideAlert(); resetRecFlow();
+        const typed = cleanEmail(document.getElementById("loginEmail").value);
+        if (typed) document.getElementById("recEmail").value = typed;
+        ["loginTab", "registerTab", "teamLoginTab"].forEach((id) => document.getElementById(id).classList.add("hidden"));
+        document.getElementById("authTabs").classList.add("hidden");
+        document.getElementById("recoveryPanel").classList.remove("hidden");
+      });
 
-        const state = readStore();
-        if (!state.managers[email]) {
-          showAlert("هذا البريد الإلكتروني غير مسجل كحساب مدير في النظام.", "error");
-          return;
-        }
-
-        await sendOtpToEmail(email);
-      }
-
-      async function handleRecStep2Submit() {
-        hideAlert();
-        if (Date.now() >= recoveryState.expiresAt) {
-          clearRecoveryTimer();
-          showAlert("انتهت صلاحية الكود. يرجى طلب كود جديد.", "error");
-          return;
-        }
-        const entered = normalizeArabicDigits(document.getElementById("otpInput").value).trim();
-        if (!/^\d{6}$/.test(entered)) {
-          showAlert("أدخل كود التحقق المكون من 6 أرقام.", "error");
-          return;
-        }
-        const verifyBtn = document.getElementById("verifyOtpBtn");
-        verifyBtn.disabled = true;
-        try {
-          const result = await recoveryApi("/api/verify-otp", { email: recoveryState.email, code: entered });
-          recoveryState.verified = true;
-          recoveryState.resetToken = result.resetToken;
-          clearRecoveryTimer();
-          document.getElementById("recStep2").classList.add("hidden");
-          document.getElementById("recStep3").classList.remove("hidden");
-          showAlert("تم التحقق من الكود بنجاح. أدخل كلمة المرور الجديدة مرتين.", "success");
-        } catch (err) {
-          showAlert(err.message || "كود التحقق غير صحيح أو انتهت صلاحيته.", "error");
-        } finally {
-          verifyBtn.disabled = false;
-        }
-      }
-
-      async function handleRecStep3Submit() {
-        hideAlert();
-
-        if (!recoveryState.verified || !recoveryState.email || !recoveryState.resetToken) {
-          showAlert("يجب التحقق من كود البريد الإلكتروني أولاً.", "error");
-          return;
-        }
-
-        const p1 = document.getElementById("newPass1").value;
-        const p2 = document.getElementById("newPass2").value;
-
-        if (p1.length < 6) {
-          showAlert("يجب ألا تقل كلمة المرور الجديدة عن 6 أحرف أو أرقام.", "error");
-          return;
-        }
-
-        if (p1 !== p2) {
-          showAlert("كلمتا المرور الجديدتان غير متطابقتين.", "error");
-          return;
-        }
-
-        const state = readStore();
-        if (!state.managers[recoveryState.email]) {
-          showAlert("تعذر العثور على حساب المدير.", "error");
-          return;
-        }
-
-        try {
-          await recoveryApi("/api/consume-reset", { email: recoveryState.email, resetToken: recoveryState.resetToken });
-        } catch (err) {
-          recoveryState.verified = false;
-          recoveryState.resetToken = null;
-          showAlert(err.message || "انتهت جلسة الاستعادة. اطلب كوداً جديداً.", "error");
-          return;
-        }
-        state.managers[recoveryState.email].password = p1;
-        state.managers[recoveryState.email].lastActiveAt = Date.now();
-        writeStore(state);
-
-        document.getElementById("newPass1").value = "";
-        document.getElementById("newPass2").value = "";
-        resetRecoveryFlow();
+      document.getElementById("backToLoginBtn")?.addEventListener("click", () => {
+        hideAlert(); resetRecFlow();
         document.getElementById("recoveryPanel").classList.add("hidden");
         document.getElementById("authTabs").classList.remove("hidden");
         document.getElementById("loginTab").classList.remove("hidden");
-        showAlert("تم تحديث كلمة المرور بنجاح. يمكنك تسجيل الدخول الآن.", "success");
-      }
+      });
 
-      function handleAddMemberSubmit() {
+      document.getElementById("sendOtpBtn")?.addEventListener("click", async () => {
+        hideAlert();
+        const email = cleanEmail(document.getElementById("recEmail").value);
+        if (!email || !isValidEmail(email)) { showAlert("أدخل بريدًا إلكترونيًا صحيحًا.", "error"); return; }
+        if (!readStore().managers[email]) { showAlert("هذا البريد غير مسجل كمدير.", "error"); return; }
+        await sendOtpToEmail(email);
+      });
+
+      document.getElementById("resendOtpBtn")?.addEventListener("click", () => { if (recoveryState.email) sendOtpToEmail(recoveryState.email); });
+
+      document.getElementById("verifyOtpBtn")?.addEventListener("click", async () => {
+        hideAlert();
+        const code = normalizeArabicDigits(document.getElementById("otpInput").value).trim();
+        if (!/^\d{6}$/.test(code)) { showAlert("أدخل الكود المكون من 6 أرقام.", "error"); return; }
+        try {
+          const r = await recoveryApi("/api/verify-otp", { email: recoveryState.email, code });
+          recoveryState.verified = true;
+          recoveryState.resetToken = r.resetToken;
+          clearRecTimer();
+          document.getElementById("recStep2").classList.add("hidden");
+          document.getElementById("recStep3").classList.remove("hidden");
+          showAlert("تم التحقق من الكود بنجاح.", "success");
+        } catch (err) {
+          showAlert(err.message || "كود غير صحيح.", "error");
+        }
+      });
+
+      document.getElementById("saveNewPassBtn")?.addEventListener("click", async () => {
+        hideAlert();
+        const p1 = document.getElementById("newPass1").value;
+        const p2 = document.getElementById("newPass2").value;
+        if (p1.length < 6 || p1 !== p2) { showAlert("تأكد من تطابق كلمة المرور وأنها 6 أحرف/أرقام على الأقل.", "error"); return; }
+        try {
+          await recoveryApi("/api/consume-reset", { email: recoveryState.email, resetToken: recoveryState.resetToken });
+          const st = readStore();
+          if (st.managers[recoveryState.email]) {
+            st.managers[recoveryState.email].password = p1;
+            st.managers[recoveryState.email].lastActiveAt = Date.now();
+            writeStore(st);
+          }
+          resetRecFlow();
+          document.getElementById("recoveryPanel").classList.add("hidden");
+          document.getElementById("authTabs").classList.remove("hidden");
+          document.getElementById("loginTab").classList.remove("hidden");
+          showAlert("تم تحديث كلمة المرور بنجاح.", "success");
+        } catch (err) {
+          showAlert(err.message || "تعذر حفظ كلمة المرور.", "error");
+        }
+      });
+
+      document.getElementById("addMemberBtn")?.addEventListener("click", () => {
         hideAlert();
         const session = getActiveSession();
         if (!session || session.role !== "Manager") return;
-
         const name = document.getElementById("memberName").value.trim();
         const role = document.getElementById("memberRole").value;
         const username = document.getElementById("memberUser").value.trim();
         const password = document.getElementById("memberPass").value;
-
-        if (!name || !username || !password) {
-          showAlert("يرجى استكمال جميع بيانات عضو الفريق.", "error");
+        if (!name || !username || !password) { showAlert("يرجى استكمال بيانات العضو.", "error"); return; }
+        const st = readStore();
+        if (st.members.some((m) => m.tenantEmail === session.tenantEmail && m.username.toLowerCase() === username.toLowerCase())) {
+          showAlert("اسم المستخدم مستخدم بالفعل.", "error");
           return;
         }
-
-        const state = readStore();
-        const exists = state.members.some(
-          (m) => m.tenantEmail === session.tenantEmail && m.username.toLowerCase() === username.toLowerCase()
-        );
-        if (exists) {
-          showAlert("اسم المستخدم موجود بالفعل ضمن فريقك.", "error");
-          return;
-        }
-
-        state.members.push({
-          id: "mem_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6),
-          tenantEmail: session.tenantEmail,
-          name,
-          role,
-          username,
-          password
-        });
-        writeStore(state);
-        touchTenant(session.tenantEmail);
+        st.members.push({ id: "mem_" + Date.now(), tenantEmail: session.tenantEmail, name, role, username, password });
+        writeStore(st);
         document.getElementById("memberName").value = "";
         document.getElementById("memberUser").value = "";
         document.getElementById("memberPass").value = "";
         renderMembers(session.tenantEmail);
-        renderMainDashboardStats();
-        showAlert("تمت إضافة العضو إلى فريق العمل بنجاح.", "success");
-      }
+        showAlert("تمت إضافة العضو للفريق.", "success");
+      });
 
       function renderMembers(tenantEmail) {
-        const list = document.getElementById("membersList");
-        const state = readStore();
-        const filterVal = normalizeArabicDigits(document.getElementById("teamFilterInput")?.value || "")
-          .trim()
-          .toLowerCase();
-        const team = state.members.filter((m) => {
-          if (m.tenantEmail !== tenantEmail) return false;
-          if (!filterVal) return true;
-          return (
-            String(m.name || "").toLowerCase().includes(filterVal) ||
-            String(m.role || "").toLowerCase().includes(filterVal) ||
-            String(m.username || "").toLowerCase().includes(filterVal)
-          );
-        });
-
-        if (team.length === 0) {
-          list.innerHTML = '<p style="font-size:0.84rem;color:var(--muted);">لا يوجد أعضاء مطابقون أو مسجلون بعد.</p>';
+        const box = document.getElementById("membersList");
+        if (!box) return;
+        const team = readStore().members.filter((m) => m.tenantEmail === tenantEmail);
+        if (!team.length) {
+          box.innerHTML = '<p style="font-size:0.8rem;color:var(--muted);margin-top:8px;">لا يوجد أعضاء مسجلون بعد.</p>';
           return;
         }
-
-        list.innerHTML = "";
+        box.innerHTML = "";
         team.forEach((m) => {
-          const item = document.createElement("div");
-          item.className = "member-item";
-          item.innerHTML = `
-            <div class="member-info">
-              <h4>${escapeHtml(m.name)} <span class="badge">${escapeHtml(m.role)}</span></h4>
-              <p>اسم المستخدم: ${escapeHtml(m.username)}</p>
-            </div>
-            <button type="button" class="btn btn-danger btn-sm">حذف</button>
-          `;
-          onButtonTap(item.querySelector("button"), () => {
+          const el = document.createElement("div");
+          el.className = "member-item";
+          el.innerHTML = `<div><strong style="font-size:0.88rem;">${escapeHtml(m.name)} <span class="badge">${escapeHtml(m.role)}</span></strong><p style="font-size:0.75rem;color:var(--muted);">مستخدم: ${escapeHtml(m.username)}</p></div><button type="button" class="btn btn-danger btn-sm">حذف</button>`;
+          el.querySelector("button").addEventListener("click", () => {
             const cur = readStore();
             cur.members = cur.members.filter((x) => x.id !== m.id);
             writeStore(cur);
             renderMembers(tenantEmail);
-            renderMainDashboardStats();
           });
-          list.appendChild(item);
+          box.appendChild(el);
         });
       }
 
-      function escapeHtml(str) {
-        return String(str)
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;");
-      }
-
-      function getActiveSession() {
-        const state = readStore();
-        if (state.session) return state.session;
-        try {
-          const temp = safeGetSession("ohs_temp_session");
-          if (temp) return JSON.parse(temp);
-        } catch (e) {}
-        return null;
-      }
+      document.getElementById("logoutBtn")?.addEventListener("click", () => {
+        hideAlert();
+        closeRightDrawer();
+        const st = readStore();
+        st.session = null;
+        writeStore(st);
+        safeRemoveSession("ohs_temp_session");
+        renderApp();
+        showAlert("تم تسجيل الخروج بنجاح.", "info");
+      });
 
       function renderApp() {
-        migrateLegacyStorage();
+        migrateLegacyAuth();
         purgeInactiveTenants();
         const session = getActiveSession();
         const authView = document.getElementById("authView");
         const dashView = document.getElementById("dashboardView");
 
         if (!session) {
-          closeModelsDrawer();
+          closeRightDrawer();
           authView.classList.remove("hidden");
           dashView.classList.add("hidden");
           updateBiometricUI();
-          syncAssistantVisibility();
           return;
         }
 
-        const state = readStore();
-        if (!state.managers[session.tenantEmail]) {
-          closeModelsDrawer();
-          state.session = null;
-          writeStore(state);
+        const st = readStore();
+        if (!st.managers[session.tenantEmail]) {
+          closeRightDrawer();
+          st.session = null;
+          writeStore(st);
           safeRemoveSession("ohs_temp_session");
           authView.classList.remove("hidden");
           dashView.classList.add("hidden");
           updateBiometricUI();
-          syncAssistantVisibility();
           showAlert("انتهت صلاحية هذا الحساب لعدم النشاط لمدة 30 يوماً.", "error");
           return;
         }
@@ -2384,415 +1884,19 @@
         touchTenant(session.tenantEmail);
         authView.classList.add("hidden");
         dashView.classList.remove("hidden");
-
         document.getElementById("dashUserName").textContent = "مرحباً، " + session.name;
-        document.getElementById("dashCompanyInfo").textContent =
-          (session.company ? session.company + " • " : "") +
-          "الصفة: " + session.role +
-          " • البريد المرجعي: " + session.tenantEmail;
+        document.getElementById("dashCompanyInfo").textContent = (session.company ? session.company + " • " : "") + session.role + " • " + session.tenantEmail;
+        document.getElementById("managerOnlySection").classList.toggle("hidden", session.role !== "Manager");
 
-        const isMgr = session.role === "Manager";
-        document.getElementById("managerOnlySection").classList.toggle("hidden", !isMgr);
-        document.getElementById("memberOnlySection").classList.toggle("hidden", isMgr);
         updateBiometricUI();
-        renderMainDashboardStats();
-        renderModelsDrawer();
-        renderSelectedWorkspace();
-        applyModuleFilter();
-        syncAssistantVisibility();
-        if (isMgr) {
-          renderMembers(session.tenantEmail);
-        }
+        renderOverviewAndIssues();
+        renderRightDrawer();
+        renderActiveWorkspace();
+        if (session.role === "Manager") renderMembers(session.tenantEmail);
       }
-
-      window.ohsHasActiveSession = function () {
-        const s = getActiveSession();
-        return Boolean(s && s.tenantEmail);
-      };
 
       renderApp();
     })();
-  </script>
-
-  <!-- ==================== مساعد الذكاء الاصطناعي للسلامة والصحة المهنية (يظهر ويعمل بعد تسجيل الدخول فقط) ==================== -->
-  <style>
-    #ohs-ai-fab {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      z-index: 9998;
-      background: linear-gradient(135deg, #0f2942 0%, #0284c7 100%);
-      color: #ffffff;
-      border: 2px solid #38bdf8;
-      border-radius: 999px;
-      padding: 11px 16px;
-      font-family: 'Cairo', Tahoma, Arial, sans-serif;
-      font-size: 13px;
-      font-weight: 800;
-      cursor: pointer;
-      box-shadow: 0 10px 26px rgba(2, 132, 199, 0.35);
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: transform 0.18s ease, box-shadow 0.18s ease;
-    }
-    #ohs-ai-fab:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 14px 30px rgba(2, 132, 199, 0.45);
-    }
-    #ohs-ai-drawer {
-      position: fixed;
-      bottom: 76px;
-      left: 20px;
-      width: min(410px, calc(100vw - 28px));
-      max-height: min(600px, calc(100vh - 105px));
-      background: #0f172a;
-      color: #f8fafc;
-      border: 1px solid #334155;
-      border-radius: 18px;
-      box-shadow: 0 20px 50px rgba(2, 6, 23, 0.65);
-      z-index: 9999;
-      display: none;
-      flex-direction: column;
-      overflow: hidden;
-      font-family: 'Cairo', Tahoma, Arial, sans-serif;
-      direction: rtl;
-      text-align: right;
-    }
-    #ohs-ai-drawer.open {
-      display: flex;
-    }
-    .ohs-ai-head {
-      background: linear-gradient(135deg, #091a2b 0%, #0f2942 100%);
-      padding: 12px 14px;
-      border-bottom: 1px solid #1e293b;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-    .ohs-ai-head-title {
-      font-size: 13.5px;
-      font-weight: 800;
-      color: #38bdf8;
-      margin: 0;
-    }
-    .ohs-ai-head-sub {
-      font-size: 11px;
-      color: #94a3b8;
-      margin: 1px 0 0;
-    }
-    .ohs-ai-head-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .ohs-ai-icon-btn {
-      background: #1e293b;
-      color: #e2e8f0;
-      border: 1px solid #334155;
-      border-radius: 8px;
-      padding: 5px 8px;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .ohs-ai-icon-btn:hover {
-      background: #334155;
-    }
-    .ohs-ai-msgs {
-      padding: 12px;
-      overflow-y: auto;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      background: #0b1120;
-      max-height: 360px;
-    }
-    .ohs-ai-msg {
-      padding: 10px 12px;
-      border-radius: 12px;
-      font-size: 12.5px;
-      line-height: 1.65;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-    .ohs-ai-msg.bot {
-      background: #1e293b;
-      color: #f1f5f9;
-      border: 1px solid #334155;
-      align-self: stretch;
-    }
-    .ohs-ai-msg.user {
-      background: #0284c7;
-      color: #ffffff;
-      align-self: flex-start;
-      max-width: 88%;
-    }
-    .ohs-ai-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      padding: 8px 12px;
-      background: #0f172a;
-      border-top: 1px solid #1e293b;
-    }
-    .ohs-ai-chip {
-      background: #1e293b;
-      color: #bae6fd;
-      border: 1px solid #334155;
-      border-radius: 999px;
-      padding: 4px 10px;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .ohs-ai-chip:hover {
-      background: #0284c7;
-      color: #ffffff;
-    }
-    .ohs-ai-foot {
-      padding: 10px;
-      background: #0f172a;
-      border-top: 1px solid #1e293b;
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
-    #ohs-ai-input {
-      flex: 1;
-      background: #1e293b;
-      color: #f8fafc;
-      border: 1px solid #334155;
-      border-radius: 10px;
-      padding: 9px 11px;
-      font-size: 12.5px;
-      font-family: inherit;
-      outline: none;
-    }
-    #ohs-ai-input:focus {
-      border-color: #38bdf8;
-    }
-    #ohs-ai-send {
-      background: #10b981;
-      color: #ffffff;
-      border: none;
-      border-radius: 10px;
-      padding: 9px 13px;
-      font-size: 12.5px;
-      font-weight: 800;
-      cursor: pointer;
-      font-family: inherit;
-    }
-    #ohs-ai-send:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-    }
-    @media print {
-      #ohs-ai-fab, #ohs-ai-drawer { display: none !important; }
-    }
-  </style>
-
-  <button type="button" id="ohs-ai-fab" class="hidden" aria-label="مساعد السلامة الذكي">
-    <span>🤖</span>
-    <span>مساعد السلامة AI</span>
-  </button>
-
-  <div id="ohs-ai-drawer" role="dialog" aria-label="مساعد السلامة والصحة المهنية الذكي">
-    <div class="ohs-ai-head">
-      <div>
-        <h4 class="ohs-ai-head-title">مساعد السلامة والصحة المهنية (AI)</h4>
-        <p class="ohs-ai-head-sub">قانون العمل 14 لسنة 2025 • القرارات 248 و249 و250 لسنة 2026 • NFPA</p>
-      </div>
-      <div class="ohs-ai-head-actions">
-        <button type="button" id="ohs-ai-clear" class="ohs-ai-icon-btn" title="مسح المحادثة">مسح</button>
-        <button type="button" id="ohs-ai-close" class="ohs-ai-icon-btn" title="إغلاق">✕</button>
-      </div>
-    </div>
-    <div id="ohs-ai-msgs" class="ohs-ai-msgs"></div>
-    <div class="ohs-ai-chips">
-      <button type="button" class="ohs-ai-chip" data-q="ما هي أبرز متطلبات قانون العمل 14 لسنة 2025 والقرارات 248 و249 و250 لسنة 2026 للسلامة؟">متطلبات قانون 14/2025</button>
-      <button type="button" class="ohs-ai-chip" data-q="كيف أحسب معدل تكرار وشدة الإصابات في النموذج رقم 7؟">معدل التكرار والشدة</button>
-      <button type="button" class="ohs-ai-chip" data-q="ما هي خطوات خطة الطوارئ والإخلاء وتوزيع الفرق الثلاثة؟">خطة الطوارئ</button>
-    </div>
-    <div class="ohs-ai-foot">
-      <input type="text" id="ohs-ai-input" placeholder="اكتب سؤالك في السلامة أو الدفاع المدني أو النماذج..." />
-      <button type="button" id="ohs-ai-send">إرسال</button>
-    </div>
-  </div>
-
-  <script>
-  (function () {
-    const CHAT_STORAGE_KEY = "ohs_global_ai_chat_v1";
-
-    const fab = document.getElementById("ohs-ai-fab");
-    const drawer = document.getElementById("ohs-ai-drawer");
-    const closeBtn = document.getElementById("ohs-ai-close");
-    const clearBtn = document.getElementById("ohs-ai-clear");
-    const msgsBox = document.getElementById("ohs-ai-msgs");
-    const inputEl = document.getElementById("ohs-ai-input");
-    const sendBtn = document.getElementById("ohs-ai-send");
-
-    if (!fab || !drawer || !msgsBox || !inputEl || !sendBtn) return;
-
-    function isUserLoggedIn() {
-      return typeof window.ohsHasActiveSession === "function" && window.ohsHasActiveSession();
-    }
-
-    function getPageContextSummary() {
-      const title = document.title || "وحدة السلامة والصحة المهنية";
-      const inputs = Array.from(document.querySelectorAll("input, select, textarea"))
-        .filter(el => el.type !== "password" && el.type !== "file" && el.id !== "ohs-ai-input" && el.value && String(el.value).trim())
-        .slice(0, 12)
-        .map(el => (el.name || el.id || "حقل") + ": " + String(el.value).trim().slice(0, 60));
-      return "الصفحة المفتوحة حالياً: " + title + (inputs.length ? ("\nبيانات مدخلة حالياً:\n- " + inputs.join("\n- ")) : "");
-    }
-
-    function loadMessages() {
-      try {
-        const raw = sessionStorage.getItem(CHAT_STORAGE_KEY);
-        if (raw) {
-          const arr = JSON.parse(raw);
-          if (Array.isArray(arr) && arr.length) return arr;
-        }
-      } catch (e) {}
-      return [
-        {
-          role: "bot",
-          text: "أهلاً بك! أنا مساعد السلامة والصحة المهنية الذكي.\nيمكنني مساعدتك في:\n• شرح وتطبيق قانون العمل 14 لسنة 2025 والقرارات 248 و249 و250 لسنة 2026.\n• تعبئة النماذج القانونية وحساب معدلات التكرار والشدة.\n• حسابات الدفاع المدني والحماية من الحريق (الكود المصري وNFPA).\n• خطط الطوارئ، تقييم 5S، تحليل صحائف SDS، وتقييم فريق العمل."
-        }
-      ];
-    }
-
-    let history = loadMessages();
-
-    function saveMessages() {
-      try {
-        sessionStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(history.slice(-20)));
-      } catch (e) {}
-    }
-
-    function renderMessages() {
-      msgsBox.innerHTML = "";
-      history.forEach(item => {
-        const div = document.createElement("div");
-        div.className = "ohs-ai-msg " + (item.role === "user" ? "user" : "bot");
-        div.textContent = item.text;
-        msgsBox.appendChild(div);
-      });
-      msgsBox.scrollTop = msgsBox.scrollHeight;
-    }
-
-    function localFallbackReply(question) {
-      const q = String(question || "").toLowerCase();
-      if (q.includes("14") || q.includes("248") || q.includes("249") || q.includes("250") || q.includes("قانون")) {
-        return "ملخص الالتزامات وفق قانون العمل 14 لسنة 2025 والقرارات الوزارية 248 و249 و250 لسنة 2026:\n1) الإخطار الفوري بالحوادث الجسيمة (نموذج 1) خلال 24 ساعة داخل المنشأة و48 ساعة خارجها (قرار 248).\n2) تشكيل جهاز ولجنة السلامة وتصنيف الأخصائيين وفق حجم العمالة وطبيعة النشاط (قرار 249).\n3) تقييم المخاطر الدورية (فيزيائية، ميكانيكية، كيميائية، بيولوجية) والالتزام بحدود الأمان وخطط الطوارئ (قرار 250).\n4) تقديم الإحصائيات النصف سنوية للأمراض والإصابات والحوادث (النماذج 3 إلى 7).";
-      }
-      if (q.includes("تكرار") || q.includes("شدة") || q.includes("نموذج 7") || q.includes("اصابات")) {
-        return "معادلات إصابات العمل (نموذج رقم 7):\n• معدل تكرار الإصابة = (عدد الإصابات × 200,000) ÷ (إجمالي ساعات العمل الفعلية لجميع العاملين خلال الفترة).\n• معدل شدة الإصابة = (إجمالي أيام الانقطاع × 200,000) ÷ (إجمالي ساعات العمل الفعلية).\n• ساعات العمل الفعلية = عدد العاملين × ساعات العمل اليومية × أيام العمل الفعلية.";
-      }
-      if (q.includes("طوارئ") || q.includes("اخلاء") || q.includes("اطفاء") || q.includes("اسعاف")) {
-        return "هيكل خطة الطوارئ المرنة لثلاث ورديات:\n• تتكون كل وردية من 3 فرق مستقلة (فريق الإخلاء، فريق الإطفاء، فريق الإسعاف) ولكل فريق قائده.\n• الحد الأدنى هو فرد واحد لكل فريق (3 أفراد بالوردية) مع تحديد بديل داخل الوردية وبديل من الوردية التالية.\n• عند الحريق: يتدخل فريق الإطفاء للسيطرة المبدئية الآمنة، ويقود فريق الإخلاء التوجه لنقطة التجمع وحصر الأعداد، ويجهز فريق الإسعاف حقيبة الإسعاف الأولي.";
-      }
-      if (q.includes("دفاع") || q.includes("مضخ") || q.includes("رشاش") || q.includes("طفاي") || q.includes("nfpa")) {
-        return "إرشادات الدفاع المدني والحماية من الحريق (الكود المصري وNFPA):\n• منظومة المضخات (NFPA 20): مضخة كهربائية رئيسية + مضخة ديزل احتياطية بنفس القدرة + مضخة جوكي (Jockey) للحفاظ على ضغط الشبكة.\n• صناديق الحريق والروايزر (NFPA 14): تغطية شاملة بمسافة وصول حتى ~30 متر.\n• الكواشف والرشاشات (NFPA 72 / NFPA 13): تباعد الكواشف عادة 7.5–9 م والرشاشات 3–4.2 م حسب درجة الخطورة وارتفاع السقف.";
-      }
-      if (q.includes("5s")) {
-        return "منهجية 5S للتنظيم والنظافة الصناعية:\n1) التصنيف (Seiri): فرز الضروري وعزل الراكد والتالف.\n2) الترتيب (Seiton): تحديد مكان واضح ومُعرّف لكل أداة وخامة مع إخلاء الممرات.\n3) التنظيف (Seiso): نظافة مستمرة ومعالجة مصادر التسريب.\n4) التوحيد (Seiketsu): علامات أرضية وتعليمات فحص موحدة.\n5) الاستدامة (Shitsuke): الالتزام والتدقيق الدوري وإغلاق الفجوات.";
-      }
-      return "تم استلام استفسارك بنجاح.\nبناءً على بيانات الصفحة الحالية (" + (document.title || "إدارة السلامة") + "):\nتأكد من استيفاء الحقول الأساسية، وتوثيق الإجراءات التصحيحية والمسؤول وموعد التنفيذ، وحفظ نسخة PDF أو Excel للمراجعة والاعتماد الرسمي. إذا أردت شرحاً لنموذج أو بند محدد اكتب اسمه وسأوضح لك خطواته بالتفصيل.";
-    }
-
-    async function askAssistant(question) {
-      if (!isUserLoggedIn()) {
-        drawer.classList.remove("open");
-        fab.classList.add("hidden");
-        return;
-      }
-
-      const q = String(question || "").trim();
-      if (!q) return;
-
-      history.push({ role: "user", text: q });
-      saveMessages();
-      renderMessages();
-      inputEl.value = "";
-      sendBtn.disabled = true;
-
-      const thinkingIdx = history.push({ role: "bot", text: "جاري التحليل وصياغة الإجابة..." }) - 1;
-      renderMessages();
-
-      const systemInstruction = [
-        "أنت مستشار خبير في السلامة والصحة المهنية (OHS) والدفاع المدني والحماية من الحريق في مصر.",
-        "مرجعياتك: قانون العمل المصري رقم 14 لسنة 2025، والقرارات الوزارية 248 و249 و250 لسنة 2026، والكود المصري للحريق، ومعايير NFPA وOSHA.",
-        "أجب دائماً باللغة العربية الواضحة والعملية في نقاط منظمة ومباشرة دون مقدمات مطولة.",
-        getPageContextSummary()
-      ].join("\n");
-
-      try {
-        const res = await fetch("/api/assistant", {
-          method: "POST",
-          credentials: "same-origin",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ question: q, context: systemInstruction })
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || !data.ok) throw new Error(data.error || ("HTTP " + res.status));
-        history[thinkingIdx] = {
-          role: "bot",
-          text: (data.text && data.text.trim()) ? data.text.trim() : localFallbackReply(q)
-        };
-      } catch (err) {
-        history[thinkingIdx] = {
-          role: "bot",
-          text: localFallbackReply(q)
-        };
-      } finally {
-        saveMessages();
-        renderMessages();
-        sendBtn.disabled = false;
-        inputEl.focus();
-      }
-    }
-
-    fab.addEventListener("click", () => {
-      if (!isUserLoggedIn()) {
-        fab.classList.add("hidden");
-        drawer.classList.remove("open");
-        return;
-      }
-      drawer.classList.toggle("open");
-      if (drawer.classList.contains("open")) {
-        renderMessages();
-        inputEl.focus();
-      }
-    });
-    closeBtn.addEventListener("click", () => drawer.classList.remove("open"));
-    clearBtn.addEventListener("click", () => {
-      try { sessionStorage.removeItem(CHAT_STORAGE_KEY); } catch (e) {}
-      history = loadMessages();
-      renderMessages();
-    });
-    sendBtn.addEventListener("click", () => askAssistant(inputEl.value));
-    inputEl.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        askAssistant(inputEl.value);
-      }
-    });
-    drawer.querySelectorAll(".ohs-ai-chip").forEach(chip => {
-      chip.addEventListener("click", () => askAssistant(chip.getAttribute("data-q") || chip.textContent));
-    });
-
-    if (isUserLoggedIn()) {
-      fab.classList.remove("hidden");
-      renderMessages();
-    } else {
-      fab.classList.add("hidden");
-      drawer.classList.remove("open");
-    }
-  })();
   </script>
 </body>
 </html>
