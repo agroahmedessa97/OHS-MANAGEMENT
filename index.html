@@ -1,24 +1,695 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>منصة HSE متعددة الشركات</title><style>
-*{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#edf2f8;color:#172a43}.wrap{max-width:1000px;margin:25px auto;padding:16px}.hero{background:linear-gradient(120deg,#122c4b,#2871ad);color:white;padding:26px;border-radius:20px;margin-bottom:16px}.hero h1{margin:0 0 8px}.panel{background:white;border:1px solid #dce5ef;border-radius:18px;padding:20px;margin:14px 0;box-shadow:0 6px 20px #14365b0a}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}input,textarea,select{width:100%;padding:12px;border:1px solid #d2deeb;border-radius:10px;margin:7px 0;font-size:15px}button{background:#1767a8;color:white;border:0;border-radius:10px;padding:12px 16px;cursor:pointer;font-weight:bold;margin:4px}button.secondary{background:#e5edf6;color:#16456e}button.danger{background:#b53a3a}.muted{color:#6b7c90;font-size:13px}.hidden{display:none}.notice{padding:12px;border-radius:10px;background:#edf5ff;margin:10px 0;white-space:pre-wrap}.err{background:#fff0ef;color:#8c2525}.good{background:#eaf8ef;color:#1d6b39}.member{border:1px solid #e1e8ef;padding:10px;border-radius:12px;margin:8px 0}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}label{display:block;font-size:13px;font-weight:bold;margin-top:8px}#pics img{max-width:120px;max-height:120px;border-radius:10px;margin:5px}footer{font-size:12px;color:#67788c;padding:10px}@media(max-width:600px){.wrap{padding:8px}}
-</style></head><body><div class="wrap"><div class="hero"><h1>منصة السلامة والصحة المهنية HSE</h1><p>نسخة تجريبية لنظام متعدد الشركات — لكل شركة مديرها وأعضاؤها وبياناتها المستقلة.</p></div>
-<div class="panel"><label>رابط Worker API بعد النشر على Cloudflare</label><input id="api" placeholder="https://your-worker.your-subdomain.workers.dev"><button onclick="saveApi()">حفظ رابط API</button><div class="muted">يجب نشر Worker وتجهيز قاعدة D1 وإضافة الأسرار أولًا. هذا الملف واجهة اختبار وليس خدمة سحابية قائمة بذاتها.</div></div>
-<div id="auth" class="grid"><section class="panel"><h2>إنشاء شركة ومدير</h2><input id="cname" placeholder="اسم الشركة"><input id="ownername" placeholder="اسم المدير"><input id="owneruser" placeholder="اسم المستخدم"><input id="owneremail" type="email" placeholder="البريد الإلكتروني — فريد"><input id="ownerpass" type="password" placeholder="كلمة المرور (10 أحرف على الأقل)"><button onclick="registerCompany()">إنشاء الشركة</button><div id="regmsg"></div></section><section class="panel"><h2>دخول عضو الشركة</h2><input id="code" placeholder="كود الشركة"><input id="loginuser" placeholder="اسم المستخدم"><input id="loginpass" type="password" placeholder="كلمة المرور"><button onclick="login()">تسجيل الدخول</button><div id="loginmsg"></div><p class="muted">نسيت كلمة المرور؟ استعادة البريد الإلكتروني غير مفعّلة في هذه النسخة التجريبية؛ تحتاج مزود إرسال بريد وآلية آمنة على الخادم.</p></section></div>
-<div id="workspace" class="hidden"><div class="panel"><div class="row"><div><h2 id="welcome"></h2><div id="companylabel" class="muted"></div></div><button class="secondary" onclick="logout()">تسجيل خروج</button></div><div id="codebox" class="notice good"></div></div>
-<div class="grid"><section class="panel" id="membersPanel"><h2>إضافة أعضاء الشركة</h2><input id="mname" placeholder="اسم العضو"><input id="muser" placeholder="اسم المستخدم"><input id="memail" type="email" placeholder="البريد الإلكتروني — غير مستخدم"><input id="mpass" type="password" placeholder="كلمة المرور (10 أحرف على الأقل)"><select id="mrole"><option value="member">عضو</option><option value="manager">مدير فرعي</option></select><button onclick="addMember()">إضافة العضو</button><div id="membermsg"></div><hr><button class="secondary" onclick="loadMembers()">تحديث قائمة الأعضاء</button><div id="members"></div></section>
-<section class="panel"><h2>مساعد HSE — صور وأسئلة</h2><textarea id="question" rows="4" placeholder="اكتب سؤالك عن المخاطر أو صور التفتيش..."></textarea><label>إرفاق صور (حتى 8)</label><input id="images" type="file" accept="image/*" multiple onchange="previewImages()"><div id="pics"></div><button onclick="analyze()">تحليل السؤال والصور</button><div id="aimsg"></div><div id="answer" class="notice hidden"></div></section></div></div>
-<footer>نموذج اختبار للربط. قبل الاستخدام التجاري يلزم إكمال استعادة كلمة المرور عبر البريد، التحقق من البريد، مراجعة أمان، رفع الملفات إلى R2، تحديد حدود الاستخدام، وإجراء اختبار عزل شامل.</footer></div>
-<script>
-let apiBase='',token='',user=null,companyCode='';let imgs=[];
-function saveApi(){apiBase=document.getElementById('api').value.trim().replace(/\/$/,'');if(!apiBase){msg('regmsg','أدخل رابط API أولًا','err');return}localStorage.setItem('hse_api',apiBase);msg('regmsg','تم حفظ الرابط في هذا المتصفح.','good')}
-function loadApi(){apiBase=localStorage.getItem('hse_api')||'';document.getElementById('api').value=apiBase}
-function msg(id,text,cls='notice'){let el=document.getElementById(id);el.className='notice '+cls;el.textContent=text}
-async function call(path,data,auth=false){if(!apiBase)throw Error('أدخل رابط Worker API واحفظه أولًا');let r=await fetch(apiBase+path,{method:data?'POST':'GET',headers:{'Content-Type':'application/json',...(auth?{Authorization:'Bearer '+token}:{})},body:data?JSON.stringify(data):undefined});let j=await r.json().catch(()=>({}));if(!r.ok)throw Error(j.error||'حدث خطأ في الطلب');return j}
-async function registerCompany(){try{saveApi();let d={company:val('cname'),name:val('ownername'),username:val('owneruser'),email:val('owneremail'),password:val('ownerpass')};let r=await call('/api/company/register',d);msg('regmsg','تم إنشاء الشركة! كود الشركة: '+r.companyCode+'\nاحتفظ بالكود وشاركه مع أعضاء الشركة.','good');document.getElementById('code').value=r.companyCode;document.getElementById('loginuser').value=d.username;document.getElementById('loginpass').value=d.password;}catch(e){msg('regmsg',e.message,'err')}}
-async function login(){try{saveApi();let r=await call('/api/login',{companyCode:val('code'),username:val('loginuser'),password:val('loginpass')});token=r.token;user=r.user;companyCode=r.user.companyCode;document.getElementById('auth').classList.add('hidden');document.getElementById('workspace').classList.remove('hidden');document.getElementById('welcome').textContent='مرحبًا '+user.name;document.getElementById('companylabel').textContent=r.user.companyName+' — الدور: '+user.role;document.getElementById('codebox').textContent='كود الشركة: '+companyCode;document.getElementById('membersPanel').classList.toggle('hidden',!['owner','manager'].includes(user.role));if(['owner','manager'].includes(user.role))loadMembers();}catch(e){msg('loginmsg',e.message,'err')}}
-function logout(){token='';user=null;document.getElementById('workspace').classList.add('hidden');document.getElementById('auth').classList.remove('hidden')}
-async function addMember(){try{let r=await call('/api/members',{name:val('mname'),username:val('muser'),email:val('memail'),password:val('mpass'),role:val('mrole')},true);msg('membermsg','تم إضافة العضو.','good');['mname','muser','memail','mpass'].forEach(x=>document.getElementById(x).value='');loadMembers()}catch(e){msg('membermsg',e.message,'err')}}
-async function loadMembers(){try{let rows=await call('/api/members',null,true);let box=document.getElementById('members');box.innerHTML='';rows.forEach(x=>{let d=document.createElement('div');d.className='member';d.textContent=x.name+' | '+x.username+' | '+x.email+' | '+x.role;box.appendChild(d)})}catch(e){msg('membermsg',e.message,'err')}}
-function previewImages(){imgs=[];let files=[...document.getElementById('images').files].slice(0,8);let holder=document.getElementById('pics');holder.innerHTML='';files.forEach(f=>{if(!f.type.startsWith('image/'))return;let reader=new FileReader();reader.onload=()=>{imgs.push({name:f.name,data:reader.result});let im=document.createElement('img');im.src=reader.result;holder.appendChild(im)};reader.readAsDataURL(f)})}
-async function analyze(){try{msg('aimsg','جارٍ إرسال التحليل...');let r=await call('/api/ai',{question:val('question'),images:imgs},true);let a=document.getElementById('answer');a.textContent=r.answer;a.classList.remove('hidden');msg('aimsg','اكتمل التحليل','good')}catch(e){msg('aimsg',e.message,'err')}}
-function val(id){return document.getElementById(id).value.trim()}loadApi();
-</script></body></html>
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>منصة السلامة والصحة المهنية (HSE) — إدارة متعددة الشركات</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy: #0f2942;
+      --navy-2: #1b4369;
+      --sky: #0284c7;
+      --sky-hover: #0369a1;
+      --emerald: #059669;
+      --danger: #dc2626;
+      --bg: #eef3f8;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #cbd5e1;
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: 'Cairo', Tahoma, Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .wrap {
+      max-width: 1080px;
+      margin: 20px auto;
+      padding: 14px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #091a2b 0%, #0f2942 60%, #1d4ed8 100%);
+      color: #ffffff;
+      padding: 24px 26px;
+      border-radius: 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 12px 30px rgba(15, 41, 66, 0.16);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .hero h1 {
+      margin: 0 0 6px;
+      font-size: 1.45rem;
+      font-weight: 800;
+    }
+
+    .hero p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #dbeafe;
+    }
+
+    .hero-badge {
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #f8fafc;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid #dce5ef;
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 14px 0;
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
+    }
+
+    .panel h2 {
+      margin: 0 0 12px;
+      font-size: 1.12rem;
+      color: var(--navy);
+      font-weight: 800;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.83rem;
+      font-weight: 700;
+      color: #334155;
+      margin-top: 8px;
+      margin-bottom: 4px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 6px;
+      font-size: 0.92rem;
+      background: #f8fafc;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s, background-color 0.15s;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--sky);
+      background: #ffffff;
+    }
+
+    button {
+      background: var(--sky);
+      color: #ffffff;
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 16px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.92rem;
+      margin-top: 6px;
+      transition: background-color 0.15s, opacity 0.15s;
+    }
+
+    button:hover:not(:disabled) {
+      background: var(--sky-hover);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    button.secondary {
+      background: #e2e8f0;
+      color: #0f2942;
+    }
+
+    button.secondary:hover:not(:disabled) {
+      background: #cbd5e1;
+    }
+
+    button.success {
+      background: var(--emerald);
+    }
+
+    button.success:hover:not(:disabled) {
+      background: #047857;
+    }
+
+    button.danger {
+      background: var(--danger);
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .notice {
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e3a8a;
+      margin: 10px 0;
+      font-size: 0.88rem;
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+
+    .err {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #991b1b;
+    }
+
+    .good {
+      background: #ecfdf5;
+      border-color: #a7f3d0;
+      color: #065f46;
+      font-weight: 700;
+    }
+
+    .member {
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      padding: 10px 12px;
+      border-radius: 10px;
+      margin: 8px 0;
+      font-size: 0.86rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .role-pill {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .module-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 13px;
+      text-decoration: none;
+      color: var(--text);
+      transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .module-card:hover {
+      border-color: var(--sky);
+      background: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(2, 132, 199, 0.12);
+    }
+
+    .module-card strong {
+      font-size: 0.92rem;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .module-card span {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    #pics img {
+      max-width: 110px;
+      max-height: 110px;
+      border-radius: 10px;
+      margin: 5px;
+      border: 1px solid #cbd5e1;
+      object-fit: cover;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+      padding: 14px 10px;
+    }
+
+    @media (max-width: 600px) {
+      .wrap { padding: 8px; }
+      .hero h1 { font-size: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <div>
+        <h1>منصة السلامة والصحة المهنية (HSE)</h1>
+        <p>نظام إدارة السلامة متعدد الشركات — إدارة الفرق، السجلات، والتحليل الذكي للمخاطر</p>
+      </div>
+      <div class="hero-badge">نظام معتمد ومتكامل</div>
+    </div>
+
+    <!-- شاشة التسجيل والدخول -->
+    <div id="auth" class="grid">
+      <section class="panel">
+        <h2>إنشاء حساب شركة ومدير</h2>
+        <label for="cname">اسم الشركة / المنشأة</label>
+        <input id="cname" placeholder="أدخل اسم الشركة" />
+
+        <label for="ownername">اسم المدير المسؤول</label>
+        <input id="ownername" placeholder="أدخل الاسم الكامل" />
+
+        <label for="owneruser">اسم المستخدم</label>
+        <input id="owneruser" placeholder="username" dir="ltr" />
+
+        <label for="owneremail">البريد الإلكتروني</label>
+        <input id="owneremail" type="email" placeholder="manager@company.com" dir="ltr" />
+
+        <label for="ownerpass">كلمة المرور (10 أحرف أو أرقام على الأقل)</label>
+        <input id="ownerpass" type="password" placeholder="••••••••••" />
+
+        <button type="button" id="btn-register" style="width:100%;" onclick="registerCompany()">إنشاء الشركة وتوليد كود الدخول</button>
+        <div id="regmsg"></div>
+      </section>
+
+      <section class="panel">
+        <h2>تسجيل الدخول للشركة</h2>
+        <label for="code">كود الشركة</label>
+        <input id="code" placeholder="HSE-XXXXXXXX" dir="ltr" />
+
+        <label for="loginuser">اسم المستخدم</label>
+        <input id="loginuser" placeholder="username" dir="ltr" />
+
+        <label for="loginpass">كلمة المرور</label>
+        <input id="loginpass" type="password" placeholder="••••••••••" />
+
+        <button type="button" id="btn-login" class="success" style="width:100%;" onclick="login()">تسجيل الدخول</button>
+        <div id="loginmsg"></div>
+      </section>
+    </div>
+
+    <!-- مساحة العمل بعد تسجيل الدخول -->
+    <div id="workspace" class="hidden">
+      <div class="panel">
+        <div class="row">
+          <div>
+            <h2 id="welcome" style="margin-bottom:2px;"></h2>
+            <div id="companylabel" class="muted"></div>
+          </div>
+          <button type="button" class="secondary" onclick="logout()">تسجيل خروج</button>
+        </div>
+        <div id="codebox" class="notice good" style="margin-bottom:0;"></div>
+      </div>
+
+      <!-- وحدات وسجلات السلامة والصحة المهنية -->
+      <section class="panel">
+        <h2>وحدات وسجلات السلامة والصحة المهنية</h2>
+        <div class="modules-grid">
+          <a href="./النماذج القانونيه.html" class="module-card">
+            <strong>📋 النماذج القانونية</strong>
+            <span>قانون العمل 14 لسنة 2025 والقرارات 248 و249 و250 لسنة 2026</span>
+          </a>
+          <a href="./مهام السلامة ومعدل تكرارها.html" class="module-card">
+            <strong>⚖️ مهام السلامة وتكرارها</strong>
+            <span>جدول المهام الأسبوعية والدورية والإشعارات</span>
+          </a>
+          <a href="./مخططات الدفاع المدني.html" class="module-card">
+            <strong>🚒 مخططات الدفاع المدني</strong>
+            <span>حساب المضخات والصناديق والرشاشات والكواشف والطفايات</span>
+          </a>
+          <a href="./خطة الطوارئ.html" class="module-card">
+            <strong>🚨 خطة الطوارئ لـ 3 ورديات</strong>
+            <span>فرق الإخلاء والإطفاء والإسعاف وسجل التدريب</span>
+          </a>
+          <a href="./SDS.html" class="module-card">
+            <strong>🧪 صحائف بيانات السلامة SDS</strong>
+            <span>تحليل واستخراج بيانات المواد الكيميائية ومهمات الوقاية</span>
+          </a>
+          <a href="./5S.html" class="module-card">
+            <strong>🧹 تقييم منهجية 5S</strong>
+            <span>التقييم التفاعلي وحصر الفجوات وتصدير PDF</span>
+          </a>
+          <a href="./تقييم فريق العمل.html" class="module-card">
+            <strong>⭐ تقييم فريق السلامة</strong>
+            <span>تقييم الأداء وحساب المتوسط السنوي</span>
+          </a>
+          <a href="./التدريب والتوعية.html" class="module-card">
+            <strong>🎓 التدريب والتوعية</strong>
+            <span>سجل الجلسات التدريبية وعدد الحضور</span>
+          </a>
+        </div>
+      </section>
+
+      <div class="grid">
+        <section class="panel" id="membersPanel">
+          <h2>إدارة أعضاء فريق الشركة</h2>
+          <label for="mname">اسم العضو</label>
+          <input id="mname" placeholder="الاسم الكامل للعضو" />
+
+          <label for="muser">اسم المستخدم</label>
+          <input id="muser" placeholder="username" dir="ltr" />
+
+          <label for="memail">البريد الإلكتروني</label>
+          <input id="memail" type="email" placeholder="member@company.com" dir="ltr" />
+
+          <label for="mpass">كلمة المرور (10 أحرف أو أرقام على الأقل)</label>
+          <input id="mpass" type="password" placeholder="••••••••••" />
+
+          <label for="mrole">الدور الوظيفي</label>
+          <select id="mrole">
+            <option value="member">عضو فريق سلامة (Member)</option>
+            <option value="manager">مدير فرعي (Manager)</option>
+          </select>
+
+          <div class="row" style="margin-top:6px;">
+            <button type="button" id="btn-add-member" onclick="addMember()">إضافة العضو</button>
+            <button type="button" class="secondary" onclick="loadMembers()">تحديث القائمة</button>
+          </div>
+          <div id="membermsg"></div>
+          <div id="members" style="margin-top:10px;"></div>
+        </section>
+
+        <section class="panel">
+          <h2>مساعد السلامة الذكي — تحليل الصور والاستشارات</h2>
+          <label for="question">وصف الحالة أو السؤال الفني</label>
+          <textarea id="question" rows="4" placeholder="اكتب سؤالك حول المخاطر المهنية أو ارفق صور الفحص الميداني..."></textarea>
+
+          <label for="images">إرفاق صور الموقع / التفتيش (حتى 8 صور)</label>
+          <input id="images" type="file" accept="image/*" multiple onchange="previewImages()" />
+          <div id="pics"></div>
+
+          <button type="button" id="btn-analyze" style="width:100%;" onclick="analyze()">تحليل السؤال والصور</button>
+          <div id="aimsg"></div>
+          <div id="answer" class="notice hidden"></div>
+        </section>
+      </div>
+    </div>
+
+    <footer>منصة إدارة السلامة والصحة المهنية (HSE) — جميع الحقوق محفوظة</footer>
+  </div>
+
+  <script>
+    // إعدادات الاتصال المدمجة والمخفية تلقائياً مع Cloudflare Worker
+    const API_CANDIDATES = (function () {
+      const list = [];
+      if (typeof window !== 'undefined' && window.location && /^https?:\/\//i.test(window.location.origin)) {
+        if (window.location.hostname.endsWith('.workers.dev')) {
+          list.push(window.location.origin);
+        }
+      }
+      list.push('https://hse-multitenant-api.agroahmedessa97.workers.dev');
+      list.push('https://ohs-management.agroahmedessa97.workers.dev');
+      return Array.from(new Set(list));
+    })();
+
+    let activeApiBase = API_CANDIDATES[0];
+    let token = '';
+    let user = null;
+    let companyCode = '';
+    let imgs = [];
+
+    function msg(id, text, cls = 'notice') {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.className = 'notice ' + cls;
+      el.textContent = text;
+    }
+
+    function val(id) {
+      const el = document.getElementById(id);
+      return el ? el.value.trim() : '';
+    }
+
+    async function call(path, data, auth = false) {
+      let lastError = null;
+      const orderedBases = [activeApiBase, ...API_CANDIDATES.filter(u => u !== activeApiBase)];
+
+      for (let i = 0; i < orderedBases.length; i++) {
+        const base = orderedBases[i];
+        try {
+          const r = await fetch(base + path, {
+            method: data ? 'POST' : 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              ...(auth ? { Authorization: 'Bearer ' + token } : {})
+            },
+            body: data ? JSON.stringify(data) : undefined
+          });
+
+          const j = await r.json().catch(() => ({}));
+          if (r.status === 404 && j && j.error === 'Not found' && i < orderedBases.length - 1) {
+            continue;
+          }
+          if (!r.ok) {
+            throw new Error(j.error || ('خطأ في الخادم (' + r.status + ')'));
+          }
+          activeApiBase = base;
+          return j;
+        } catch (err) {
+          lastError = err;
+          if (err && err.message && !/failed to fetch|networkerror|load failed/i.test(err.message)) {
+            throw err;
+          }
+        }
+      }
+
+      throw lastError || new Error('تعذر الاتصال بالخادم حالياً، يرجى المحاولة مرة أخرى.');
+    }
+
+    async function registerCompany() {
+      const btn = document.getElementById('btn-register');
+      try {
+        const d = {
+          company: val('cname'),
+          name: val('ownername'),
+          username: val('owneruser'),
+          email: val('owneremail'),
+          password: val('ownerpass')
+        };
+        if (!d.company || !d.name || !d.username || !d.email || !d.password) {
+          msg('regmsg', 'يرجى استكمال جميع البيانات المطلوبة.', 'err');
+          return;
+        }
+        if (d.password.length < 10) {
+          msg('regmsg', 'يجب ألا تقل كلمة المرور عن 10 أحرف أو أرقام.', 'err');
+          return;
+        }
+        if (btn) btn.disabled = true;
+        msg('regmsg', 'جارٍ إنشاء حساب الشركة...', 'notice');
+
+        const r = await call('/api/company/register', d);
+        msg('regmsg', 'تم إنشاء الشركة بنجاح! كود الشركة الخاص بك هو: ' + r.companyCode + '\nاحتفظ بهذا الكود وشاركه مع أعضاء فريقك.', 'good');
+        document.getElementById('code').value = r.companyCode;
+        document.getElementById('loginuser').value = d.username;
+        document.getElementById('loginpass').value = d.password;
+      } catch (e) {
+        msg('regmsg', e.message, 'err');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    async function login() {
+      const btn = document.getElementById('btn-login');
+      try {
+        const payload = {
+          companyCode: val('code'),
+          username: val('loginuser'),
+          password: val('loginpass')
+        };
+        if (!payload.companyCode || !payload.username || !payload.password) {
+          msg('loginmsg', 'يرجى إدخال كود الشركة واسم المستخدم وكلمة المرور.', 'err');
+          return;
+        }
+        if (btn) btn.disabled = true;
+        msg('loginmsg', 'جارٍ التحقق وتسجيل الدخول...', 'notice');
+
+        const r = await call('/api/login', payload);
+        token = r.token;
+        user = r.user;
+        companyCode = r.user.companyCode;
+
+        document.getElementById('auth').classList.add('hidden');
+        document.getElementById('workspace').classList.remove('hidden');
+        document.getElementById('welcome').textContent = 'مرحباً، ' + user.name;
+        document.getElementById('companylabel').textContent = r.user.companyName + ' — الصفة الوظيفية: ' + user.role;
+        document.getElementById('codebox').textContent = 'كود الشركة المعتمد للدخول: ' + companyCode;
+
+        const canManage = ['owner', 'manager'].includes(user.role);
+        document.getElementById('membersPanel').classList.toggle('hidden', !canManage);
+        if (canManage) {
+          loadMembers();
+        }
+      } catch (e) {
+        msg('loginmsg', e.message, 'err');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    function logout() {
+      token = '';
+      user = null;
+      companyCode = '';
+      document.getElementById('workspace').classList.add('hidden');
+      document.getElementById('auth').classList.remove('hidden');
+      document.getElementById('loginmsg').className = '';
+      document.getElementById('loginmsg').textContent = '';
+    }
+
+    async function addMember() {
+      const btn = document.getElementById('btn-add-member');
+      try {
+        const payload = {
+          name: val('mname'),
+          username: val('muser'),
+          email: val('memail'),
+          password: val('mpass'),
+          role: val('mrole')
+        };
+        if (!payload.name || !payload.username || !payload.email || !payload.password) {
+          msg('membermsg', 'يرجى استكمال جميع بيانات العضو.', 'err');
+          return;
+        }
+        if (payload.password.length < 10) {
+          msg('membermsg', 'يجب ألا تقل كلمة مرور العضو عن 10 أحرف أو أرقام.', 'err');
+          return;
+        }
+        if (btn) btn.disabled = true;
+        await call('/api/members', payload, true);
+        msg('membermsg', 'تمت إضافة العضو إلى فريق الشركة بنجاح.', 'good');
+        ['mname', 'muser', 'memail', 'mpass'].forEach(x => {
+          document.getElementById(x).value = '';
+        });
+        loadMembers();
+      } catch (e) {
+        msg('membermsg', e.message, 'err');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    async function loadMembers() {
+      try {
+        const rows = await call('/api/members', null, true);
+        const box = document.getElementById('members');
+        box.innerHTML = '';
+        if (!rows || !rows.length) {
+          box.innerHTML = '<div class="muted">لا يوجد أعضاء إضافيون مسجلون حتى الآن.</div>';
+          return;
+        }
+        rows.forEach(x => {
+          const d = document.createElement('div');
+          d.className = 'member';
+          const info = document.createElement('span');
+          info.textContent = x.name + ' (' + x.username + ') — ' + x.email;
+          const badge = document.createElement('span');
+          badge.className = 'role-pill';
+          badge.textContent = x.role;
+          d.appendChild(info);
+          d.appendChild(badge);
+          box.appendChild(d);
+        });
+      } catch (e) {
+        msg('membermsg', e.message, 'err');
+      }
+    }
+
+    function previewImages() {
+      imgs = [];
+      const files = [...document.getElementById('images').files].slice(0, 8);
+      const holder = document.getElementById('pics');
+      holder.innerHTML = '';
+      files.forEach(f => {
+        if (!f.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          imgs.push({ name: f.name, data: reader.result });
+          const im = document.createElement('img');
+          im.src = reader.result;
+          holder.appendChild(im);
+        };
+        reader.readAsDataURL(f);
+      });
+    }
+
+    async function analyze() {
+      const btn = document.getElementById('btn-analyze');
+      try {
+        const q = val('question');
+        if (!q && !imgs.length) {
+          msg('aimsg', 'يرجى كتابة سؤال أو إرفاق صورة واحدة على الأقل.', 'err');
+          return;
+        }
+        if (btn) btn.disabled = true;
+        msg('aimsg', 'جارٍ تحليل البيانات والصور...', 'notice');
+        const r = await call('/api/ai', { question: q, images: imgs }, true);
+        const a = document.getElementById('answer');
+        a.textContent = r.answer;
+        a.classList.remove('hidden');
+        msg('aimsg', 'اكتمل التحليل بنجاح.', 'good');
+      } catch (e) {
+        msg('aimsg', e.message, 'err');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
