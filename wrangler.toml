@@ -1,0 +1,11 @@
+name = "ohs-management"
+main = "src/worker.js"
+compatibility_date = "2026-11-27"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+[[kv_namespaces]]
+binding = "OTP_KV"
+id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
