@@ -1,8 +1,0 @@
-node_modules/
-.git/
-*.zip
-*.tar.gz
-*.7z
-*.log
-*.mp4
-*.mov
