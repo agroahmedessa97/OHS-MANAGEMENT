@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقييم منهجية 5S</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        if (typeof tailwind !== 'undefined') {
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        fontFamily: { sans: ['Cairo', 'sans-serif'] },
+                        colors: {
+                            emerald: { 50:'#eff8ff',100:'#dbeefe',200:'#bfe0fc',300:'#8fc7f8',400:'#5aa8ef',500:'#3a8be0',600:'#2468c4',700:'#1b4fa0',800:'#173f80',900:'#12306b',950:'#0b2150' },
+                            slate: { 50:'#f4f8fd',100:'#e8f0fa',200:'#d3e0f0',300:'#b3c6de',400:'#8499b8',500:'#5f7497',600:'#475b7e',700:'#2f4468',800:'#16295a',900:'#0d2154',950:'#071538' }
+                        }
+                    }
+                }
+            };
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; background: linear-gradient(180deg,#f3f9ff 0%,#e6f1fc 100%) fixed; color: #0d2154; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #dbeafe; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 9999px; }
+        .card-shadow { box-shadow: 0 4px 18px rgba(36,104,196,.08); }
+    </style>
+</head>
+<body class="antialiased selection:bg-emerald-500 selection:text-white">
+
+    <div id="toast-container" class="fixed top-4 left-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- الشريط العلوي المخصص لتقييم 5S فقط -->
+    <header id="app-header" class="bg-slate-900 text-white sticky top-0 z-20 px-4 sm:px-6 py-3.5 shadow-md">
+        <div class="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-broom"></i>
+                </div>
+                <div>
+                    <h1 class="text-base sm:text-lg font-extrabold">نموذج تقييم 5S التفاعلي</h1>
+                    <p class="text-[11px] text-slate-300">نتيجة لحظية (من 20 ونسبة مئوية من 100%) • حفظ PDF مع خيار اسم ولوجو الشركة</p>
+                </div>
+            </div>
+            <div class="flex items-center flex-wrap gap-2">
+                <button type="button" onclick="open5SPdfOptionsModal()" class="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white font-extrabold text-xs shadow transition">
+                    <i class="fa-solid fa-file-pdf ml-1"></i>حفظ PDF
+                </button>
+                <button type="button" onclick="reset5SForm()" class="px-3.5 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-bold text-xs transition">
+                    <i class="fa-solid fa-rotate-left ml-1"></i>مسح النموذج
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي لتقييم 5S فقط -->
+    <main id="main-content" class="max-w-5xl mx-auto p-4 sm:p-6">
+        <form id="auditForm" class="space-y-4 text-xs">
+            <!-- بيانات التقييم -->
+            <section class="bg-white rounded-2xl p-4 sm:p-5 border card-shadow">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+                    <div>
+                        <label class="block font-bold mb-1">القسم / منطقة العمل</label>
+                        <input id="f-area" name="area" placeholder="مثال: مخزن الخامات / خط الإنتاج" class="w-full px-3 py-2 bg-slate-50 border rounded-xl font-bold">
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1">تاريخ التقييم</label>
+                        <input id="f-date" name="date" type="date" class="w-full px-3 py-2 bg-slate-50 border rounded-xl font-mono">
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1">اسم المقيم</label>
+                        <input id="f-auditor" name="auditor" placeholder="اسم القائم بالتقييم" class="w-full px-3 py-2 bg-slate-50 border rounded-xl">
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1">المسؤول عن المنطقة</label>
+                        <input id="f-owner" name="owner" placeholder="اسم المشرف أو المسؤول" class="w-full px-3 py-2 bg-slate-50 border rounded-xl">
+                    </div>
+                </div>
+
+                <!-- نتيجة التقييم اللحظية (كم من كم + النسبة المئوية كم من كم) -->
+                <div class="bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-4 mb-4 flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <div class="font-extrabold text-emerald-950 text-xs">نتيجة التقييم اللحظية (تتحدث فور تغيير الأرقام):</div>
+                        <div id="live-score-out-of" class="text-lg font-black text-slate-900 mt-0.5">0 من 20</div>
+                    </div>
+                    <div>
+                        <div class="font-extrabold text-blue-950 text-xs">النسبة المئوية اللحظية:</div>
+                        <div id="live-percent-out-of" class="text-lg font-black text-blue-700 mt-0.5">0% من 100%</div>
+                    </div>
+                    <div>
+                        <div class="font-extrabold text-slate-700 text-xs">التقدير:</div>
+                        <div id="grade" class="text-base font-black text-emerald-800 mt-0.5">يحتاج إلى تحسين</div>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto rounded-xl border">
+                    <table class="w-full text-right text-xs">
+                        <thead class="bg-slate-900 text-white">
+                            <tr>
+                                <th class="p-3 w-36">المحور (5S)</th>
+                                <th class="p-3">نقطة التحقق</th>
+                                <th class="p-3 w-44 text-center">الدرجة (0 إلى 2)</th>
+                                <th class="p-3 w-48">ملاحظات / دليل</th>
+                            </tr>
+                        </thead>
+                        <tbody id="five-s-rows" class="divide-y bg-white"></tbody>
+                    </table>
+                </div>
+
+                <div class="mt-4">
+                    <label class="block font-bold mb-1">ملاحظات عامة</label>
+                    <textarea id="f-summary" name="summary" rows="2" placeholder="اكتب ملاحظاتك..." class="w-full px-3 py-2 bg-slate-50 border rounded-xl"></textarea>
+                </div>
+            </section>
+
+            <!-- خطة الإجراءات التصحيحية والاعتماد -->
+            <section class="bg-white rounded-2xl p-4 sm:p-5 border card-shadow space-y-4">
+                <h2 class="text-sm font-extrabold text-slate-900">خطة الإجراءات التصحيحية</h2>
+                <div class="overflow-x-auto rounded-xl border">
+                    <table class="w-full text-right text-xs">
+                        <thead class="bg-slate-800 text-white">
+                            <tr>
+                                <th class="p-2.5">الملاحظة / الفجوة</th>
+                                <th class="p-2.5">الإجراء المطلوب</th>
+                                <th class="p-2.5">المسؤول</th>
+                                <th class="p-2.5">تاريخ الاستحقاق</th>
+                                <th class="p-2.5">الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y bg-white">
+                            <tr>
+                                <td class="p-2"><input name="gap1" class="w-full px-2.5 py-1.5 bg-slate-50 border rounded-lg"></td>
+                                <td class="p-2"><input name="action1" class="w-full px-2.5 py-1.5 bg-slate-50 border rounded-lg"></td>
+                                <td class="p-2"><input name="resp1" class="w-full px-2.5 py-1.5 bg-slate-50 border rounded-lg"></td>
+                                <td class="p-2"><input type="date" name="due1" class="w-full px-2 py-1.5 bg-slate-50 border rounded-lg font-mono"></td>
+                                <td class="p-2">
+                                    <select name="status1" class="w-full px-2 py-1.5 bg-slate-50 border rounded-lg font-bold">
+                                        <option>مفتوح</option>
+                                        <option>جارٍ التنفيذ</option>
+                                        <option>مغلق</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="p-2"><input name="gap2" class="w-full px-2.5 py-1.5 bg-slate-50 border rounded-lg"></td>
+                                <td class="p-2"><input name="action2" class="w-full px-2.5 py-1.5 bg-slate-50 border rounded-lg"></td>
+                                <td class="p-2"><input name="resp2" class="w-full px-2.5 py-1.5 bg-slate-50 border rounded-lg"></td>
+                                <td class="p-2"><input type="date" name="due2" class="w-full px-2 py-1.5 bg-slate-50 border rounded-lg font-mono"></td>
+                                <td class="p-2">
+                                    <select name="status2" class="w-full px-2 py-1.5 bg-slate-50 border rounded-lg font-bold">
+                                        <option>مفتوح</option>
+                                        <option>جارٍ التنفيذ</option>
+                                        <option>مغلق</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold mb-1">توقيع المقيم</label>
+                        <input name="sign1" class="w-full px-3 py-2 bg-slate-50 border rounded-xl">
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1">اعتماد مسؤول المنطقة</label>
+                        <input name="sign2" class="w-full px-3 py-2 bg-slate-50 border rounded-xl">
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap justify-end gap-2 pt-2 border-t">
+                    <button type="button" onclick="saveCurrent5SToHistory()" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs">
+                        <i class="fa-solid fa-calendar-plus ml-1"></i>حفظ تقييم هذا التاريخ للمتابعة
+                    </button>
+                    <button type="button" onclick="reset5SForm()" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs">مسح النموذج</button>
+                    <button type="button" onclick="open5SPdfOptionsModal()" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs">
+                        <i class="fa-solid fa-file-pdf ml-1"></i>حفظ PDF
+                    </button>
+                </div>
+            </section>
+        </form>
+
+        <!-- سجل التواريخ المنفذة وحصر الفجوات والمشاكل للمتابعة -->
+        <section id="five-s-history-section" class="mt-6 space-y-4"></section>
+    </main>
+
+    <!-- النافذة المنبثقة لخيارات حفظ PDF (اسم الشركة واللوجو) -->
+    <div id="modal-container" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/65 p-3 sm:p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-xl max-h-[92vh] flex flex-col overflow-hidden my-auto">
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
+                <h3 id="modal-title" class="text-base sm:text-lg font-extrabold text-slate-900">حفظ PDF</h3>
+                <button type="button" onclick="closeModal()" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-red-600 flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="modal-body" class="p-5 sm:p-6 overflow-y-auto flex-1"></div>
+        </div>
+    </div>
+
+    <script>
+        const FIVE_S_ITEMS = [
+            { name: 's1', noteName: 'n1', pillar: 'Seiri (التصنيف)', check: 'الأدوات والخامات الضرورية فقط موجودة بالمنطقة.' },
+            { name: 's2', noteName: 'n2', pillar: 'Seiri (التصنيف)', check: 'المواد التالفة أو الراكدة أو غير المعروفة محددة ومعزولة.' },
+            { name: 's3', noteName: 'n3', pillar: 'Seiton (الترتيب)', check: 'لكل أداة وخامة مكان محدد ومعروف ومُعرّف.' },
+            { name: 's4', noteName: 'n4', pillar: 'Seiton (الترتيب)', check: 'الممرات ومخارج الطوارئ ووسائل مكافحة الحريق خالية من العوائق.' },
+            { name: 's5', noteName: 'n5', pillar: 'Seiso (التنظيف)', check: 'الأرضيات والمعدات والأسطح نظيفة وخالية من المخلفات.' },
+            { name: 's6', noteName: 'n6', pillar: 'Seiso (التنظيف)', check: 'مصادر الاتساخ أو التسريب أو التلف يتم الإبلاغ عنها ومعالجتها.' },
+            { name: 's7', noteName: 'n7', pillar: 'Seiketsu (التوحيد)', check: 'توجد علامات أرضية وتعريفات ولوحات واضحة وموحدة.' },
+            { name: 's8', noteName: 'n8', pillar: 'Seiketsu (التوحيد)', check: 'توجد تعليمات أو قائمة فحص ومسؤوليات محددة للحفاظ على 5S.' },
+            { name: 's9', noteName: 'n9', pillar: 'Shitsuke (الاستدامة)', check: 'العاملون ملتزمون بالتعليمات وتم توعيتهم بمسؤولياتهم.' },
+            { name: 's10', noteName: 'n10', pillar: 'Shitsuke (الاستدامة)', check: 'يتم تنفيذ التقييمات الدورية وإغلاق الملاحظات في مواعيدها.' }
+        ];
+
+        const STORAGE_KEY_5S_HISTORY = 'ohs_5s_audit_history_v1';
+
+        function load5SHistory() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY_5S_HISTORY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    return Array.isArray(parsed) ? parsed : [];
+                }
+            } catch (e) {}
+            return [];
+        }
+
+        function save5SHistory(arr) {
+            try {
+                localStorage.setItem(STORAGE_KEY_5S_HISTORY, JSON.stringify(arr));
+            } catch (e) {}
+        }
+
+        let fiveSHistory = load5SHistory();
+
+        let fiveSPdfConfig = {
+            includeCompanyName: false,
+            companyName: '',
+            includeLogo: false,
+            logoDataUrl: ''
+        };
+
+        function escapeHtml(str) {
+            return String(str == null ? '' : str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function showToast(msg, type = 'info') {
+            const c = document.getElementById('toast-container');
+            const bg = type === 'success' ? 'bg-emerald-600' : type === 'error' ? 'bg-red-600' : 'bg-slate-800';
+            const el = document.createElement('div');
+            el.className = `${bg} text-white px-4 py-3 rounded-xl shadow-lg text-xs font-bold flex items-center gap-2 pointer-events-auto`;
+            el.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-info'}"></i><span>${escapeHtml(msg)}</span>`;
+            c.appendChild(el);
+            setTimeout(() => el.remove(), 3500);
+        }
+
+        function buildFiveSTableRows() {
+            const tbody = document.getElementById('five-s-rows');
+            if (!tbody) return;
+            tbody.innerHTML = FIVE_S_ITEMS.map((item, idx) => `
+                <tr class="hover:bg-slate-50/70">
+                    <td class="p-2.5 font-extrabold text-slate-900">${escapeHtml(item.pillar)}</td>
+                    <td class="p-2.5 font-semibold text-slate-800">${escapeHtml(item.check)}</td>
+                    <td class="p-2.5 text-center">
+                        <select id="sel-${item.name}" name="${item.name}" onchange="calc5SLive()" oninput="calc5SLive()" class="w-full px-2 py-1.5 bg-slate-50 border rounded-lg font-mono font-extrabold text-center">
+                            <option value="0">0 (غير مطبق)</option>
+                            <option value="1">1 (جزئي)</option>
+                            <option value="2">2 (كامل)</option>
+                        </select>
+                    </td>
+                    <td class="p-2.5">
+                        <input id="note-${idx}" name="${item.noteName}" placeholder="ملاحظة / دليل" class="w-full px-2.5 py-1.5 bg-slate-50 border rounded-lg">
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function get5SScoreStats() {
+            const maxScore = FIVE_S_ITEMS.length * 2; // 20
+            let sum = 0;
+            FIVE_S_ITEMS.forEach(item => {
+                const el = document.getElementById(`sel-${item.name}`);
+                const v = el ? Number(el.value) : 0;
+                sum += (Number.isFinite(v) ? v : 0);
+            });
+            const pct = maxScore > 0 ? Math.round((sum / maxScore) * 100) : 0;
+            const grade = pct >= 90 ? 'ممتاز' : pct >= 75 ? 'جيد جداً' : pct >= 60 ? 'مقبول' : 'يحتاج إلى تحسين';
+            return { sum, maxScore, pct, grade };
+        }
+
+        function calc5SLive() {
+            const st = get5SScoreStats();
+            document.getElementById('live-score-out-of').textContent = `${st.sum} من ${st.maxScore}`;
+            document.getElementById('live-percent-out-of').textContent = `${st.pct}% من 100%`;
+            document.getElementById('grade').textContent = st.grade;
+        }
+
+        function reset5SForm() {
+            const form = document.getElementById('auditForm');
+            if (form) form.reset();
+            calc5SLive();
+            showToast('تم مسح النموذج', 'info');
+        }
+
+        function compressLogoImage(file, maxW = 450, quality = 0.88) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const scale = Math.min(1, maxW / (img.width || maxW));
+                        const w = Math.max(1, Math.round((img.width || maxW) * scale));
+                        const h = Math.max(1, Math.round((img.height || maxW) * scale));
+                        const canvas = document.createElement('canvas');
+                        canvas.width = w;
+                        canvas.height = h;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, w, h);
+                        const outType = (file.type === 'image/png') ? 'image/png' : 'image/jpeg';
+                        resolve(canvas.toDataURL(outType, quality));
+                    };
+                    img.onerror = () => resolve(String(reader.result || ''));
+                    img.src = String(reader.result || '');
+                };
+                reader.onerror = () => resolve('');
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function open5SPdfOptionsModal() {
+            openModal('إعدادات حفظ تقييم 5S بصيغة PDF', `
+                <form id="five-s-pdf-form" class="space-y-4 text-xs" dir="rtl">
+                    <div class="bg-blue-50 border border-blue-200 rounded-2xl p-3 text-blue-950 leading-relaxed">
+                        قبل حفظ ملف الـ <strong>PDF</strong>، حدد إذا كنت تريد إضافة <strong>اسم الشركة</strong> و<strong>لوجو الشركة</strong>.
+                    </div>
+
+                    <div class="bg-slate-50 p-3.5 rounded-2xl border space-y-2">
+                        <div class="font-extrabold text-slate-900">هل تريد إضافة اسم الشركة في ملف PDF؟</div>
+                        <div class="flex gap-3">
+                            <label class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border cursor-pointer font-bold">
+                                <input type="radio" name="compChoice" value="yes" ${fiveSPdfConfig.includeCompanyName ? 'checked' : ''} onchange="toggle5SPdfFields()" class="accent-emerald-600">
+                                <span>أيوة</span>
+                            </label>
+                            <label class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border cursor-pointer font-bold">
+                                <input type="radio" name="compChoice" value="no" ${!fiveSPdfConfig.includeCompanyName ? 'checked' : ''} onchange="toggle5SPdfFields()" class="accent-slate-700">
+                                <span>لأ</span>
+                            </label>
+                        </div>
+                        <div id="five-s-comp-box" class="${fiveSPdfConfig.includeCompanyName ? '' : 'hidden'} pt-1">
+                            <input type="text" name="companyName" value="${escapeHtml(fiveSPdfConfig.companyName)}" placeholder="اكتب اسم الشركة..." class="w-full px-3 py-2 bg-white border rounded-xl font-bold">
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 p-3.5 rounded-2xl border space-y-2">
+                        <div class="font-extrabold text-slate-900">هل تريد إضافة لوجو الشركة في ملف PDF؟</div>
+                        <div class="flex gap-3">
+                            <label class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border cursor-pointer font-bold">
+                                <input type="radio" name="logoChoice" value="yes" ${fiveSPdfConfig.includeLogo ? 'checked' : ''} onchange="toggle5SPdfFields()" class="accent-emerald-600">
+                                <span>أيوة</span>
+                            </label>
+                            <label class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border cursor-pointer font-bold">
+                                <input type="radio" name="logoChoice" value="no" ${!fiveSPdfConfig.includeLogo ? 'checked' : ''} onchange="toggle5SPdfFields()" class="accent-slate-700">
+                                <span>لأ</span>
+                            </label>
+                        </div>
+                        <div id="five-s-logo-box" class="${fiveSPdfConfig.includeLogo ? '' : 'hidden'} pt-1 space-y-2">
+                            <input type="file" id="five-s-logo-file" accept="image/*" onchange="handle5SLogoChange(this)" class="w-full px-2.5 py-1.5 bg-white border rounded-xl text-[11px]">
+                            <div id="five-s-logo-preview">${fiveSPdfConfig.logoDataUrl ? `<img src="${fiveSPdfConfig.logoDataUrl}" class="h-12 w-auto object-contain bg-white p-1 rounded-lg border">` : ''}</div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-2 pt-2 border-t">
+                        <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-xl bg-slate-100 font-bold">إلغاء</button>
+                        <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold">حفظ PDF الآن ✓</button>
+                    </div>
+                </form>
+            `);
+
+            document.getElementById('five-s-pdf-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const fd = new FormData(e.target);
+                const wantComp = fd.get('compChoice') === 'yes';
+                const wantLogo = fd.get('logoChoice') === 'yes';
+                const compName = (fd.get('companyName') || '').trim();
+
+                const fileInp = document.getElementById('five-s-logo-file');
+                if (wantLogo && fileInp && fileInp.files && fileInp.files[0]) {
+                    fiveSPdfConfig.logoDataUrl = await compressLogoImage(fileInp.files[0], 450, 0.88);
+                }
+
+                fiveSPdfConfig.includeCompanyName = wantComp && Boolean(compName);
+                fiveSPdfConfig.companyName = wantComp ? compName : '';
+                fiveSPdfConfig.includeLogo = wantLogo && Boolean(fiveSPdfConfig.logoDataUrl);
+
+                closeModal();
+                await download5SPdf();
+            });
+        }
+
+        function toggle5SPdfFields() {
+            const form = document.getElementById('five-s-pdf-form');
+            if (!form) return;
+            const cVal = form.querySelector('input[name="compChoice"]:checked')?.value;
+            const lVal = form.querySelector('input[name="logoChoice"]:checked')?.value;
+            document.getElementById('five-s-comp-box')?.classList.toggle('hidden', cVal !== 'yes');
+            document.getElementById('five-s-logo-box')?.classList.toggle('hidden', lVal !== 'yes');
+        }
+
+        async function handle5SLogoChange(inputEl) {
+            const file = inputEl && inputEl.files ? inputEl.files[0] : null;
+            if (!file || !file.type.startsWith('image/')) return;
+            fiveSPdfConfig.logoDataUrl = await compressLogoImage(file, 450, 0.88);
+            const prev = document.getElementById('five-s-logo-preview');
+            if (prev) prev.innerHTML = `<img src="${fiveSPdfConfig.logoDataUrl}" class="h-12 w-auto object-contain bg-white p-1 rounded-lg border">`;
+        }
+
+        function drawRoundedRect(ctx, x, y, w, h, r, fillStyle, strokeStyle, lineWidth = 1) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + w - r, y);
+            ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+            ctx.lineTo(x + w, y + h - r);
+            ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            ctx.lineTo(x + r, y + h);
+            ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+            ctx.lineTo(x, y + r);
+            ctx.quadraticCurveTo(x, y, x + r, y);
+            ctx.closePath();
+            if (fillStyle) { ctx.fillStyle = fillStyle; ctx.fill(); }
+            if (strokeStyle) { ctx.strokeStyle = strokeStyle; ctx.lineWidth = lineWidth; ctx.stroke(); }
+            ctx.restore();
+        }
+
+        function loadImageSafe(src) {
+            return new Promise((resolve) => {
+                if (!src) { resolve(null); return; }
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = () => resolve(null);
+                img.src = src;
+            });
+        }
+
+        async function render5SPdfPages() {
+            const showComp = Boolean(fiveSPdfConfig.includeCompanyName && fiveSPdfConfig.companyName);
+            const showLogo = Boolean(fiveSPdfConfig.includeLogo && fiveSPdfConfig.logoDataUrl);
+            const logoImg = showLogo ? await loadImageSafe(fiveSPdfConfig.logoDataUrl) : null;
+
+            const areaVal = document.getElementById('f-area')?.value.trim() || '-';
+            const dateVal = document.getElementById('f-date')?.value || '-';
+            const auditorVal = document.getElementById('f-auditor')?.value.trim() || '-';
+            const ownerVal = document.getElementById('f-owner')?.value.trim() || '-';
+            const summaryVal = document.getElementById('f-summary')?.value.trim() || '';
+            const st = get5SScoreStats();
+
+            const W = 1240;
+            const H = 1754;
+            const M = 52;
+            const contentW = W - M * 2;
+            const pages = [];
+
+            const createPage = (pageNum) => {
+                const canvas = document.createElement('canvas');
+                canvas.width = W;
+                canvas.height = H;
+                const ctx = canvas.getContext('2d');
+
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, W, H);
+                drawRoundedRect(ctx, 26, 26, W - 52, H - 52, 16, '#ffffff', '#cbd5e1', 2);
+
+                const grad = ctx.createLinearGradient(26, 26, W - 26, 185);
+                grad.addColorStop(0, '#071538');
+                grad.addColorStop(0.6, '#12306b');
+                grad.addColorStop(1, '#1b4fa0');
+                drawRoundedRect(ctx, 26, 26, W - 52, 160, 14, grad, null);
+
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#93c5fd';
+                ctx.font = 'bold 15px sans-serif';
+                ctx.fillText('5S WORKPLACE AUDIT REPORT', W - 58, 64);
+
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 30px sans-serif';
+                ctx.fillText('تقرير تقييم منهجية 5S', W - 58, 108);
+
+                if (showComp) {
+                    ctx.fillStyle = '#fde68a';
+                    ctx.font = 'bold 21px sans-serif';
+                    ctx.fillText(String(fiveSPdfConfig.companyName), W - 58, 148);
+                }
+
+                if (logoImg) {
+                    drawRoundedRect(ctx, 52, 48, 200, 114, 12, '#ffffff', '#e2e8f0', 2);
+                    const scale = Math.min(176 / logoImg.width, 94 / logoImg.height);
+                    const lw = logoImg.width * scale;
+                    const lh = logoImg.height * scale;
+                    ctx.drawImage(logoImg, 52 + (200 - lw) / 2, 48 + (114 - lh) / 2, lw, lh);
+                }
+
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#64748b';
+                ctx.font = 'bold 15px sans-serif';
+                ctx.fillText(`صفحة ${pageNum}`, W / 2, H - 42);
+
+                pages.push(canvas);
+                return { canvas, ctx, y: 206 };
+            };
+
+            let { ctx, y } = createPage(1);
+
+            drawRoundedRect(ctx, M, y, contentW, 88, 10, '#f8fafc', '#cbd5e1', 1.5);
+            ctx.textAlign = 'right';
+            ctx.fillStyle = '#0f172a';
+            ctx.font = 'bold 16px sans-serif';
+            ctx.fillText(`القسم / المنطقة: ${areaVal}`, W - M - 18, y + 32);
+            ctx.fillText(`التاريخ: ${dateVal}`, 540, y + 32);
+            ctx.fillText(`المقيم: ${auditorVal}`, W - M - 18, y + 66);
+            ctx.fillText(`المسؤول: ${ownerVal}`, 540, y + 66);
+            y += 104;
+
+            drawRoundedRect(ctx, M, y, contentW, 56, 10, '#ecfdf5', '#6ee7b7', 1.5);
+            ctx.fillStyle = '#065f46';
+            ctx.font = 'bold 18px sans-serif';
+            ctx.fillText(`النتيجة: ${st.sum} من ${st.maxScore}`, W - M - 18, y + 35);
+            ctx.fillStyle = '#1d4ed8';
+            ctx.fillText(`النسبة المئوية: ${st.pct}% من 100%`, 640, y + 35);
+            ctx.fillStyle = '#0f172a';
+            ctx.fillText(`التقدير: ${st.grade}`, 290, y + 35);
+            y += 74;
+
+            drawRoundedRect(ctx, M, y, contentW, 42, 6, '#0d2154', null);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 15px sans-serif';
+            ctx.fillText('المحور', W - M - 16, y + 27);
+            ctx.fillText('نقطة التحقق', W - M - 230, y + 27);
+            ctx.textAlign = 'center';
+            ctx.fillText('الدرجة', 240, y + 27);
+            ctx.textAlign = 'right';
+            ctx.fillText('ملاحظات', 175, y + 27);
+            y += 42;
+
+            FIVE_S_ITEMS.forEach((item, idx) => {
+                const scVal = Number(document.getElementById(`sel-${item.name}`)?.value || 0);
+                const ntVal = document.getElementById(`note-${idx}`)?.value.trim() || '-';
+
+                if (y + 46 > H - 120) {
+                    const next = createPage(pages.length + 1);
+                    ctx = next.ctx;
+                    y = next.y;
+                }
+
+                ctx.fillStyle = idx % 2 === 0 ? '#ffffff' : '#f8fafc';
+                ctx.fillRect(M, y, contentW, 44);
+                ctx.strokeStyle = '#cbd5e1';
+                ctx.strokeRect(M, y, contentW, 44);
+
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#0f172a';
+                ctx.font = 'bold 14px sans-serif';
+                ctx.fillText(item.pillar, W - M - 16, y + 28);
+                ctx.fillText(item.check.slice(0, 56), W - M - 230, y + 28);
+
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#047857';
+                ctx.fillText(`${scVal} من 2`, 240, y + 28);
+
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#334155';
+                ctx.fillText(ntVal.slice(0, 22), 175, y + 28);
+                y += 44;
+            });
+
+            if (summaryVal) {
+                y += 16;
+                if (y + 64 > H - 120) {
+                    const next = createPage(pages.length + 1);
+                    ctx = next.ctx;
+                    y = next.y;
+                }
+                drawRoundedRect(ctx, M, y, contentW, 56, 10, '#f8fafc', '#cbd5e1', 1.5);
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#0f172a';
+                ctx.font = 'bold 15px sans-serif';
+                ctx.fillText(`ملاحظات عامة: ${summaryVal.slice(0, 95)}`, W - M - 16, y + 34);
+            }
+
+            return pages;
+        }
+
+        async function download5SPdf() {
+            const JsPdfCtor = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF : window.jsPDF;
+            if (!JsPdfCtor) {
+                showToast('تعذر تحميل مكتبة PDF، تحقق من الاتصال بالإنترنت', 'error');
+                return;
+            }
+
+            showToast('جاري حفظ ملف PDF لتقييم 5S...', 'info');
+            try {
+                const pages = await render5SPdfPages();
+                const pdf = new JsPdfCtor({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+                pages.forEach((canvas, idx) => {
+                    if (idx > 0) pdf.addPage('a4', 'portrait');
+                    const imgData = canvas.toDataURL('image/jpeg', 0.94);
+                    pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+                });
+                const datePart = (document.getElementById('f-date')?.value || new Date().toISOString().split('T')[0]).replace(/[^0-9-]/g, '');
+                pdf.save(`5S_Evaluation_${datePart}.pdf`);
+                showToast('تم حفظ ملف PDF بنجاح ✓', 'success');
+            } catch (e) {
+                showToast('حدث خطأ أثناء إنشاء ملف PDF', 'error');
+            }
+        }
+
+
+        function collectCurrent5SSnapshot() {
+            const area = (document.getElementById('f-area')?.value || '').trim();
+            const date = document.getElementById('f-date')?.value || new Date().toISOString().split('T')[0];
+            const auditor = (document.getElementById('f-auditor')?.value || '').trim();
+            const owner = (document.getElementById('f-owner')?.value || '').trim();
+            const summary = (document.getElementById('f-summary')?.value || '').trim();
+            const form = document.getElementById('auditForm');
+            const fd = form ? new FormData(form) : new FormData();
+
+            const itemScores = {};
+            const itemNotes = {};
+            const gaps = [];
+
+            FIVE_S_ITEMS.forEach((item, idx) => {
+                const val = Number(document.getElementById(`sel-${item.name}`)?.value || 0);
+                const note = (document.getElementById(`note-${idx}`)?.value || '').trim();
+                itemScores[item.name] = val;
+                itemNotes[item.noteName] = note;
+
+                if (val < 2) {
+                    gaps.push({
+                        date,
+                        area: area || '-',
+                        pillar: item.pillar,
+                        check: item.check,
+                        score: val,
+                        statusLabel: val === 0 ? 'غير مطبق (0/2)' : 'مطبق جزئياً (1/2)',
+                        note
+                    });
+                }
+            });
+
+            [1, 2].forEach(n => {
+                const g = (fd.get(`gap${n}`) || '').trim();
+                const act = (fd.get(`action${n}`) || '').trim();
+                const resp = (fd.get(`resp${n}`) || '').trim();
+                const due = (fd.get(`due${n}`) || '').trim();
+                const st = (fd.get(`status${n}`) || 'مفتوح').trim();
+                if (g || act) {
+                    gaps.push({
+                        date,
+                        area: area || '-',
+                        pillar: 'خطة تحسين',
+                        check: g || act,
+                        score: null,
+                        statusLabel: `${st}${due ? ` • استحقاق: ${due}` : ''}${resp ? ` • مسؤول: ${resp}` : ''}`,
+                        note: act && g ? `الإجراء: ${act}` : ''
+                    });
+                }
+            });
+
+            const st = get5SScoreStats();
+            return {
+                id: '5S-' + Date.now(),
+                date,
+                area,
+                auditor,
+                owner,
+                summary,
+                itemScores,
+                itemNotes,
+                score: st.sum,
+                maxScore: st.maxScore,
+                percent: st.pct,
+                grade: st.grade,
+                gaps
+            };
+        }
+
+        function saveCurrent5SToHistory() {
+            const snap = collectCurrent5SSnapshot();
+            fiveSHistory.unshift(snap);
+            save5SHistory(fiveSHistory);
+            render5SHistorySection();
+            showToast(`تم حفظ تقييم تاريخ (${snap.date}) وحصر الفجوات للمتابعة ✓`, 'success');
+        }
+
+        function load5SHistoryItem(recId) {
+            const rec = fiveSHistory.find(x => x.id === recId);
+            if (!rec) return;
+            if (document.getElementById('f-area')) document.getElementById('f-area').value = rec.area || '';
+            if (document.getElementById('f-date')) document.getElementById('f-date').value = rec.date || '';
+            if (document.getElementById('f-auditor')) document.getElementById('f-auditor').value = rec.auditor || '';
+            if (document.getElementById('f-owner')) document.getElementById('f-owner').value = rec.owner || '';
+            if (document.getElementById('f-summary')) document.getElementById('f-summary').value = rec.summary || '';
+
+            FIVE_S_ITEMS.forEach((item, idx) => {
+                const sel = document.getElementById(`sel-${item.name}`);
+                if (sel && rec.itemScores && rec.itemScores[item.name] != null) {
+                    sel.value = String(rec.itemScores[item.name]);
+                }
+                const nt = document.getElementById(`note-${idx}`);
+                if (nt && rec.itemNotes && rec.itemNotes[item.noteName] != null) {
+                    nt.value = rec.itemNotes[item.noteName];
+                }
+            });
+
+            calc5SLive();
+            showToast(`تم تحميل تقييم تاريخ (${rec.date}) في النموذج`, 'info');
+        }
+
+        function delete5SHistoryItem(recId) {
+            fiveSHistory = fiveSHistory.filter(x => x.id !== recId);
+            save5SHistory(fiveSHistory);
+            render5SHistorySection();
+            showToast('تم حذف السجل من المتابعة', 'info');
+        }
+
+        function render5SHistorySection() {
+            const box = document.getElementById('five-s-history-section');
+            if (!box) return;
+
+            // حصر جميع المشاكل والفجوات عبر التواريخ المسجلة
+            const allGaps = [];
+            fiveSHistory.forEach(rec => {
+                const recGaps = Array.isArray(rec.gaps) ? rec.gaps : [];
+                recGaps.forEach(g => {
+                    allGaps.push(Object.assign({ date: rec.date, area: rec.area || '-' }, g));
+                });
+            });
+
+            box.innerHTML = `
+                <!-- التواريخ المنفذة وما تم فيها -->
+                <div class="bg-white rounded-2xl p-4 sm:p-5 border card-shadow text-xs space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <h2 class="text-sm font-extrabold text-slate-900"><i class="fa-solid fa-clock-rotate-left ml-1 text-blue-600"></i>متابعة التواريخ المنفذة (${fiveSHistory.length})</h2>
+                        <span class="text-[11px] text-slate-500">يظهر هنا كل تاريخ نفّذت فيه التقييم وما تم إنجازه فيه للمقارنة والمتابعة</span>
+                    </div>
+
+                    ${fiveSHistory.map(rec => {
+                        const recGapsCount = Array.isArray(rec.gaps) ? rec.gaps.length : 0;
+                        return `
+                            <div class="p-3.5 rounded-xl bg-slate-50 border flex flex-wrap items-center justify-between gap-3">
+                                <div class="space-y-1">
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <span class="font-mono font-extrabold bg-slate-900 text-white px-2.5 py-0.5 rounded">${escapeHtml(rec.date)}</span>
+                                        <span class="font-extrabold text-slate-900">${escapeHtml(rec.area || 'بدون تحديد منطقة')}</span>
+                                        <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-black">${rec.score} من ${rec.maxScore} (${rec.percent}% من 100%)</span>
+                                        <span class="px-2.5 py-0.5 rounded-full ${recGapsCount ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-900'} font-bold">
+                                            ${recGapsCount ? `فجوات مرصودة: ${recGapsCount}` : 'بدون فجوات'}
+                                        </span>
+                                    </div>
+                                    ${rec.summary ? `<div class="text-slate-700">ما تم وملاحظات هذا التاريخ: <strong>${escapeHtml(rec.summary)}</strong></div>` : ''}
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button type="button" onclick="load5SHistoryItem('${escapeHtml(rec.id)}')" class="px-3 py-1.5 rounded-lg bg-white hover:bg-blue-50 text-blue-800 border font-bold">عرض في النموذج</button>
+                                    <button type="button" onclick="delete5SHistoryItem('${escapeHtml(rec.id)}')" class="px-2.5 py-1.5 rounded-lg bg-red-50 hover:bg-red-600 text-red-600 hover:text-white font-bold">حذف</button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('') || `
+                        <div class="p-6 text-center text-slate-400 border rounded-xl">
+                            لم يتم حفظ أي تاريخ للمتابعة بعد — اضغط على <strong>"حفظ تقييم هذا التاريخ للمتابعة"</strong> بعد كل جولة (اليوم، بعد أسبوع، إلخ).
+                        </div>
+                    `}
+                </div>
+
+                <!-- حصر المشاكل والفجوات عبر التواريخ -->
+                <div class="bg-white rounded-2xl p-4 sm:p-5 border-2 border-red-200/80 card-shadow text-xs space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <h2 class="text-sm font-extrabold text-red-950"><i class="fa-solid fa-triangle-exclamation ml-1 text-red-600"></i>حصر المشاكل والفجوات للمتابعة (${allGaps.length})</h2>
+                        <span class="text-[11px] text-slate-600">تجميع الفجوات والملاحظات حسب التاريخ والمنطقة للعمل عليها وإغلاقها</span>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-xl border">
+                        <table class="w-full text-right text-xs">
+                            <thead class="bg-slate-900 text-white">
+                                <tr>
+                                    <th class="p-2.5">التاريخ</th>
+                                    <th class="p-2.5">المنطقة / القسم</th>
+                                    <th class="p-2.5">المحور</th>
+                                    <th class="p-2.5">المشكلة / الفجوة</th>
+                                    <th class="p-2.5">الحالة / التفاصيل</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y bg-white">
+                                ${allGaps.map(g => `
+                                    <tr>
+                                        <td class="p-2.5 font-mono font-bold">${escapeHtml(g.date)}</td>
+                                        <td class="p-2.5 font-bold">${escapeHtml(g.area)}</td>
+                                        <td class="p-2.5 font-bold text-blue-900">${escapeHtml(g.pillar)}</td>
+                                        <td class="p-2.5 font-semibold text-slate-900">${escapeHtml(g.check)}${g.note ? `<div class="text-[11px] text-slate-500 mt-0.5">${escapeHtml(g.note)}</div>` : ''}</td>
+                                        <td class="p-2.5 font-bold text-red-700">${escapeHtml(g.statusLabel)}</td>
+                                    </tr>
+                                `).join('') || `
+                                    <tr>
+                                        <td colspan="5" class="p-6 text-center text-slate-400">لا توجد فجوات أو مشاكل مرصودة في السجلات المحفوظة حالياً.</td>
+                                    </tr>
+                                `}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ==================== النوافذ المساعدة ====================
+        function openModal(title, html) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-body').innerHTML = html;
+            const m = document.getElementById('modal-container');
+            m.classList.remove('hidden'); m.classList.add('flex');
+        }
+        function closeModal() {
+            const m = document.getElementById('modal-container');
+            m.classList.add('hidden'); m.classList.remove('flex');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const dEl = document.getElementById('f-date');
+            if (dEl && !dEl.value) dEl.value = new Date().toISOString().split('T')[0];
+            buildFiveSTableRows();
+            calc5SLive();
+            render5SHistorySection();
+        });
+    </script>
+
+<script>
+(function () {
+  if (window.__OHS_AI_BRIDGE_READY__) return;
+  window.__OHS_AI_BRIDGE_READY__ = true;
+
+  window.ohsAskHighPrecisionAI = async function (question, options = {}) {
+    let base = 'https://ohs-management.ahmed4qhse.workers.dev';
+    let token = '';
+    try {
+      const raw = localStorage.getItem('hse_session_v2') || localStorage.getItem('hse_session_v1');
+      if (raw) {
+        const s = JSON.parse(raw);
+        if (s.apiBase) base = s.apiBase;
+        if (s.token) token = s.token;
+      }
+    } catch {}
+
+    const res = await fetch(base + '/api/ai', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': 'Bearer ' + token } : {})
+      },
+      body: JSON.stringify({
+        question: String(question || '').trim(),
+        mode: options.mode || 'deep_analysis',
+        images: Array.isArray(options.images) ? options.images : []
+      })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.message ? (data.error + ': ' + data.message) : (data.error || 'تعذر الاتصال بالمساعد الذكي'));
+    }
+    return data.answer || '';
+  };
+})();
+</script>
+
+</body>
+</html>

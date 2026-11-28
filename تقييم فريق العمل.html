@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقييم فريق السلامة والصحة المهنية</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        if (typeof tailwind !== 'undefined') {
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        fontFamily: { sans: ['Cairo', 'sans-serif'] },
+                        colors: {
+                            emerald: { 50:'#eff8ff',100:'#dbeefe',200:'#bfe0fc',300:'#8fc7f8',400:'#5aa8ef',500:'#3a8be0',600:'#2468c4',700:'#1b4fa0',800:'#173f80',900:'#12306b',950:'#0b2150' },
+                            slate: { 50:'#f4f8fd',100:'#e8f0fa',200:'#d3e0f0',300:'#b3c6de',400:'#8499b8',500:'#5f7497',600:'#475b7e',700:'#2f4468',800:'#16295a',900:'#0d2154',950:'#071538' }
+                        }
+                    }
+                }
+            };
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; background: linear-gradient(180deg,#f3f9ff 0%,#e6f1fc 100%) fixed; color: #0d2154; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #dbeafe; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 9999px; }
+        .card-shadow { box-shadow: 0 4px 18px rgba(36,104,196,.08); }
+    </style>
+</head>
+<body class="antialiased selection:bg-emerald-500 selection:text-white">
+
+    <div id="toast-container" class="fixed top-4 left-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- الشريط العلوي المخصص لتقييم فريق السلامة والصحة المهنية فقط -->
+    <header id="app-header" class="bg-slate-900 text-white sticky top-0 z-20 px-4 sm:px-6 py-3.5 shadow-md">
+        <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-300 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-star-half-stroke"></i>
+                </div>
+                <div>
+                    <h1 class="text-base sm:text-lg font-extrabold">تقييم فريق السلامة والصحة المهنية</h1>
+                    <p class="text-[11px] text-slate-300">تقييم من 1 إلى 10 (بأنصاف وأرباع) • تخزين حتى نهاية السنة • حساب تلقائي للمتوسط السنوي والزيادة السنوية</p>
+                </div>
+            </div>
+            <div class="flex items-center flex-wrap gap-2">
+                <button type="button" onclick="openEvaluationPdfModal()" class="px-3.5 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white font-extrabold text-xs shadow transition">
+                    <i class="fa-solid fa-file-pdf ml-1"></i>تحميل PDF
+                </button>
+                <button type="button" onclick="openEvaluationModal()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow transition">
+                    <i class="fa-solid fa-plus ml-1"></i>إضافة تقييم
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <main id="main-content" class="max-w-6xl mx-auto p-4 sm:p-6"></main>
+
+    <!-- النافذة المنبثقة -->
+    <div id="modal-container" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/65 p-3 sm:p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-3xl max-h-[92vh] flex flex-col overflow-hidden my-auto">
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
+                <h3 id="modal-title" class="text-base sm:text-lg font-extrabold text-slate-900">عنوان</h3>
+                <button type="button" onclick="closeModal()" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-red-600 flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="modal-body" class="p-5 sm:p-6 overflow-y-auto flex-1"></div>
+        </div>
+    </div>
+
+    <!-- نافذة التأكيد -->
+    <div id="confirm-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/65 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
+            <h3 id="confirm-title" class="text-lg font-extrabold text-slate-900 mb-2">تأكيد</h3>
+            <p id="confirm-message" class="text-sm text-slate-600 mb-6"></p>
+            <div class="flex justify-end gap-2">
+                <button type="button" onclick="closeConfirmModal(false)" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold text-sm">إلغاء</button>
+                <button type="button" onclick="closeConfirmModal(true)" class="px-5 py-2 rounded-xl bg-red-600 text-white font-bold text-sm">تأكيد</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY_EVALUATIONS = 'ohs_team_evaluation_annual_v1';
+
+        // بنود تقييم مخصصة لأخصائيي ومشرفي السلامة والصحة المهنية (الكفاءة، الإنجازات، جودة العمل، المتابعة والدقة، والالتزام)
+        const OHS_EVAL_CRITERIA = [
+            { id: 'ohs_competence', label: 'الكفاءة الفنية والمهنية في السلامة والصحة المهنية', desc: 'القدرة على تحديد المخاطر وتطبيق ضوابط التحكم ومعايير السلامة بكفاءة عملية في الموقع' },
+            { id: 'ohs_achievements', label: 'الإنجازات الميدانية والوقائية المحققة', desc: 'حجم وملموسية ما تم إنجازه من تحسينات وقائية وخفض للملاحظات والحوادث والبلاغات الوشيكة' },
+            { id: 'ohs_work_quality', label: 'جودة الشغل والتقارير والتوثيق', desc: 'جودة ودقة التفتيشات والتقارير والتحقيقات وتصاريح العمل والسجلات دون نقص أو صورية' },
+            { id: 'ohs_followup_accuracy', label: 'المتابعة المستمرة ودقة التنفيذ', desc: 'متابعة الإجراءات التصحيحية والطفايات والمهمات والمواعيد حتى الإغلاق الفعلي بدقة عالية' },
+            { id: 'ohs_commitment', label: 'الالتزام والانضباط الوظيفي والمهني', desc: 'الالتزام بالمواعيد والورديات والتعليمات والقوانين والقرارات المنظمة لعمل السلامة والصحة المهنية' }
+        ];
+
+        // درجات متدرجة من 1 إلى 10 تشمل الأنصاف (0.5) والأرباع (0.25 و 0.75)
+        function buildQuarterStepScores() {
+            const scores = [];
+            for (let v = 1.0; v <= 10.0001; v += 0.25) {
+                scores.push(Number(v.toFixed(2)));
+            }
+            return scores;
+        }
+        const QUARTER_SCORES = buildQuarterStepScores();
+
+        function formatScoreDisplay(num) {
+            const n = Number(num) || 0;
+            if (Number.isInteger(n)) return String(n);
+            return String(Number(n.toFixed(2)));
+        }
+
+        function getDefaultEvalState() {
+            const curYear = new Date().getFullYear();
+            return {
+                selectedYear: curYear,
+                evaluations: [],
+                exportConfig: {
+                    includeCompanyName: true,
+                    companyName: '',
+                    includeLogo: false,
+                    logoDataUrl: ''
+                }
+            };
+        }
+
+        function loadEvalState() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY_EVALUATIONS);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    return Object.assign(getDefaultEvalState(), parsed, {
+                        evaluations: Array.isArray(parsed.evaluations) ? parsed.evaluations : [],
+                        exportConfig: Object.assign(getDefaultEvalState().exportConfig, parsed.exportConfig || {})
+                    });
+                }
+            } catch (e) {}
+            return getDefaultEvalState();
+        }
+
+        let evalState = loadEvalState();
+        let confirmCallback = null;
+
+        // تتخزن التقييمات حتى نهاية السنة (31 ديسمبر) ولا تُمسح تلقائياً أثناء السنة
+        function saveEvalState() {
+            try {
+                localStorage.setItem(STORAGE_KEY_EVALUATIONS, JSON.stringify(evalState));
+            } catch (e) {
+                showToast('تعذر الحفظ المحلي بالمتصفح', 'error');
+            }
+        }
+
+        function escapeHtml(str) {
+            return String(str == null ? '' : str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function showToast(msg, type = 'info') {
+            const c = document.getElementById('toast-container');
+            const bg = type === 'success' ? 'bg-emerald-600' : type === 'error' ? 'bg-red-600' : 'bg-slate-800';
+            const el = document.createElement('div');
+            el.className = `${bg} text-white px-4 py-3 rounded-xl shadow-lg text-xs font-bold flex items-center gap-2 pointer-events-auto`;
+            el.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-info'}"></i><span>${escapeHtml(msg)}</span>`;
+            c.appendChild(el);
+            setTimeout(() => el.remove(), 3500);
+        }
+
+        function calcEntryAverage(scoresObj) {
+            if (!scoresObj || typeof scoresObj !== 'object') return 0;
+            const vals = OHS_EVAL_CRITERIA.map(c => Number(scoresObj[c.id]) || 0);
+            if (!vals.length) return 0;
+            const sum = vals.reduce((a, b) => a + b, 0);
+            return Number((sum / vals.length).toFixed(2));
+        }
+
+        function suggestAnnualIncrementPercent(annualAvg) {
+            const s = Number(annualAvg) || 0;
+            if (s >= 9.0) return '15% (ممتاز — شريحة الزيادة القصوى)';
+            if (s >= 8.0) return '12% (جيد جداً مرتفع)';
+            if (s >= 7.0) return '10% (جيد جداً)';
+            if (s >= 6.0) return '7% (جيد)';
+            if (s >= 5.0) return '5% (مقبول — زيادة أساسية)';
+            return '0%–3% (يحتاج خطة تحسين أداء)';
+        }
+
+        function getAvailableYears() {
+            const yearsSet = new Set([new Date().getFullYear()]);
+            evalState.evaluations.forEach(ev => {
+                const yr = Number(ev.year || (ev.date ? String(ev.date).slice(0, 4) : new Date().getFullYear()));
+                if (yr) yearsSet.add(yr);
+            });
+            return Array.from(yearsSet).sort((a, b) => b - a);
+        }
+
+        // ==================== حساب المتوسط السنوي لكل فرد من أفراد السلامة ====================
+        function computeAnnualStaffSummaries(yearNum) {
+            const yrItems = evalState.evaluations.filter(ev => {
+                const evYr = Number(ev.year || (ev.date ? String(ev.date).slice(0, 4) : yearNum));
+                return evYr === Number(yearNum);
+            });
+
+            const grouped = new Map();
+            yrItems.forEach(ev => {
+                const nameKey = String(ev.employeeName || '').trim().toLowerCase();
+                if (!nameKey) return;
+                if (!grouped.has(nameKey)) {
+                    grouped.set(nameKey, {
+                        employeeName: ev.employeeName.trim(),
+                        jobTitle: ev.jobTitle || '',
+                        items: []
+                    });
+                }
+                const entry = grouped.get(nameKey);
+                if (ev.jobTitle) entry.jobTitle = ev.jobTitle;
+                entry.items.push(ev);
+            });
+
+            return Array.from(grouped.values()).map(person => {
+                const totalAvg = person.items.reduce((acc, it) => acc + (Number(it.average) || calcEntryAverage(it.scores)), 0);
+                const annualAvg = person.items.length ? Number((totalAvg / person.items.length).toFixed(2)) : 0;
+                return {
+                    employeeName: person.employeeName,
+                    jobTitle: person.jobTitle || '-',
+                    evaluationsCount: person.items.length,
+                    annualAverage: annualAvg,
+                    incrementSuggestion: suggestAnnualIncrementPercent(annualAvg)
+                };
+            }).sort((a, b) => b.annualAverage - a.annualAverage);
+        }
+
+        // ==================== عرض الشاشة الرئيسية ====================
+        function renderTeamEvaluation() {
+            const years = getAvailableYears();
+            const curYear = Number(evalState.selectedYear || new Date().getFullYear());
+            const yearEvals = evalState.evaluations.filter(ev => {
+                const evYr = Number(ev.year || (ev.date ? String(ev.date).slice(0, 4) : curYear));
+                return evYr === curYear;
+            });
+            const annualSummaries = computeAnnualStaffSummaries(curYear);
+            const now = new Date();
+            const isYearEndWindow = (now.getMonth() === 11 && now.getDate() >= 20); // قرب نهاية ديسمبر
+
+            document.getElementById('main-content').innerHTML = `
+                <!-- إشعار الاحتفاظ بالتقييمات حتى نهاية السنة وحساب الزيادة السنوية -->
+                <div class="bg-blue-50 border border-blue-200 rounded-2xl p-4 mb-5 text-xs text-blue-950 flex flex-wrap items-center justify-between gap-3 card-shadow">
+                    <div class="space-y-1">
+                        <div class="font-extrabold text-sm"><i class="fa-solid fa-calendar-check text-blue-600 ml-1"></i>الاحتفاظ السنوي وحساب الزيادة السنوية التلقائي (سنة ${curYear})</div>
+                        <p class="leading-relaxed text-slate-700">
+                            تُخزن جميع التقييمات طوال العام حتى نهاية السنة (<strong>31 ديسمبر ${curYear}</strong>) دون حذف تلقائي أثناء السنة، ويُحسب تلقائياً <strong>متوسط تقييم كل فرد من أفراد السلامة</strong> على مدار السنة لتحديد شريحة الزيادة السنوية المستحقة.
+                            ${isYearEndWindow ? `<span class="text-emerald-800 font-extrabold"> • نحن في فترة نهاية العام ${curYear} — المتوسطات السنوية جاهزة لاعتماد الزيادة السنوية.</span>` : ''}
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <label class="font-bold text-slate-700">السنة:</label>
+                        <select onchange="evalState.selectedYear = Number(this.value); saveEvalState(); renderTeamEvaluation();" class="px-3 py-1.5 bg-white border rounded-xl font-mono font-extrabold">
+                            ${years.map(y => `<option value="${y}" ${y === curYear ? 'selected' : ''}>${y}</option>`).join('')}
+                        </select>
+                        <button type="button" onclick="openEvaluationModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-4 py-2 rounded-xl text-xs">
+                            <i class="fa-solid fa-plus ml-1"></i>إضافة تقييم
+                        </button>
+                    </div>
+                </div>
+
+                <!-- جدول المتوسط السنوي والزيادة السنوية لكل فرد في إدارة السلامة -->
+                <div class="bg-white rounded-2xl border-2 border-emerald-200 card-shadow overflow-hidden mb-6">
+                    <div class="p-4 bg-emerald-50/70 border-b border-emerald-200 flex flex-wrap items-center justify-between gap-2">
+                        <div>
+                            <h2 class="text-sm font-extrabold text-emerald-950"><i class="fa-solid fa-chart-line ml-1 text-emerald-600"></i>المتوسط السنوي والزيادة السنوية لأفراد السلامة (${curYear})</h2>
+                            <p class="text-[11px] text-slate-600">يُحسب تلقائياً من واقع تقييمات كل فرد على مدار سنة ${curYear}</p>
+                        </div>
+                        <span class="px-3 py-1 rounded-full bg-slate-900 text-white font-bold text-[11px]">عدد الأفراد المُقيّمين: ${annualSummaries.length}</span>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-right text-xs">
+                            <thead class="bg-slate-900 text-white">
+                                <tr>
+                                    <th class="p-3">الاسم</th>
+                                    <th class="p-3">الوظيفة</th>
+                                    <th class="p-3 text-center">عدد التقييمات</th>
+                                    <th class="p-3 text-center">متوسط التقييم السنوي (من 10)</th>
+                                    <th class="p-3">مؤشر الزيادة السنوية المقترح</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y">
+                                ${annualSummaries.map(s => `
+                                    <tr class="hover:bg-slate-50/80">
+                                        <td class="p-3 font-extrabold text-slate-900">${escapeHtml(s.employeeName)}</td>
+                                        <td class="p-3 font-bold text-slate-700">${escapeHtml(s.jobTitle)}</td>
+                                        <td class="p-3 text-center font-mono font-bold">${s.evaluationsCount}</td>
+                                        <td class="p-3 text-center">
+                                            <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-950 font-black">${formatScoreDisplay(s.annualAverage)} / 10</span>
+                                        </td>
+                                        <td class="p-3 font-extrabold text-blue-950">${escapeHtml(s.incrementSuggestion)}</td>
+                                    </tr>
+                                `).join('') || `
+                                    <tr>
+                                        <td colspan="5" class="p-6 text-center text-slate-400">لا توجد تقييمات مسجلة لسنة ${curYear} بعد — اضغط على <strong>"+ إضافة تقييم"</strong> للبدء.</td>
+                                    </tr>
+                                `}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- سجل التقييمات المسجلة مع إمكانية التعديل والحذف -->
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-sm font-extrabold text-slate-900"><i class="fa-solid fa-list-check ml-1 text-blue-600"></i>سجل التقييمات المخزنة (${yearEvals.length})</h2>
+                        <span class="text-[11px] text-slate-500">يمكنك تعديل أو حذف أي تقييم في أي وقت</span>
+                    </div>
+
+                    ${yearEvals.map(ev => {
+                        const avg = Number(ev.average) || calcEntryAverage(ev.scores);
+                        return `
+                            <div class="bg-white rounded-2xl p-4 sm:p-5 border card-shadow text-xs space-y-3">
+                                <div class="flex flex-wrap justify-between items-center gap-2">
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <span class="font-mono font-extrabold bg-slate-900 text-white px-2.5 py-1 rounded">${escapeHtml(ev.id)}</span>
+                                        <span class="font-extrabold text-sm text-slate-900">${escapeHtml(ev.employeeName)}</span>
+                                        <span class="px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-900 border border-blue-200 font-bold">${escapeHtml(ev.jobTitle || '-')}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-950 font-black">المتوسط: ${formatScoreDisplay(avg)} / 10</span>
+                                        <span class="font-mono font-bold text-slate-500">${escapeHtml(ev.date || '')}</span>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2">
+                                    ${OHS_EVAL_CRITERIA.map(c => {
+                                        const val = Number((ev.scores && ev.scores[c.id]) || 0);
+                                        return `
+                                            <div class="bg-slate-50 p-2.5 rounded-xl border">
+                                                <div class="text-[11px] font-bold text-slate-700 leading-snug">${escapeHtml(c.label)}</div>
+                                                <div class="text-sm font-black text-blue-900 mt-1">${formatScoreDisplay(val)} / 10</div>
+                                            </div>
+                                        `;
+                                    }).join('')}
+                                </div>
+
+                                ${ev.notes ? `<div class="text-slate-700 bg-slate-50/80 px-3 py-2 rounded-xl border"><strong>ملاحظات:</strong> ${escapeHtml(ev.notes)}</div>` : ''}
+
+                                <div class="flex justify-between items-center pt-2 border-t">
+                                    <button type="button" onclick="deleteEvaluation('${escapeHtml(ev.id)}')" class="px-2.5 py-1.5 rounded-lg bg-red-50 hover:bg-red-600 text-red-600 hover:text-white font-bold transition">
+                                        <i class="fa-solid fa-trash-can ml-1"></i>حذف التقييم
+                                    </button>
+                                    <button type="button" onclick="openEvaluationModal('${escapeHtml(ev.id)}')" class="px-3.5 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-900 hover:text-white border border-amber-200 font-bold transition">
+                                        <i class="fa-solid fa-pen-to-square ml-1"></i>تعديل التقييم
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('') || `
+                        <div class="bg-white rounded-2xl p-8 text-center text-slate-400 text-xs border card-shadow">
+                            لا توجد تقييمات مسجلة في سجل هذه السنة بعد.
+                        </div>
+                    `}
+                </div>
+            `;
+        }
+
+        // ==================== نافذة إضافة أو تعديل تقييم (من 1 إلى 10 بأنصاف وأرباع) ====================
+        function openEvaluationModal(evalId = null) {
+            const ed = evalId ? evalState.evaluations.find(x => x.id === evalId) : null;
+            const today = new Date().toISOString().split('T')[0];
+            const existingScores = (ed && ed.scores) ? ed.scores : {};
+
+            openModal(ed ? `تعديل تقييم (${ed.employeeName})` : 'إضافة تقييم جديد لفرد سلامة', `
+                <form id="eval-form" class="space-y-4 text-xs" dir="rtl">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                            <label class="block font-bold mb-1">الاسم *</label>
+                            <input name="employeeName" value="${ed ? escapeHtml(ed.employeeName || '') : ''}" required placeholder="اكتب اسم فرد السلامة" class="w-full px-3 py-2 bg-slate-50 border rounded-xl font-bold">
+                        </div>
+                        <div>
+                            <label class="block font-bold mb-1">الوظيفة *</label>
+                            <input name="jobTitle" value="${ed ? escapeHtml(ed.jobTitle || '') : ''}" required placeholder="مثال: أخصائي / مشرف سلامة وصحة مهنية" class="w-full px-3 py-2 bg-slate-50 border rounded-xl font-bold">
+                        </div>
+                        <div>
+                            <label class="block font-bold mb-1">التاريخ *</label>
+                            <input type="date" name="date" value="${ed ? escapeHtml(ed.date || today) : today}" required class="w-full px-3 py-2 bg-slate-50 border rounded-xl font-mono">
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 p-3.5 rounded-2xl border space-y-3">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <span class="font-extrabold text-slate-900">بنود التقييم (من 1 إلى 10 — يشمل الأنصاف 0.5 والأرباع 0.25 و 0.75):</span>
+                            <span id="live-eval-avg" class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-950 font-black">المتوسط الحالي: 8 / 10</span>
+                        </div>
+
+                        <div class="space-y-2.5">
+                            ${OHS_EVAL_CRITERIA.map(c => {
+                                const curVal = Number(existingScores[c.id] != null ? existingScores[c.id] : 8);
+                                return `
+                                    <div class="bg-white p-3 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                        <div class="space-y-0.5">
+                                            <div class="font-extrabold text-slate-900">${escapeHtml(c.label)}</div>
+                                            <div class="text-[11px] text-slate-500">${escapeHtml(c.desc)}</div>
+                                        </div>
+                                        <select name="score_${c.id}" onchange="updateLiveEvalAverage()" class="w-full sm:w-32 px-3 py-2 bg-slate-50 border rounded-xl font-mono font-extrabold text-center">
+                                            ${QUARTER_SCORES.map(sc => {
+                                                const isSel = Math.abs(sc - curVal) < 0.001;
+                                                return `<option value="${sc}" ${isSel ? 'selected' : ''}>${formatScoreDisplay(sc)} / 10</option>`;
+                                            }).join('')}
+                                        </select>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50/60 p-3.5 rounded-2xl border border-amber-200 space-y-1.5">
+                        <label class="block font-extrabold text-amber-950"><i class="fa-solid fa-note-sticky ml-1 text-amber-600"></i>ملاحظات التقييم (اختياري)</label>
+                        <textarea name="notes" rows="3" placeholder="اكتب ملاحظاتك حول أداء الموظف أو نقاط القوة أو التحسين المطلوبة..." class="w-full px-3 py-2 bg-white border rounded-xl">${ed ? escapeHtml(ed.notes || '') : ''}</textarea>
+                    </div>
+
+                    <div class="flex justify-end gap-2 pt-2 border-t">
+                        <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-xl bg-slate-100 font-bold">إلغاء</button>
+                        <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold">
+                            ${ed ? 'حفظ التعديلات ✓' : 'حفظ التقييم ✓'}
+                        </button>
+                    </div>
+                </form>
+            `);
+
+            updateLiveEvalAverage();
+
+            document.getElementById('eval-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const fd = new FormData(e.target);
+                const dateStr = fd.get('date') || today;
+                const yr = Number(String(dateStr).slice(0, 4)) || new Date().getFullYear();
+
+                const scores = {};
+                OHS_EVAL_CRITERIA.forEach(c => {
+                    scores[c.id] = Number(fd.get(`score_${c.id}`)) || 1;
+                });
+                const average = calcEntryAverage(scores);
+
+                const payload = {
+                    employeeName: fd.get('employeeName').trim(),
+                    jobTitle: fd.get('jobTitle').trim(),
+                    date: dateStr,
+                    year: yr,
+                    scores,
+                    average,
+                    notes: (fd.get('notes') || '').trim()
+                };
+
+                if (ed) {
+                    Object.assign(ed, payload);
+                    showToast(`تم تعديل تقييم (${payload.employeeName}) ✓`, 'success');
+                } else {
+                    evalState.evaluations.unshift({
+                        id: 'EV-' + Date.now(),
+                        ...payload
+                    });
+                    showToast(`تم حفظ تقييم (${payload.employeeName}) — المتوسط: ${formatScoreDisplay(average)}/10 ✓`, 'success');
+                }
+
+                evalState.selectedYear = yr;
+                saveEvalState();
+                closeModal();
+                renderTeamEvaluation();
+            });
+        }
+
+        function updateLiveEvalAverage() {
+            const form = document.getElementById('eval-form');
+            const badge = document.getElementById('live-eval-avg');
+            if (!form || !badge) return;
+            const scores = {};
+            OHS_EVAL_CRITERIA.forEach(c => {
+                const el = form.querySelector(`[name="score_${c.id}"]`);
+                scores[c.id] = el ? Number(el.value) : 0;
+            });
+            const avg = calcEntryAverage(scores);
+            badge.textContent = `المتوسط الحالي: ${formatScoreDisplay(avg)} / 10`;
+        }
+
+        function deleteEvaluation(evalId) {
+            openConfirmModal('حذف تقييم', 'هل تريد حذف هذا التقييم نهائياً؟', () => {
+                evalState.evaluations = evalState.evaluations.filter(x => x.id !== evalId);
+                saveEvalState();
+                renderTeamEvaluation();
+                showToast('تم حذف التقييم', 'info');
+            });
+        }
+
+        // ==================== تحميل PDF مع خيار إضافة اسم الشركة ولوجو الشركة ====================
+        function compressEvalLogo(file, maxW = 450, quality = 0.88) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const scale = Math.min(1, maxW / (img.width || maxW));
+                        const w = Math.max(1, Math.round((img.width || maxW) * scale));
+                        const h = Math.max(1, Math.round((img.height || maxW) * scale));
+                        const canvas = document.createElement('canvas');
+                        canvas.width = w;
+                        canvas.height = h;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, w, h);
+                        const outType = (file.type === 'image/png') ? 'image/png' : 'image/jpeg';
+                        resolve(canvas.toDataURL(outType, quality));
+                    };
+                    img.onerror = () => resolve(String(reader.result || ''));
+                    img.src = String(reader.result || '');
+                };
+                reader.onerror = () => resolve('');
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function openEvaluationPdfModal() {
+            const cfg = evalState.exportConfig || getDefaultEvalState().exportConfig;
+            const curYear = Number(evalState.selectedYear || new Date().getFullYear());
+
+            openModal('تحميل تقييمات الفريق بصيغة PDF', `
+                <form id="eval-pdf-form" class="space-y-4 text-xs" dir="rtl">
+                    <div class="bg-blue-50 border border-blue-200 rounded-2xl p-3 text-blue-950 leading-relaxed">
+                        يُنشئ ملف PDF منسق لتقييمات فريق السلامة والمتوسطات السنوية لسنة <strong>${curYear}</strong>، ويمكنك اختيار إضافة <strong>اسم الشركة</strong> و<strong>لوجو الشركة</strong>.
+                    </div>
+
+                    <div class="bg-slate-50 p-3.5 rounded-2xl border space-y-2">
+                        <div class="font-extrabold text-slate-900">إضافة اسم الشركة في ملف PDF؟</div>
+                        <div class="flex gap-3">
+                            <label class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border cursor-pointer font-bold">
+                                <input type="radio" name="compChoice" value="yes" ${cfg.includeCompanyName ? 'checked' : ''} onchange="toggleEvalPdfFields()" class="accent-emerald-600">
+                                <span>أيوة</span>
+                            </label>
+                            <label class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border cursor-pointer font-bold">
+                                <input type="radio" name="compChoice" value="no" ${!cfg.includeCompanyName ? 'checked' : ''} onchange="toggleEvalPdfFields()" class="accent-slate-700">
+                                <span>لأ</span>
+                            </label>
+                        </div>
+                        <div id="eval-comp-name-box" class="${cfg.includeCompanyName ? '' : 'hidden'} pt-1">
+                            <input type="text" name="companyName" value="${escapeHtml(cfg.companyName || '')}" placeholder="اكتب اسم الشركة..." class="w-full px-3 py-2 bg-white border rounded-xl font-bold">
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 p-3.5 rounded-2xl border space-y-2">
+                        <div class="font-extrabold text-slate-900">إضافة لوجو الشركة في ملف PDF؟</div>
+                        <div class="flex gap-3">
+                            <label class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border cursor-pointer font-bold">
+                                <input type="radio" name="logoChoice" value="yes" ${cfg.includeLogo ? 'checked' : ''} onchange="toggleEvalPdfFields()" class="accent-emerald-600">
+                                <span>أيوة</span>
+                            </label>
+                            <label class="flex items-center gap-2 bg-white px-3 py-2 rounded-xl border cursor-pointer font-bold">
+                                <input type="radio" name="logoChoice" value="no" ${!cfg.includeLogo ? 'checked' : ''} onchange="toggleEvalPdfFields()" class="accent-slate-700">
+                                <span>لأ</span>
+                            </label>
+                        </div>
+                        <div id="eval-logo-box" class="${cfg.includeLogo ? '' : 'hidden'} pt-1 space-y-2">
+                            <input type="file" id="eval-logo-file" accept="image/*" onchange="handleEvalLogoChange(this)" class="w-full px-2.5 py-1.5 bg-white border rounded-xl text-[11px]">
+                            <div id="eval-logo-preview">${cfg.logoDataUrl ? `<img src="${cfg.logoDataUrl}" class="h-12 w-auto object-contain bg-white p-1 rounded-lg border">` : ''}</div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-2 pt-2 border-t">
+                        <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-xl bg-slate-100 font-bold">إلغاء</button>
+                        <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold">تحميل PDF ✓</button>
+                    </div>
+                </form>
+            `);
+
+            document.getElementById('eval-pdf-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const fd = new FormData(e.target);
+                const wantComp = fd.get('compChoice') === 'yes';
+                const wantLogo = fd.get('logoChoice') === 'yes';
+                const compName = (fd.get('companyName') || '').trim();
+
+                const fileInp = document.getElementById('eval-logo-file');
+                if (wantLogo && fileInp && fileInp.files && fileInp.files[0]) {
+                    evalState.exportConfig.logoDataUrl = await compressEvalLogo(fileInp.files[0], 450, 0.88);
+                }
+
+                evalState.exportConfig.includeCompanyName = wantComp && Boolean(compName);
+                evalState.exportConfig.companyName = wantComp ? compName : '';
+                evalState.exportConfig.includeLogo = wantLogo && Boolean(evalState.exportConfig.logoDataUrl);
+                saveEvalState();
+
+                closeModal();
+                await downloadTeamEvaluationPdf();
+            });
+        }
+
+        function toggleEvalPdfFields() {
+            const form = document.getElementById('eval-pdf-form');
+            if (!form) return;
+            const cVal = form.querySelector('input[name="compChoice"]:checked')?.value;
+            const lVal = form.querySelector('input[name="logoChoice"]:checked')?.value;
+            document.getElementById('eval-comp-name-box')?.classList.toggle('hidden', cVal !== 'yes');
+            document.getElementById('eval-logo-box')?.classList.toggle('hidden', lVal !== 'yes');
+        }
+
+        async function handleEvalLogoChange(inputEl) {
+            const file = inputEl && inputEl.files ? inputEl.files[0] : null;
+            if (!file || !file.type.startsWith('image/')) return;
+            evalState.exportConfig.logoDataUrl = await compressEvalLogo(file, 450, 0.88);
+            const prev = document.getElementById('eval-logo-preview');
+            if (prev) prev.innerHTML = `<img src="${evalState.exportConfig.logoDataUrl}" class="h-12 w-auto object-contain bg-white p-1 rounded-lg border">`;
+        }
+
+        function drawRoundedRect(ctx, x, y, w, h, r, fillStyle, strokeStyle, lineWidth = 1) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.lineTo(x + w - r, y);
+            ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+            ctx.lineTo(x + w, y + h - r);
+            ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+            ctx.lineTo(x + r, y + h);
+            ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+            ctx.lineTo(x, y + r);
+            ctx.quadraticCurveTo(x, y, x + r, y);
+            ctx.closePath();
+            if (fillStyle) { ctx.fillStyle = fillStyle; ctx.fill(); }
+            if (strokeStyle) { ctx.strokeStyle = strokeStyle; ctx.lineWidth = lineWidth; ctx.stroke(); }
+            ctx.restore();
+        }
+
+        function loadImageSafe(src) {
+            return new Promise((resolve) => {
+                if (!src) { resolve(null); return; }
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = () => resolve(null);
+                img.src = src;
+            });
+        }
+
+        async function renderEvaluationPdfPages() {
+            const curYear = Number(evalState.selectedYear || new Date().getFullYear());
+            const cfg = evalState.exportConfig || {};
+            const showComp = Boolean(cfg.includeCompanyName && cfg.companyName);
+            const showLogo = Boolean(cfg.includeLogo && cfg.logoDataUrl);
+            const logoImg = showLogo ? await loadImageSafe(cfg.logoDataUrl) : null;
+
+            const summaries = computeAnnualStaffSummaries(curYear);
+            const entries = evalState.evaluations.filter(ev => Number(ev.year || (ev.date ? String(ev.date).slice(0, 4) : curYear)) === curYear);
+
+            const W = 1240;
+            const H = 1754;
+            const M = 52;
+            const contentW = W - M * 2;
+            const pages = [];
+
+            const createPage = (pageNum) => {
+                const canvas = document.createElement('canvas');
+                canvas.width = W;
+                canvas.height = H;
+                const ctx = canvas.getContext('2d');
+
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, W, H);
+                drawRoundedRect(ctx, 26, 26, W - 52, H - 52, 16, '#ffffff', '#cbd5e1', 2);
+
+                const grad = ctx.createLinearGradient(26, 26, W - 26, 185);
+                grad.addColorStop(0, '#071538');
+                grad.addColorStop(0.6, '#12306b');
+                grad.addColorStop(1, '#1b4fa0');
+                drawRoundedRect(ctx, 26, 26, W - 52, 160, 14, grad, null);
+
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#93c5fd';
+                ctx.font = 'bold 15px sans-serif';
+                ctx.fillText(`OHS TEAM ANNUAL EVALUATION REPORT — YEAR ${curYear}`, W - 58, 64);
+
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 30px sans-serif';
+                ctx.fillText(`تقرير تقييم فريق السلامة والمتوسط السنوي (${curYear})`, W - 58, 108);
+
+                if (showComp) {
+                    ctx.fillStyle = '#fde68a';
+                    ctx.font = 'bold 21px sans-serif';
+                    ctx.fillText(String(cfg.companyName), W - 58, 148);
+                }
+
+                if (logoImg) {
+                    drawRoundedRect(ctx, 52, 48, 200, 114, 12, '#ffffff', '#e2e8f0', 2);
+                    const scale = Math.min(176 / logoImg.width, 94 / logoImg.height);
+                    const lw = logoImg.width * scale;
+                    const lh = logoImg.height * scale;
+                    ctx.drawImage(logoImg, 52 + (200 - lw) / 2, 48 + (114 - lh) / 2, lw, lh);
+                }
+
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#64748b';
+                ctx.font = 'bold 15px sans-serif';
+                ctx.fillText(`إدارة السلامة والصحة المهنية  •  صفحة ${pageNum}`, W / 2, H - 42);
+
+                pages.push(canvas);
+                return { canvas, ctx, y: 206 };
+            };
+
+            let { ctx, y } = createPage(1);
+
+            ctx.textAlign = 'right';
+            ctx.fillStyle = '#0d2154';
+            ctx.font = 'bold 20px sans-serif';
+            ctx.fillText('أولاً: المتوسط السنوي والزيادة السنوية لكل فرد', W - M, y + 24);
+            y += 42;
+
+            drawRoundedRect(ctx, M, y, contentW, 42, 6, '#0d2154', null);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 15px sans-serif';
+            ctx.fillText('الاسم', W - M - 16, y + 27);
+            ctx.fillText('الوظيفة', W - M - 300, y + 27);
+            ctx.textAlign = 'center';
+            ctx.fillText('عدد التقييمات', 590, y + 27);
+            ctx.fillText('المتوسط السنوي', 435, y + 27);
+            ctx.textAlign = 'right';
+            ctx.fillText('مؤشر الزيادة السنوية', 340, y + 27);
+            y += 42;
+
+            summaries.forEach((s, idx) => {
+                if (y + 46 > H - 120) {
+                    const next = createPage(pages.length + 1);
+                    ctx = next.ctx;
+                    y = next.y;
+                }
+                ctx.fillStyle = idx % 2 === 0 ? '#ffffff' : '#f8fafc';
+                ctx.fillRect(M, y, contentW, 44);
+                ctx.strokeStyle = '#cbd5e1';
+                ctx.strokeRect(M, y, contentW, 44);
+
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#0f172a';
+                ctx.font = 'bold 15px sans-serif';
+                ctx.fillText(s.employeeName, W - M - 16, y + 28);
+                ctx.fillText(s.jobTitle, W - M - 300, y + 28);
+
+                ctx.textAlign = 'center';
+                ctx.fillText(String(s.evaluationsCount), 590, y + 28);
+                ctx.fillStyle = '#047857';
+                ctx.fillText(`${formatScoreDisplay(s.annualAverage)} / 10`, 435, y + 28);
+
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#1e3a8a';
+                ctx.fillText(s.incrementSuggestion, 340, y + 28);
+                y += 44;
+            });
+
+            y += 24;
+            if (y + 90 > H - 120) {
+                const next = createPage(pages.length + 1);
+                ctx = next.ctx;
+                y = next.y;
+            }
+
+            ctx.textAlign = 'right';
+            ctx.fillStyle = '#0d2154';
+            ctx.font = 'bold 20px sans-serif';
+            ctx.fillText('ثانياً: سجل التقييمات المسجلة خلال السنة', W - M, y + 24);
+            y += 42;
+
+            entries.forEach((ev, idx) => {
+                const avg = Number(ev.average) || calcEntryAverage(ev.scores);
+                if (y + 52 > H - 120) {
+                    const next = createPage(pages.length + 1);
+                    ctx = next.ctx;
+                    y = next.y;
+                }
+                ctx.fillStyle = idx % 2 === 0 ? '#ffffff' : '#f8fafc';
+                ctx.fillRect(M, y, contentW, 48);
+                ctx.strokeStyle = '#cbd5e1';
+                ctx.strokeRect(M, y, contentW, 48);
+
+                ctx.textAlign = 'right';
+                ctx.fillStyle = '#0f172a';
+                ctx.font = 'bold 15px sans-serif';
+                ctx.fillText(`${idx + 1}. ${ev.employeeName} (${ev.jobTitle || '-'})`, W - M - 16, y + 30);
+
+                ctx.textAlign = 'center';
+                ctx.fillText(ev.date || '', 470, y + 30);
+                ctx.fillStyle = '#047857';
+                ctx.fillText(`المتوسط: ${formatScoreDisplay(avg)} / 10`, 220, y + 30);
+                y += 48;
+            });
+
+            return pages;
+        }
+
+        async function downloadTeamEvaluationPdf() {
+            const curYear = Number(evalState.selectedYear || new Date().getFullYear());
+            const JsPdfCtor = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF : window.jsPDF;
+            if (!JsPdfCtor) {
+                showToast('تعذر تحميل مكتبة PDF، تحقق من الاتصال بالإنترنت', 'error');
+                return;
+            }
+
+            showToast('جاري تجهيز ملف PDF لتقييم الفريق...', 'info');
+            try {
+                const pages = await renderEvaluationPdfPages();
+                const pdf = new JsPdfCtor({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+                pages.forEach((canvas, idx) => {
+                    if (idx > 0) pdf.addPage('a4', 'portrait');
+                    const imgData = canvas.toDataURL('image/jpeg', 0.94);
+                    pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+                });
+                pdf.save(`OHS_Team_Evaluation_${curYear}.pdf`);
+                showToast('تم تحميل ملف PDF بنجاح ✓', 'success');
+            } catch (e) {
+                showToast('حدث خطأ أثناء إنشاء ملف PDF', 'error');
+            }
+        }
+
+        // ==================== النوافذ المساعدة ====================
+        function openModal(title, html) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-body').innerHTML = html;
+            const m = document.getElementById('modal-container');
+            m.classList.remove('hidden'); m.classList.add('flex');
+        }
+        function closeModal() {
+            const m = document.getElementById('modal-container');
+            m.classList.add('hidden'); m.classList.remove('flex');
+        }
+        function openConfirmModal(title, msg, cb) {
+            document.getElementById('confirm-title').textContent = title;
+            document.getElementById('confirm-message').textContent = msg;
+            confirmCallback = cb;
+            const m = document.getElementById('confirm-modal');
+            m.classList.remove('hidden'); m.classList.add('flex');
+        }
+        function closeConfirmModal(ok) {
+            const m = document.getElementById('confirm-modal');
+            m.classList.add('hidden'); m.classList.remove('flex');
+            if (ok && typeof confirmCallback === 'function') confirmCallback();
+            confirmCallback = null;
+        }
+
+        window.addEventListener('DOMContentLoaded', renderTeamEvaluation);
+    </script>
+
+<script>
+(function () {
+  if (window.__OHS_AI_BRIDGE_READY__) return;
+  window.__OHS_AI_BRIDGE_READY__ = true;
+
+  window.ohsAskHighPrecisionAI = async function (question, options = {}) {
+    let base = 'https://ohs-management.ahmed4qhse.workers.dev';
+    let token = '';
+    try {
+      const raw = localStorage.getItem('hse_session_v2') || localStorage.getItem('hse_session_v1');
+      if (raw) {
+        const s = JSON.parse(raw);
+        if (s.apiBase) base = s.apiBase;
+        if (s.token) token = s.token;
+      }
+    } catch {}
+
+    const res = await fetch(base + '/api/ai', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': 'Bearer ' + token } : {})
+      },
+      body: JSON.stringify({
+        question: String(question || '').trim(),
+        mode: options.mode || 'deep_analysis',
+        images: Array.isArray(options.images) ? options.images : []
+      })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.message ? (data.error + ': ' + data.message) : (data.error || 'تعذر الاتصال بالمساعد الذكي'));
+    }
+    return data.answer || '';
+  };
+})();
+</script>
+
+</body>
+</html>
