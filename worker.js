@@ -53,7 +53,7 @@ function normalizePermissions(raw, role = 'member') {
 async function hash(p, s) {
   const b = await crypto.subtle.importKey('raw', enc.encode(p), 'PBKDF2', false, ['deriveBits']);
   const bits = await crypto.subtle.deriveBits(
-    { name: 'PBKDF2', salt: enc.encode(s), iterations: 180000, hash: 'SHA-256' },
+    { name: 'PBKDF2', salt: enc.encode(s), iterations: 100000, hash: 'SHA-256' },
     b,
     256
   );
