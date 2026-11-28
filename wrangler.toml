@@ -2,10 +2,6 @@ name = "ohs-management"
 main = "worker.js"
 compatibility_date = "2026-11-27"
 
-[assets]
-directory = "."
-binding = "ASSETS"
-
 [[d1_databases]]
 binding = "DB"
 database_name = "hse-saas-db"

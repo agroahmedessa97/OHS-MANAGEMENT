@@ -449,13 +449,7 @@ ${q || 'حلل الصور المرفقة من منظور السلامة والص
       return json({ error: 'Not found' }, 404, origin);
     } catch (e) {
       if (String(e).includes('UNIQUE')) return json({ error: 'البريد الإلكتروني أو اسم المستخدم مستخدم بالفعل.' }, 409, origin);
-    if (env.ASSETS && !u.pathname.startsWith('/api/')) {
-        return env.ASSETS.fetch(req);
-      }
- if (env.ASSETS && !u.pathname.startsWith('/api/')) {
-        return env.ASSETS.fetch(req);
-      }
-      return json({ error: 'Not found' }, 404, origin);
+      return json({ error: 'خطأ في الخادم', message: e.message }, 500, origin);
     }
   }
 };
