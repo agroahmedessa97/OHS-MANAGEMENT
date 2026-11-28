@@ -120,6 +120,12 @@
         padding: 0.15rem 0.25rem !important;
       }
     }
+    #active-form-container {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      min-height: 360px;
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -2552,11 +2558,30 @@
       }
     }
 
+        function ensureFormsVisibleBoot() {
+      try {
+        if (!formsState || !formsState[currentFormId]) {
+          loadState();
+        }
+        renderTabs();
+        renderActiveForm();
+        const box = document.getElementById('active-form-container');
+        if (box && (!box.innerHTML || !box.innerHTML.trim())) {
+          currentFormId = 'form1';
+          renderTabs();
+          renderActiveForm();
+        }
+      } catch (err) {
+        console.error('Form render fallback:', err);
+      }
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
-      loadState();
-      renderTabs();
-      renderActiveForm();
+      ensureFormsVisibleBoot();
     });
+    if (document.readyState === 'interactive' || document.readyState === 'complete') {
+      ensureFormsVisibleBoot();
+    }
   </script>
 
 <script>

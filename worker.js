@@ -182,11 +182,15 @@ async function parseJsonBody(req) {
 }
 
 async function callGeminiProvider(env, promptText, validImgs, temperature) {
+  const rawKey = String(env.GEMINI_API_KEY || '').trim();
+  if (!rawKey) throw new Error('NO_AI_KEY');
+
   const modelsToTry = [
-    env.GEMINI_MODEL || 'gemini-2.5-pro',
-    'gemini-2.5-flash'
+    env.GEMINI_MODEL || 'gemini-2.5-flash',
+    'gemini-2.5-pro',
+    'gemini-2.0-flash'
   ];
-  const uniqueModels = Array.from(new Set(modelsToTry));
+  const uniqueModels = Array.from(new Set(modelsToTry.filter(Boolean)));
   let lastErr = null;
 
   for (const model of uniqueModels) {
@@ -195,7 +199,7 @@ async function callGeminiProvider(env, promptText, validImgs, temperature) {
       for (const img of validImgs) {
         parts.push({ inlineData: { mimeType: img.mimeType, data: img.base64 } });
       }
-      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(env.GEMINI_API_KEY)}`;
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(rawKey)}`;
       const resp = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -210,12 +214,14 @@ async function callGeminiProvider(env, promptText, validImgs, temperature) {
       });
       const data = await resp.json().catch(() => ({}));
       if (!resp.ok) {
-        lastErr = new Error(data.error?.message || `Gemini HTTP ${resp.status}`);
+        const apiMsg = data.error?.message || `Gemini HTTP ${resp.status}`;
+        lastErr = new Error(`${model}: ${apiMsg}`);
         continue;
       }
       const candParts = data.candidates?.[0]?.content?.parts || [];
       const text = candParts.map((p) => p.text || '').join('\n').trim();
       if (text) return { answer: text, modelUsed: model };
+      lastErr = new Error(`${model}: رد فارغ من النموذج`);
     } catch (err) {
       lastErr = err;
     }
@@ -347,7 +353,7 @@ export default {
         const emailN = String(email).trim().toLowerCase();
         const userN = String(username).trim().toLowerCase();
 
-        const existingEmail = await env.DB.prepare('SELECT id FROM users WHERE email=?').bind(emailN).first();
+        const existingEmail = await env.DB.prepare('SELECT id FROM users WHERE LOWER(TRIM(email))=?').bind(emailN).first();
         if (existingEmail) {
           return json({ error: 'هذا البريد الإلكتروني مسجّل بالفعل. استخدم بريداً آخر أو سجّل الدخول.' }, 409, origin);
         }
@@ -374,6 +380,122 @@ export default {
         ]);
 
         return json({ ok: true, companyId: cid, companyCode: cc, message: 'تم إنشاء الشركة بنجاح.' }, 201, origin);
+      }
+
+
+      if (req.method === 'POST' && u.pathname === '/api/auth/forgot-password') {
+        if (!env.DB) return json({ error: 'قاعدة البيانات D1 غير مربوطة بالمشروع (DB).' }, 503, origin);
+        await ensureDatabaseReady(env);
+        const body = await parseJsonBody(req);
+        if (!body) return json({ error: 'صيغة البيانات المرسلة غير صالحة.' }, 400, origin);
+
+        const emailN = String(body.email || '').trim().toLowerCase();
+        if (!emailN || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailN)) {
+          return json({ error: 'أدخل بريداً إلكترونياً صحيحاً ومسجلاً في النظام.' }, 400, origin);
+        }
+
+        const existing = await env.DB.prepare('SELECT id, name, email FROM users WHERE LOWER(TRIM(email))=?')
+          .bind(emailN)
+          .first();
+        if (!existing) {
+          return json({ error: 'هذا البريد الإلكتروني غير مسجّل في النظام.' }, 404, origin);
+        }
+
+        const otpCode = String(Math.floor(100000 + Math.random() * 900000));
+        const expiresAt = Date.now() + 15 * 60 * 1000;
+        const otpPayload = JSON.stringify({
+          userId: existing.id,
+          email: existing.email,
+          otp: otpCode,
+          expiresAt
+        });
+
+        if (env.OTP_KV && typeof env.OTP_KV.put === 'function') {
+          await env.OTP_KV.put('pwd_reset:' + emailN, otpPayload, { expirationTtl: 900 });
+        }
+
+        let deliveredViaEmail = false;
+        const resendKey = String(env.RESEND_API_KEY || '').trim();
+        const fromEmail = String(env.FROM_EMAIL || 'onboarding@resend.dev').trim();
+        if (resendKey) {
+          try {
+            const mailRes = await fetch('https://api.resend.com/emails', {
+              method: 'POST',
+              headers: {
+                'Authorization': 'Bearer ' + resendKey,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                from: fromEmail,
+                to: [existing.email],
+                subject: 'رمز استعادة كلمة المرور — منصة السلامة والصحة المهنية (HSE)',
+                html: `<div dir="rtl" style="font-family:Cairo,Arial,sans-serif;line-height:1.7;">
+                  <h2>استعادة كلمة المرور</h2>
+                  <p>مرحباً ${existing.name || ''}،</p>
+                  <p>رمز التحقق الخاص باستعادة كلمة المرور هو: <strong style="font-size:20px;letter-spacing:3px;">${otpCode}</strong></p>
+                  <p>صلاحية الرمز 15 دقيقة.</p>
+                </div>`
+              })
+            });
+            deliveredViaEmail = mailRes.ok;
+          } catch {
+            deliveredViaEmail = false;
+          }
+        }
+
+        return json({
+          ok: true,
+          email: existing.email,
+          deliveredViaEmail,
+          expiresInMinutes: 15,
+          ...(deliveredViaEmail ? {} : { debugOtp: otpCode })
+        }, 200, origin);
+      }
+
+      if (req.method === 'POST' && u.pathname === '/api/auth/reset-password') {
+        if (!env.DB) return json({ error: 'قاعدة البيانات D1 غير مربوطة بالمشروع (DB).' }, 503, origin);
+        await ensureDatabaseReady(env);
+        const body = await parseJsonBody(req);
+        if (!body) return json({ error: 'صيغة البيانات المرسلة غير صالحة.' }, 400, origin);
+
+        const emailN = String(body.email || '').trim().toLowerCase();
+        const otpInput = String(body.otp || '').trim();
+        const newPassword = String(body.newPassword || '');
+
+        if (!emailN || !otpInput || newPassword.length < 3) {
+          return json({ error: 'أدخل البريد الإلكتروني ورمز التحقق وكلمة المرور الجديدة (3 أحرف أو أرقام على الأقل).' }, 400, origin);
+        }
+
+        let storedRecord = null;
+        if (env.OTP_KV && typeof env.OTP_KV.get === 'function') {
+          const rawKv = await env.OTP_KV.get('pwd_reset:' + emailN);
+          if (rawKv) {
+            try { storedRecord = JSON.parse(rawKv); } catch { storedRecord = null; }
+          }
+        }
+
+        if (!storedRecord || String(storedRecord.otp) !== otpInput || Number(storedRecord.expiresAt || 0) < Date.now()) {
+          return json({ error: 'رمز التحقق غير صحيح أو منتهي الصلاحية.' }, 400, origin);
+        }
+
+        const userRow = await env.DB.prepare('SELECT id FROM users WHERE LOWER(TRIM(email))=?')
+          .bind(emailN)
+          .first();
+        if (!userRow) {
+          return json({ error: 'الحساب المرتبط بهذا البريد غير موجود.' }, 404, origin);
+        }
+
+        const newSalt = crypto.randomUUID();
+        const newHash = await hash(newPassword, newSalt);
+        await env.DB.prepare('UPDATE users SET password_hash=? WHERE id=?')
+          .bind(newSalt + ':' + newHash, userRow.id)
+          .run();
+
+        if (env.OTP_KV && typeof env.OTP_KV.delete === 'function') {
+          await env.OTP_KV.delete('pwd_reset:' + emailN);
+        }
+
+        return json({ ok: true, message: 'تم تحديث كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة.' }, 200, origin);
       }
 
       if (req.method === 'POST' && u.pathname === '/api/login') {
@@ -458,7 +580,7 @@ export default {
           }
           const emailN = String(email).trim().toLowerCase();
           const userN = String(username).trim().toLowerCase();
-          const existingEmail = await env.DB.prepare('SELECT id FROM users WHERE email=?').bind(emailN).first();
+          const existingEmail = await env.DB.prepare('SELECT id FROM users WHERE LOWER(TRIM(email))=?').bind(emailN).first();
           if (existingEmail) return json({ error: 'البريد الإلكتروني مستخدم بالفعل.' }, 409, origin);
           const existingUsername = await env.DB.prepare('SELECT id FROM users WHERE username=?').bind(userN).first();
           if (existingUsername) return json({ error: 'اسم المستخدم مستخدم بالفعل.' }, 409, origin);

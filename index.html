@@ -1,0 +1,1723 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>منصة السلامة والصحة المهنية (HSE) — الملخصات والإحصائيات</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy: #0f2942;
+      --navy-2: #1b4369;
+      --sky: #0284c7;
+      --sky-hover: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --danger: #dc2626;
+      --bg: #eef3f8;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #cbd5e1;
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: 'Cairo', Tahoma, Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 18px auto;
+      padding: 12px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #091a2b 0%, #0f2942 60%, #1d4ed8 100%);
+      color: #ffffff;
+      padding: 20px 24px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 12px 30px rgba(15, 41, 66, 0.16);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .hero h1 {
+      margin: 0 0 4px;
+      font-size: 1.38rem;
+      font-weight: 900;
+    }
+
+    .hero p {
+      margin: 0;
+      font-size: 0.88rem;
+      color: #dbeafe;
+    }
+
+    .top-right-menu-btn {
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      color: #ffffff;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background-color 0.15s, transform 0.12s;
+    }
+
+    .top-right-menu-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px);
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid #dce5ef;
+      border-radius: var(--radius);
+      padding: 20px;
+      margin: 14px 0;
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
+    }
+
+    .panel h2 {
+      margin: 0 0 12px;
+      font-size: 1.08rem;
+      color: var(--navy);
+      font-weight: 800;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .stat-card {
+      background: #f8fafc;
+      border: 1px solid #dbe4ee;
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .stat-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #475569;
+    }
+
+    .stat-pct {
+      font-size: 1.45rem;
+      font-weight: 900;
+      color: var(--navy);
+    }
+
+    .stat-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: var(--emerald);
+      border-radius: 999px;
+      transition: width 0.25s ease;
+    }
+
+    .bar-fill.warn { background: var(--amber); }
+    .bar-fill.bad { background: var(--danger); }
+
+    label {
+      display: block;
+      font-size: 0.83rem;
+      font-weight: 700;
+      color: #334155;
+      margin-top: 8px;
+      margin-bottom: 4px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 6px;
+      font-size: 0.92rem;
+      background: #f8fafc;
+      color: var(--text);
+      outline: none;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--sky);
+      background: #ffffff;
+    }
+
+    button {
+      background: var(--sky);
+      color: #ffffff;
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-top: 6px;
+      transition: background-color 0.15s, opacity 0.15s;
+    }
+
+    button:hover:not(:disabled) {
+      background: var(--sky-hover);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    button.secondary {
+      background: #e2e8f0;
+      color: #0f2942;
+    }
+
+    button.secondary:hover:not(:disabled) {
+      background: #cbd5e1;
+    }
+
+    button.success {
+      background: var(--emerald);
+    }
+
+    button.success:hover:not(:disabled) {
+      background: #047857;
+    }
+
+    .bio-btn {
+      background: #0f766e;
+      color: #ffffff;
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.88rem;
+      margin-top: 8px;
+      width: 100%;
+    }
+
+    .bio-btn:hover:not(:disabled) {
+      background: #0d9488;
+    }
+
+    .bio-box {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 12px;
+      background: #f0fdfa;
+      border: 1px solid #99f6e4;
+      font-size: 0.82rem;
+      color: #134e4a;
+    }
+
+    .perms-box {
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 12px;
+      margin: 8px 0;
+    }
+
+    .perms-title {
+      font-size: 0.84rem;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .perms-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 8px;
+    }
+
+    .perm-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #1e293b;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 7px 10px;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .perm-item input[type="checkbox"] {
+      width: auto;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .notice {
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e3a8a;
+      margin: 10px 0;
+      font-size: 0.88rem;
+      white-space: pre-wrap;
+      line-height: 1.65;
+    }
+
+    .err {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #991b1b;
+    }
+
+    .good {
+      background: #ecfdf5;
+      border-color: #a7f3d0;
+      color: #065f46;
+      font-weight: 700;
+    }
+
+    .member {
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 12px;
+      margin: 10px 0;
+      font-size: 0.86rem;
+    }
+
+    .member-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .role-pill {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    /* Top-right Forms & Team Drawer */
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      z-index: 60;
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .drawer-panel {
+      width: 100%;
+      max-width: 440px;
+      height: 100%;
+      background: #ffffff;
+      box-shadow: -12px 0 36px rgba(15, 23, 42, 0.25);
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .drawer-item {
+      width: 100%;
+      text-align: right;
+      background: #f8fafc;
+      color: #0f172a;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 11px 14px;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 800;
+      font-size: 0.88rem;
+    }
+
+    .drawer-item:hover {
+      background: #e0f2fe;
+      border-color: var(--sky);
+    }
+
+    .drawer-item.highlight {
+      background: #ecfdf5;
+      border-color: #6ee7b7;
+      color: #065f46;
+    }
+
+    .prompts-row {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      margin: 6px 0 10px;
+    }
+
+    .chip-btn {
+      background: #f1f5f9;
+      color: #0f2942;
+      border: 1px solid #cbd5e1;
+      border-radius: 999px;
+      padding: 5px 11px;
+      font-size: 0.78rem;
+      margin: 0;
+    }
+
+    .chip-btn:hover:not(:disabled) {
+      background: #e0f2fe;
+      border-color: var(--sky);
+      color: #0369a1;
+    }
+
+    #pics img {
+      max-width: 110px;
+      max-height: 110px;
+      border-radius: 10px;
+      margin: 5px;
+      border: 1px solid #cbd5e1;
+      object-fit: cover;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+      padding: 14px 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- الشريط العلوي مع أيقونة النماذج أعلى اليمين -->
+    <div class="hero">
+      <div>
+        <h1>منصة السلامة والصحة المهنية (HSE)</h1>
+        <p>ملخصات التقارير ونسب الكفاءة والإحصاءات الشاملة • إدارة الفرق • المساعد الذكي</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <button type="button" id="topFormsMenuBtn" class="top-right-menu-btn hidden" onclick="toggleFormsDrawer(true)">
+          <span>☰ النماذج</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- قائمة النماذج المنسدلة من أعلى اليمين (تشمل كل النماذج + إضافة الفريق) -->
+    <div id="formsDrawer" class="drawer-backdrop hidden" onclick="handleDrawerBackdropClick(event)">
+      <aside class="drawer-panel" onclick="event.stopPropagation()">
+        <div class="row" style="border-bottom:1px solid #e2e8f0;padding-bottom:10px;">
+          <div>
+            <h2 style="margin:0;">النماذج وإدارة الفريق</h2>
+            <div class="muted">اختر النموذج المطلوب فتحه</div>
+          </div>
+          <button type="button" class="secondary" style="margin:0;" onclick="toggleFormsDrawer(false)">✕ إغلاق</button>
+        </div>
+
+        <button type="button" id="drawerTeamBtn" class="drawer-item highlight hidden" onclick="scrollToTeamSection()">
+          <span>👥 إضافة وإدارة فريق العمل</span>
+          <span>←</span>
+        </button>
+
+        <button type="button" class="drawer-item" onclick="openModule('النماذج القانونيه.html', 'النماذج القانونية')">
+          <span>📋 النماذج القانونية (قانون 14 / قرارات 248–250)</span>
+          <span>↗</span>
+        </button>
+        <button type="button" class="drawer-item" onclick="openModule('مهام السلامة ومعدل تكرارها.html', 'مهام السلامة ومعدل تكرارها')">
+          <span>⚖️ مهام السلامة ومعدل تكرارها</span>
+          <span>↗</span>
+        </button>
+        <button type="button" class="drawer-item" onclick="openModule('مخططات الدفاع المدني.html', 'مخططات الدفاع المدني والطفايات')">
+          <span>🚒 مخططات الدفاع المدني وفحص الطفايات</span>
+          <span>↗</span>
+        </button>
+        <button type="button" class="drawer-item" onclick="openModule('خطة الطوارئ.html', 'خطة الطوارئ لـ 3 ورديات')">
+          <span>🚨 خطة الطوارئ لـ 3 ورديات</span>
+          <span>↗</span>
+        </button>
+        <button type="button" class="drawer-item" onclick="openModule('SDS.html', 'صحائف بيانات السلامة SDS')">
+          <span>🧪 صحائف بيانات السلامة SDS</span>
+          <span>↗</span>
+        </button>
+        <button type="button" class="drawer-item" onclick="openModule('5S.html', 'تقييم منهجية 5S')">
+          <span>🧹 تقييم منهجية 5S</span>
+          <span>↗</span>
+        </button>
+        <button type="button" class="drawer-item" onclick="openModule('تقييم فريق العمل.html', 'تقييم فريق السلامة')">
+          <span>⭐ تقييم فريق السلامة</span>
+          <span>↗</span>
+        </button>
+        <button type="button" class="drawer-item" onclick="openModule('التدريب والتوعية.html', 'التدريب والتوعية')">
+          <span>🎓 التدريب والتوعية</span>
+          <span>↗</span>
+        </button>
+        <button type="button" class="drawer-item" onclick="openModule('الابلاغ عن الحوادث والتحقيق فيها.html', 'الإبلاغ عن الحوادث والتحقيق فيها')">
+          <span>🚑 الحوادث والبلاغات الوشيكة</span>
+          <span>↗</span>
+        </button>
+        <button type="button" class="drawer-item" onclick="openModule('المخالفات.html', 'التفتيش والمخالفات والملاحظات الوقائية')">
+          <span>⚠️ المخالفات والملاحظات الوقائية</span>
+          <span>↗</span>
+        </button>
+        <button type="button" class="drawer-item" onclick="openModule('تصاريح العمل.html', 'تصاريح العمل PTW')">
+          <span>📝 تصاريح العمل (PTW)</span>
+          <span>↗</span>
+        </button>
+        <button type="button" class="drawer-item" onclick="openModule('تحليل المخاطر.html', 'تحليل ومصفوفة المخاطر 5×5')">
+          <span>📊 تحليل المخاطر 5×5</span>
+          <span>↗</span>
+        </button>
+        <button type="button" class="drawer-item" onclick="openModule('تقرير التفتيش اليومي.html', 'تقرير التفتيش اليومي')">
+          <span>🔍 تقرير التفتيش اليومي</span>
+          <span>↗</span>
+        </button>
+        <div id="modulemsg"></div>
+      </aside>
+    </div>
+
+    <!-- شاشة التسجيل والدخول -->
+    <div id="auth" class="grid">
+      <section class="panel">
+        <h2>إنشاء حساب شركة ومدير</h2>
+        <label for="cname">اسم الشركة / المنشأة</label>
+        <input id="cname" placeholder="أدخل اسم الشركة" />
+
+        <label for="ownername">اسم المدير المسؤول</label>
+        <input id="ownername" placeholder="أدخل الاسم الكامل" />
+
+        <label for="owneruser">اسم المستخدم</label>
+        <input id="owneruser" placeholder="username" dir="ltr" />
+
+        <label for="owneremail">البريد الإلكتروني</label>
+        <input id="owneremail" type="email" placeholder="manager@company.com" dir="ltr" />
+
+        <label for="ownerpass">كلمة المرور (3 أحرف أو أرقام على الأقل)</label>
+        <input id="ownerpass" type="password" placeholder="•••" />
+
+        <button type="button" id="btn-register" style="width:100%;" onclick="registerCompany()">إنشاء الشركة وتوليد كود الدخول</button>
+        <div id="regmsg"></div>
+      </section>
+
+      <section class="panel">
+        <h2>تسجيل الدخول للشركة</h2>
+        <label for="code">كود الشركة</label>
+        <input id="code" placeholder="HSE-XXXXXXXX" dir="ltr" />
+
+        <label for="loginuser">اسم المستخدم</label>
+        <input id="loginuser" placeholder="username" dir="ltr" />
+
+        <label for="loginpass">كلمة المرور</label>
+        <input id="loginpass" type="password" placeholder="•••" />
+
+        <button type="button" id="btn-login" class="success" style="width:100%;" onclick="login()">تسجيل الدخول</button>
+        <button type="button" id="btn-biometric-login" class="bio-btn" onclick="loginWithBiometrics()">
+          👆 الدخول بالبصمة / بصمة الوجه
+        </button>
+        <div id="biometricStatusHint" class="muted" style="margin-top:6px;text-align:center;">
+          يمكن تفعيل البصمة على هذا الجهاز بعد أول تسجيل دخول ناجح.
+        </div>
+
+        <div style="margin-top:10px;text-align:center;">
+          <button type="button" class="secondary" style="width:100%;" onclick="togglePasswordRecoveryBox()">
+            🔑 نسيت كلمة المرور؟ استعادة عبر الإيميل المسجل
+          </button>
+        </div>
+
+        <div id="recoveryBox" class="hidden" style="margin-top:12px;padding:14px;border-radius:12px;background:#f8fafc;border:1px solid #cbd5e1;">
+          <div style="font-weight:800;color:var(--navy);margin-bottom:6px;font-size:0.9rem;">استعادة كلمة المرور بالإيميل المسجل</div>
+          <label for="rec_email">البريد الإلكتروني المسجل في النظام (غير مكرر)</label>
+          <input id="rec_email" type="email" placeholder="name@company.com" dir="ltr" />
+          <button type="button" id="btn-send-otp" onclick="sendRecoveryOtp()">إرسال رمز التحقق إلى الإيميل</button>
+
+          <div id="rec_step2" class="hidden" style="margin-top:10px;padding-top:10px;border-top:1px dashed #cbd5e1;">
+            <label for="rec_otp">رمز التحقق (6 أرقام)</label>
+            <input id="rec_otp" placeholder="123456" dir="ltr" />
+
+            <label for="rec_newpass">كلمة المرور الجديدة (3 أحرف أو أرقام على الأقل)</label>
+            <input id="rec_newpass" type="password" placeholder="•••" />
+
+            <button type="button" id="btn-reset-pass" class="success" style="width:100%;" onclick="confirmPasswordReset()">تأكيد وتعيين كلمة المرور الجديدة</button>
+          </div>
+          <div id="recmsg"></div>
+        </div>
+
+        <div id="loginmsg"></div>
+      </section>
+    </div>
+
+    <!-- مساحة العمل بعد تسجيل الدخول: ملخصات التقارير ونسب الكفاءة والإحصائيات أولاً -->
+    <div id="workspace" class="hidden">
+      <div class="panel">
+        <div class="row">
+          <div>
+            <h2 id="welcome" style="margin-bottom:2px;"></h2>
+            <div id="companylabel" class="muted"></div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button type="button" class="secondary" onclick="refreshAllSummariesAndStats()">تحديث الملخصات</button>
+            <button type="button" class="secondary" onclick="logout()">تسجيل خروج</button>
+          </div>
+        </div>
+        <div id="codebox" class="notice good"></div>
+        <div id="biometricManageBox" class="bio-box">
+          <div class="row">
+            <div>
+              <strong>🔐 الدخول السريع بالبصمة على هذا الجهاز</strong>
+              <div id="biometricStateText" class="muted">جارٍ التحقق من حالة البصمة...</div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button type="button" id="btn-enable-bio" class="bio-btn" style="width:auto;margin:0;" onclick="enrollBiometricForCurrentSession()">تفعيل البصمة لهذا الحساب</button>
+              <button type="button" id="btn-disable-bio" class="secondary hidden" style="margin:0;" onclick="disableBiometricForDevice()">إلغاء البصمة</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ملخص التقارير ونسب الكفاءة والإحصائيات الشاملة -->
+      <section class="panel" id="summaryOverviewPanel">
+        <div class="row">
+          <div>
+            <h2 style="margin-bottom:2px;">📈 ملخصات التقارير ونسب الكفاءة والإحصائيات الشاملة</h2>
+            <div id="overallSystemScoreText" class="muted">نسبة الكفاءة الإجمالية ونسب كل تقرير بناءً على البيانات المسجلة</div>
+          </div>
+          <button type="button" class="secondary" onclick="toggleFormsDrawer(true)">فتح النماذج من القائمة ☰</button>
+        </div>
+
+        <div id="summariesCardsGrid" class="stats-grid"></div>
+        <div id="statisticalOverviewBox" class="notice" style="margin-top:14px;"></div>
+      </section>
+
+      <div class="grid">
+        <section class="panel" id="membersPanel">
+          <h2>👥 إضافة وإدارة فريق العمل وصلاحياتهم</h2>
+          <label for="mname">اسم العضو</label>
+          <input id="mname" placeholder="الاسم الكامل للعضو" />
+
+          <label for="muser">اسم المستخدم</label>
+          <input id="muser" placeholder="username" dir="ltr" />
+
+          <label for="memail">البريد الإلكتروني</label>
+          <input id="memail" type="email" placeholder="member@company.com" dir="ltr" />
+
+          <label for="mpass">كلمة المرور (3 أحرف أو أرقام على الأقل)</label>
+          <input id="mpass" type="password" placeholder="•••" />
+
+          <label for="mrole">الدور الوظيفي</label>
+          <select id="mrole">
+            <option value="member">عضو فريق سلامة (Member)</option>
+            <option value="manager">مدير فرعي (Manager)</option>
+          </select>
+
+          <div class="perms-box">
+            <div class="perms-title">تحديد صلاحيات هذا العضو بشكل مستقل:</div>
+            <div class="perms-grid">
+              <label class="perm-item"><input type="checkbox" id="perm_ai" checked /> المساعد الذكي</label>
+              <label class="perm-item"><input type="checkbox" id="perm_records" checked /> السجلات والتقارير</label>
+              <label class="perm-item"><input type="checkbox" id="perm_documents" checked /> المستندات</label>
+              <label class="perm-item"><input type="checkbox" id="perm_delete_records" /> حذف السجلات</label>
+              <label class="perm-item"><input type="checkbox" id="perm_members" /> إدارة الفريق</label>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:6px;">
+            <button type="button" id="btn-add-member" onclick="addMember()">إضافة العضو بصلاحياته</button>
+            <button type="button" class="secondary" onclick="loadMembers()">تحديث القائمة</button>
+          </div>
+          <div id="membermsg"></div>
+          <div id="members" style="margin-top:10px;"></div>
+        </section>
+
+        <section class="panel" id="aiPanel">
+          <h2>🤖 مساعد السلامة الذكي عالي الدقة</h2>
+
+          <label for="aimode">أسلوب التفكير والتحليل</label>
+          <select id="aimode">
+            <option value="deep_analysis">تحليل هندسي وتشغيلي فائق الدقة (موصى به)</option>
+            <option value="flexible">تفكير مرن وعملي (بدائل + افتراضات + خطوات)</option>
+            <option value="quick_action">إجراء سريع ومباشر للميدان</option>
+          </select>
+
+          <div class="prompts-row">
+            <button type="button" class="chip-btn" onclick="applyPrompt('حلل هذا الموقف الميداني بمرونة واقترح بدائل عملية للتحكم والوقاية مع توضيح الافتراضات: ')">💡 تحليل بمرونة وبدائل</button>
+            <button type="button" class="chip-btn" onclick="applyPrompt('ساعدني في بناء مصفوفة مخاطر (5×5) وإجراءات تصحيحية ووقائية للحالة التالية: ')">⚖️ بناء تقييم مخاطر 5×5</button>
+            <button type="button" class="chip-btn" onclick="applyPrompt('حلل هذه الواقعة من حيث الوقائع والافتراضات والاحتواء والأسباب الجذرية دون لوم: ')">🔍 تحليل حادث وأسباب جذرية</button>
+          </div>
+
+          <label for="question">وصف الحالة أو السؤال الفني</label>
+          <textarea id="question" rows="4" placeholder="اكتب سؤالك أو سيناريو العمل وسأقدم لك تحليلاً دقيقاً وعملياً..."></textarea>
+
+          <label for="images">إرفاق صور الموقع / التفتيش (حتى 8 صور)</label>
+          <input id="images" type="file" accept="image/*" multiple onchange="previewImages()" />
+          <div id="pics"></div>
+
+          <button type="button" id="btn-analyze" style="width:100%;" onclick="analyze()">تحليل السؤال والصور</button>
+          <div id="aimsg"></div>
+          <div id="answer" class="notice hidden"></div>
+        </section>
+      </div>
+    </div>
+
+    <footer>منصة إدارة السلامة والصحة المهنية (HSE) — جميع الحقوق محفوظة</footer>
+  </div>
+
+  <script>
+    const API_CANDIDATES = (function () {
+      const list = [];
+      if (typeof window !== 'undefined' && window.location && /^https?:\/\//i.test(window.location.origin)) {
+        if (window.location.hostname.endsWith('.workers.dev')) {
+          list.push(window.location.origin);
+        }
+      }
+      list.push('https://ohs-management.ahmed4qhse.workers.dev');
+      return Array.from(new Set(list));
+    })();
+
+    const SESSION_KEY = 'hse_session_v2';
+    const PERM_KEYS = ['ai', 'records', 'documents', 'delete_records', 'members'];
+    let activeApiBase = API_CANDIDATES[0];
+    let token = '';
+    let user = null;
+    let companyCode = '';
+    let imgs = [];
+
+    function msg(id, text, cls = 'notice') {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.className = 'notice ' + cls;
+      el.textContent = text;
+    }
+
+    function val(id) {
+      const el = document.getElementById(id);
+      return el ? el.value.trim() : '';
+    }
+
+    function parseJwtExp(tk) {
+      try {
+        const body = String(tk || '').split('.')[0];
+        if (!body) return 0;
+        let b = body.replace(/-/g, '+').replace(/_/g, '/');
+        while (b.length % 4) b += '=';
+        const parsed = JSON.parse(atob(b));
+        return Number(parsed.exp || 0);
+      } catch {
+        return 0;
+      }
+    }
+
+    function isTokenValid(tk, explicitExp = 0) {
+      const exp = Number(explicitExp || parseJwtExp(tk));
+      if (!exp) return false;
+      return exp > Math.floor(Date.now() / 1000) + 30;
+    }
+
+    function saveSession(tk, usr, codeVal, apiBase, exp) {
+      try {
+        localStorage.setItem(
+          SESSION_KEY,
+          JSON.stringify({ token: tk, user: usr, companyCode: codeVal, apiBase, exp: exp || parseJwtExp(tk) })
+        );
+      } catch {}
+    }
+
+    function clearSession() {
+      try {
+        localStorage.removeItem(SESSION_KEY);
+        localStorage.removeItem('hse_session_v1');
+      } catch {}
+    }
+
+    function getUserPermissions(uObj) {
+      if (!uObj) return { ai: false, records: false, documents: false, delete_records: false, members: false };
+      if (uObj.role === 'owner') {
+        return { ai: true, records: true, documents: true, delete_records: true, members: true };
+      }
+      const p = uObj.permissions || {};
+      return {
+        ai: Boolean(p.ai),
+        records: Boolean(p.records),
+        documents: Boolean(p.documents),
+        delete_records: Boolean(p.delete_records),
+        members: Boolean(p.members)
+      };
+    }
+
+    function readFormPermissions(prefix = 'perm_') {
+      const result = {};
+      PERM_KEYS.forEach((k) => {
+        const el = document.getElementById(prefix + k);
+        result[k] = el ? Boolean(el.checked) : false;
+      });
+      return result;
+    }
+
+    function applyPrompt(prefixText) {
+      const ta = document.getElementById('question');
+      if (!ta) return;
+      if (!ta.value.trim()) {
+        ta.value = prefixText;
+      } else if (!ta.value.includes(prefixText.trim())) {
+        ta.value = prefixText + ta.value;
+      }
+      ta.focus();
+    }
+
+    function toggleFormsDrawer(open) {
+      const drawer = document.getElementById('formsDrawer');
+      if (!drawer) return;
+      drawer.classList.toggle('hidden', !open);
+    }
+
+    function handleDrawerBackdropClick(ev) {
+      if (ev.target && ev.target.id === 'formsDrawer') {
+        toggleFormsDrawer(false);
+      }
+    }
+
+    function scrollToTeamSection() {
+      toggleFormsDrawer(false);
+      const sec = document.getElementById('membersPanel');
+      if (sec && !sec.classList.contains('hidden')) {
+        sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    async function openModule(fileName, title) {
+      toggleFormsDrawer(false);
+      try {
+        const res = await fetch('./' + encodeURIComponent(fileName), { method: 'HEAD' });
+        if (res.ok) {
+          window.location.href = './' + encodeURIComponent(fileName);
+          return;
+        }
+      } catch {}
+      msg(
+        'modulemsg',
+        'وحدة "' + title + '" جاهزة للربط بمجرد رفع ملفها (' + fileName + ') إلى المستودع.',
+        'notice'
+      );
+    }
+
+    // ==================== حساب ملخصات التقارير ونسب الكفاءة والإحصائيات ====================
+    function safeReadJson(key, fallback) {
+      try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    function computeSummariesAndStats() {
+      // 1. التفتيش اليومي
+      const dailyObj = safeReadJson('ohs_module_daily_inspection_clean_v1', { dailyReports: [] });
+      const dailyReports = Array.isArray(dailyObj.dailyReports) ? dailyObj.dailyReports : [];
+      let dTotalItems = 0, dCompliant = 0, dNonCompliant = 0;
+      dailyReports.forEach((r) => {
+        const items = Array.isArray(r.inspectedItems) ? r.inspectedItems : [];
+        items.forEach((it) => {
+          dTotalItems += 1;
+          if (it.status === 'مطابق') dCompliant += 1;
+          else dNonCompliant += 1;
+        });
+      });
+      const dailyEffPct = dTotalItems > 0 ? Math.round((dCompliant / dTotalItems) * 100) : null;
+
+      // 2. كفاءة الطفايات / أنظمة الحريق والمخططات (يفحص سجلات الطفايات إن وُجدت ثم حالة الخزان/التقييمات)
+      const extObj = safeReadJson('ohs_fire_extinguishers_v1', null)
+        || safeReadJson('ohs_module_extinguishers_v1', null)
+        || safeReadJson('ohs_extinguishers_state_v1', null);
+      let extPct = null;
+      let extSub = 'لا توجد بيانات طفايات مسجلة بعد';
+      if (extObj && Array.isArray(extObj.items) && extObj.items.length > 0) {
+        const totalExt = extObj.items.length;
+        const okExt = extObj.items.filter((x) => {
+          const st = String(x.status || x.state || '').toLowerCase();
+          return st.includes('سليم') || st.includes('مطابق') || st.includes('ok') || st.includes('valid');
+        }).length;
+        extPct = Math.round((okExt / totalExt) * 100);
+        extSub = `سليمة: ${okExt} من ${totalExt} طفاية (${totalExt - okExt} بها مشكلة)`;
+      } else if (dTotalItems > 0) {
+        // استخلاص كفاءة الطفايات / الإطفاء من بنود التفتيش اليومي المرتبطة بالطفايات أو الإطفاء إن وُجدت
+        const fireItems = [];
+        dailyReports.forEach((r) => {
+          (r.inspectedItems || []).forEach((it) => {
+            if (/طفاي|إطفاء|حريق|extinguish|fire/i.test(String(it.label || ''))) {
+              fireItems.push(it);
+            }
+          });
+        });
+        if (fireItems.length > 0) {
+          const fireOk = fireItems.filter((x) => x.status === 'مطابق').length;
+          extPct = Math.round((fireOk / fireItems.length) * 100);
+          extSub = `مطابقة من بنود الطفايات/الإطفاء: ${fireOk} من ${fireItems.length} (${fireItems.length - fireOk} ملاحظة)`;
+        }
+      }
+
+      // 3. المخالفات والملاحظات الوقائية
+      const vioObj = safeReadJson('ohs_module_violations_clean_v4', { violations: [], preventiveNotes: [] });
+      const violations = Array.isArray(vioObj.violations) ? vioObj.violations : [];
+      const prevNotes = Array.isArray(vioObj.preventiveNotes) ? vioObj.preventiveNotes : [];
+      const indViolations = violations.filter((v) => v.targetType === 'individual');
+      const immediateDoneCount = indViolations.filter((v) => v.immediateStatus !== 'not_done').length;
+      const vioEffPct = indViolations.length > 0
+        ? Math.round((immediateDoneCount / indViolations.length) * 100)
+        : (violations.length > 0 ? 100 : null);
+
+      // 4. تصاريح العمل PTW
+      const ptwObj = safeReadJson('ohs_module_work_permits_clean_v1', { permits: [] });
+      const permits = Array.isArray(ptwObj.permits) ? ptwObj.permits : [];
+      const closedPermits = permits.filter((p) => p.endDate && p.endTime).length;
+      const ptwPct = permits.length > 0 ? Math.round((closedPermits / permits.length) * 100) : null;
+
+      // 5. تحليل المخاطر 5x5
+      const riskObj = safeReadJson('ohs_module_risk_matrix_clean_v2', { risks: [] });
+      const risks = Array.isArray(riskObj.risks) ? riskObj.risks : [];
+      const mitigatedRisks = risks.filter((r) => {
+        const beforeSc = (Number(r.initialL) || 1) * (Number(r.initialS) || 1);
+        const afterSc = (Number(r.residualL) || 1) * (Number(r.residualS) || 1);
+        return afterSc < beforeSc || afterSc <= 4;
+      }).length;
+      const riskPct = risks.length > 0 ? Math.round((mitigatedRisks / risks.length) * 100) : null;
+
+      // 6. تقييم 5S
+      const fiveSHist = safeReadJson('ohs_5s_audit_history_v1', []);
+      const fiveSPct = Array.isArray(fiveSHist) && fiveSHist.length > 0
+        ? Math.round(fiveSHist.reduce((a, b) => a + (Number(b.percent) || 0), 0) / fiveSHist.length)
+        : null;
+
+      // 7. التدريب والتوعية
+      const trObj = safeReadJson('ohs_module_trainings_clean_v1', { trainings: [] });
+      const trainings = Array.isArray(trObj.trainings) ? trObj.trainings : [];
+      const totalAttendees = trainings.reduce((s, t) => s + (Number(t.attendees) || 0), 0);
+
+      // 8. الحوادث والبلاغات الوشيكة
+      const incObj = safeReadJson('ohs_module_incidents_clean_v2', { incidents: [] });
+      const incidents = Array.isArray(incObj.incidents) ? incObj.incidents : [];
+
+      // 9. مهام السلامة القانونية
+      const lawObj = safeReadJson('ohs_labor_law_14_2025_tasks_v2', { tasks: [] });
+      const lawTasks = Array.isArray(lawObj.tasks) ? lawObj.tasks : [];
+      const lawDone = lawTasks.filter((t) => Boolean(t.done)).length;
+      const lawPct = lawTasks.length > 0 ? Math.round((lawDone / lawTasks.length) * 100) : null;
+
+      const availablePcts = [dailyEffPct, extPct, vioEffPct, ptwPct, riskPct, fiveSPct, lawPct].filter((x) => x !== null);
+      const overallPct = availablePcts.length > 0
+        ? Math.round(availablePcts.reduce((a, b) => a + b, 0) / availablePcts.length)
+        : null;
+
+      const cards = [
+        {
+          title: 'كفاءة الطفايات والإطفاء',
+          pct: extPct,
+          sub: extSub,
+          file: 'مخططات الدفاع المدني.html',
+          label: 'مخططات الدفاع المدني والطفايات'
+        },
+        {
+          title: 'تقرير التفتيش اليومي',
+          pct: dailyEffPct,
+          sub: dailyReports.length
+            ? `تقارير: ${dailyReports.length} • مطابق: ${dCompliant} من ${dTotalItems} بند (غير مطابق: ${dNonCompliant})`
+            : 'لا توجد تقارير تفتيش يومي مسجلة بعد',
+          file: 'تقرير التفتيش اليومي.html',
+          label: 'تقرير التفتيش اليومي'
+        },
+        {
+          title: 'المخالفات والتصحيح الفوري',
+          pct: vioEffPct,
+          sub: violations.length
+            ? `مخالفات: ${violations.length} • تصحيح فوري للأفراد: ${immediateDoneCount}/${indViolations.length} • وقائية: ${prevNotes.length}`
+            : 'لا توجد مخالفات مسجلة بعد',
+          file: 'المخالفات.html',
+          label: 'المخالفات والملاحظات الوقائية'
+        },
+        {
+          title: 'إغلاق تصاريح العمل (PTW)',
+          pct: ptwPct,
+          sub: permits.length
+            ? `إجمالي التصاريح: ${permits.length} • مكتملة بوقت نهاية: ${closedPermits}`
+            : 'لا توجد تصاريح عمل مسجلة بعد',
+          file: 'تصاريح العمل.html',
+          label: 'تصاريح العمل PTW'
+        },
+        {
+          title: 'تحكم المخاطر (5×5)',
+          pct: riskPct,
+          sub: risks.length
+            ? `بنود المخاطر: ${risks.length} • تم تخفيض خطورتها/تأمينها: ${mitigatedRisks}`
+            : 'لا توجد بنود تحليل مخاطر مسجلة بعد',
+          file: 'تحليل المخاطر.html',
+          label: 'تحليل ومصفوفة المخاطر 5×5'
+        },
+        {
+          title: 'تقييم منهجية 5S',
+          pct: fiveSPct,
+          sub: Array.isArray(fiveSHist) && fiveSHist.length
+            ? `جولات التقييم المحفوظة: ${fiveSHist.length}`
+            : 'لم يتم حفظ جولات 5S بعد',
+          file: '5S.html',
+          label: 'تقييم منهجية 5S'
+        },
+        {
+          title: 'إنجاز مهام الالتزام القانوني',
+          pct: lawPct,
+          sub: lawTasks.length
+            ? `المنفّذ: ${lawDone} من ${lawTasks.length} مهمة`
+            : 'لا توجد مهام مسجلة بعد',
+          file: 'مهام السلامة ومعدل تكرارها.html',
+          label: 'مهام السلامة ومعدل تكرارها'
+        },
+        {
+          title: 'التدريب والحوادث والبلاغات',
+          pct: null,
+          customValue: `${trainings.length} جلسة (${totalAttendees} حضور)`,
+          sub: `الحوادث والبلاغات الوشيكة المسجلة: ${incidents.length}`,
+          file: 'التدريب والتوعية.html',
+          label: 'التدريب والتوعية'
+        }
+      ];
+
+      const totalRecordsCount =
+        dailyReports.length + violations.length + prevNotes.length + permits.length +
+        risks.length + (Array.isArray(fiveSHist) ? fiveSHist.length : 0) +
+        trainings.length + incidents.length + lawTasks.length;
+
+      return { cards, overallPct, totalRecordsCount, dailyReports, violations, permits, risks, trainings, incidents, lawTasks };
+    }
+
+    function refreshAllSummariesAndStats() {
+      const stats = computeSummariesAndStats();
+      const overallEl = document.getElementById('overallSystemScoreText');
+      const gridEl = document.getElementById('summariesCardsGrid');
+      const statBox = document.getElementById('statisticalOverviewBox');
+
+      if (overallEl) {
+        overallEl.textContent = stats.overallPct !== null
+          ? `متوسط الكفاءة العام للمنظومة: ${stats.overallPct}% • إجمالي السجلات والمحاضر المحفوظة: ${stats.totalRecordsCount}`
+          : `إجمالي السجلات والمحاضر المحفوظة حالياً: ${stats.totalRecordsCount} — ابدأ بإدخال بيانات النماذج لتظهر النسب المئوية تلقائياً`;
+      }
+
+      if (gridEl) {
+        gridEl.innerHTML = stats.cards.map((c) => {
+          if (c.customValue) {
+            return `
+              <div class="stat-card" style="cursor:pointer;" onclick="openModule('${c.file}', '${c.label}')">
+                <div class="stat-title">${c.title}</div>
+                <div class="stat-pct" style="font-size:1.1rem;">${c.customValue}</div>
+                <div class="stat-sub">${c.sub}</div>
+              </div>
+            `;
+          }
+          const pctVal = c.pct !== null ? c.pct : 0;
+          const pctLabel = c.pct !== null ? `${pctVal}%` : '—';
+          const barCls = pctVal >= 80 ? '' : (pctVal >= 50 ? 'warn' : 'bad');
+          return `
+            <div class="stat-card" style="cursor:pointer;" onclick="openModule('${c.file}', '${c.label}')">
+              <div class="stat-title">${c.title}</div>
+              <div class="stat-pct">${pctLabel}</div>
+              <div class="bar-track"><div class="bar-fill ${barCls}" style="width:${c.pct !== null ? pctVal : 0}%"></div></div>
+              <div class="stat-sub">${c.sub}</div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      if (statBox) {
+        statBox.textContent =
+          `النموذج الإحصائي للشغل الموجود:\n` +
+          `• تقارير التفتيش اليومي: ${stats.dailyReports.length} | المخالفات: ${stats.violations.length} | تصاريح العمل: ${stats.permits.length}\n` +
+          `• بنود تحليل المخاطر (5×5): ${stats.risks.length} | جلسات التدريب: ${stats.trainings.length} | الحوادث والبلاغات: ${stats.incidents.length} | المهام القانونية: ${stats.lawTasks.length}`;
+      }
+    }
+
+    async function call(path, data, auth = false, methodOverride = null) {
+      let lastError = null;
+      const orderedBases = [activeApiBase, ...API_CANDIDATES.filter((u) => u !== activeApiBase)];
+
+      for (let i = 0; i < orderedBases.length; i++) {
+        const base = orderedBases[i];
+        try {
+          const method = methodOverride || (data ? 'POST' : 'GET');
+          const r = await fetch(base + path, {
+            method,
+            headers: {
+              'Content-Type': 'application/json',
+              ...(auth ? { Authorization: 'Bearer ' + token } : {})
+            },
+            body: data !== null && data !== undefined ? JSON.stringify(data) : undefined
+          });
+
+          const j = await r.json().catch(() => ({}));
+          if (r.status === 401 && auth) {
+            logout();
+            throw new Error(j.error || 'انتهت صلاحية الجلسة. يرجى تسجيل الدخول مرة أخرى.');
+          }
+          if (r.status === 404 && j && j.error === 'Not found' && i < orderedBases.length - 1) {
+            continue;
+          }
+          if (!r.ok) {
+            const detail = j.message ? (j.error + ': ' + j.message) : (j.error || ('خطأ في الخادم (' + r.status + ')'));
+            throw new Error(detail);
+          }
+          activeApiBase = base;
+          return j;
+        } catch (err) {
+          lastError = err;
+          if (err && err.message && !/failed to fetch|networkerror|load failed/i.test(err.message)) {
+            throw err;
+          }
+        }
+      }
+
+      throw lastError || new Error('تعذر الاتصال بالخادم حالياً، يرجى المحاولة مرة أخرى.');
+    }
+
+    function activateWorkspace(tk, usr, codeVal, exp = 0) {
+      token = tk;
+      user = usr;
+      companyCode = codeVal;
+      saveSession(token, user, companyCode, activeApiBase, exp);
+
+      const perms = getUserPermissions(user);
+      document.getElementById('auth').classList.add('hidden');
+      document.getElementById('workspace').classList.remove('hidden');
+      document.getElementById('topFormsMenuBtn').classList.remove('hidden');
+
+      document.getElementById('welcome').textContent = 'مرحباً، ' + user.name;
+      document.getElementById('companylabel').textContent = user.companyName + ' — الدور: ' + user.role;
+      document.getElementById('codebox').textContent = 'كود الشركة المعتمد للدخول: ' + companyCode;
+
+      document.getElementById('membersPanel').classList.toggle('hidden', !perms.members);
+      document.getElementById('drawerTeamBtn').classList.toggle('hidden', !perms.members);
+      document.getElementById('aiPanel').classList.toggle('hidden', !perms.ai);
+      document.getElementById('summaryOverviewPanel').classList.toggle('hidden', !perms.records && !perms.documents);
+
+      refreshAllSummariesAndStats();
+      if (perms.members) {
+        loadMembers();
+      }
+    }
+
+    async function registerCompany() {
+      const btn = document.getElementById('btn-register');
+      try {
+        const d = {
+          company: val('cname'),
+          name: val('ownername'),
+          username: val('owneruser'),
+          email: val('owneremail'),
+          password: val('ownerpass')
+        };
+        if (!d.company || !d.name || !d.username || !d.email || !d.password) {
+          msg('regmsg', 'يرجى استكمال جميع البيانات المطلوبة.', 'err');
+          return;
+        }
+        if (d.password.length < 3) {
+          msg('regmsg', 'يجب ألا تقل كلمة المرور عن 3 أحرف أو أرقام.', 'err');
+          return;
+        }
+        if (btn) btn.disabled = true;
+        msg('regmsg', 'جارٍ إنشاء حساب الشركة...', 'notice');
+
+        const r = await call('/api/company/register', d);
+        msg(
+          'regmsg',
+          'تم إنشاء الشركة بنجاح! كود الشركة الخاص بك هو: ' + r.companyCode + '\nاحتفظ بهذا الكود وشاركه مع أعضاء فريقك.',
+          'good'
+        );
+        document.getElementById('code').value = r.companyCode;
+        document.getElementById('loginuser').value = d.username;
+        document.getElementById('loginpass').value = d.password;
+      } catch (e) {
+        msg('regmsg', e.message, 'err');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    async function login() {
+      const btn = document.getElementById('btn-login');
+      try {
+        const payload = {
+          companyCode: val('code'),
+          username: val('loginuser'),
+          password: val('loginpass')
+        };
+        if (!payload.companyCode || !payload.username || !payload.password) {
+          msg('loginmsg', 'يرجى إدخال كود الشركة واسم المستخدم وكلمة المرور.', 'err');
+          return;
+        }
+        if (btn) btn.disabled = true;
+        msg('loginmsg', 'جارٍ التحقق وتسجيل الدخول...', 'notice');
+
+        const r = await call('/api/login', payload);
+        activateWorkspace(r.token, r.user, r.user.companyCode, r.expiresAt || 0);
+      } catch (e) {
+        msg('loginmsg', e.message, 'err');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    function logout() {
+      token = '';
+      user = null;
+      companyCode = '';
+      clearSession();
+      toggleFormsDrawer(false);
+      document.getElementById('topFormsMenuBtn').classList.add('hidden');
+      document.getElementById('workspace').classList.add('hidden');
+      document.getElementById('auth').classList.remove('hidden');
+      document.getElementById('loginmsg').className = '';
+      document.getElementById('loginmsg').textContent = '';
+    }
+
+    async function addMember() {
+      const btn = document.getElementById('btn-add-member');
+      try {
+        const payload = {
+          name: val('mname'),
+          username: val('muser'),
+          email: val('memail'),
+          password: val('mpass'),
+          role: val('mrole'),
+          permissions: readFormPermissions('perm_')
+        };
+        if (!payload.name || !payload.username || !payload.email || !payload.password) {
+          msg('membermsg', 'يرجى استكمال جميع بيانات العضو.', 'err');
+          return;
+        }
+        if (payload.password.length < 3) {
+          msg('membermsg', 'يجب ألا تقل كلمة مرور العضو عن 3 أحرف أو أرقام.', 'err');
+          return;
+        }
+        if (btn) btn.disabled = true;
+        await call('/api/members', payload, true);
+        msg('membermsg', 'تمت إضافة العضو وتعيين صلاحياته بنجاح.', 'good');
+        ['mname', 'muser', 'memail', 'mpass'].forEach((x) => {
+          document.getElementById(x).value = '';
+        });
+        loadMembers();
+      } catch (e) {
+        msg('membermsg', e.message, 'err');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    const PERM_LABELS = {
+      ai: 'مساعد الذكاء',
+      records: 'السجلات',
+      documents: 'المستندات',
+      delete_records: 'حذف السجلات',
+      members: 'إدارة الفريق'
+    };
+
+    async function saveMemberPermissions(memberId, roleSelectId) {
+      try {
+        const updatedPerms = {};
+        PERM_KEYS.forEach((k) => {
+          const chk = document.getElementById(`edit_${memberId}_${k}`);
+          updatedPerms[k] = chk ? Boolean(chk.checked) : false;
+        });
+        const roleEl = document.getElementById(roleSelectId);
+        const nextRole = roleEl ? roleEl.value : undefined;
+        await call(`/api/members/${encodeURIComponent(memberId)}`, { role: nextRole, permissions: updatedPerms }, true, 'PUT');
+        msg('membermsg', 'تم تحديث صلاحيات العضو بنجاح.', 'good');
+        if (user && user.id === memberId) {
+          user.permissions = updatedPerms;
+          if (nextRole) user.role = nextRole;
+          activateWorkspace(token, user, companyCode);
+        } else {
+          loadMembers();
+        }
+      } catch (e) {
+        msg('membermsg', e.message, 'err');
+      }
+    }
+
+    async function loadMembers() {
+      try {
+        const rows = await call('/api/members', null, true);
+        const box = document.getElementById('members');
+        box.innerHTML = '';
+        if (!rows || !rows.length) {
+          box.innerHTML = '<div class="muted">لا يوجد أعضاء مسجلون حتى الآن.</div>';
+          return;
+        }
+        rows.forEach((x) => {
+          const p = getUserPermissions(x);
+          const d = document.createElement('div');
+          d.className = 'member';
+
+          const top = document.createElement('div');
+          top.className = 'member-top';
+          const info = document.createElement('span');
+          info.textContent = `${x.name} (${x.username}) — ${x.email}`;
+
+          const rightControls = document.createElement('div');
+          rightControls.style.display = 'flex';
+          rightControls.style.gap = '6px';
+          rightControls.style.alignItems = 'center';
+
+          if (x.role === 'owner') {
+            const badge = document.createElement('span');
+            badge.className = 'role-pill';
+            badge.textContent = 'owner (كامل الصلاحيات)';
+            rightControls.appendChild(badge);
+          } else {
+            const sel = document.createElement('select');
+            sel.id = `role_${x.id}`;
+            sel.style.width = 'auto';
+            sel.style.margin = '0';
+            sel.style.padding = '4px 8px';
+            sel.innerHTML = `<option value="member" ${x.role === 'member' ? 'selected' : ''}>member</option><option value="manager" ${x.role === 'manager' ? 'selected' : ''}>manager</option>`;
+            rightControls.appendChild(sel);
+          }
+
+          top.appendChild(info);
+          top.appendChild(rightControls);
+          d.appendChild(top);
+
+          if (x.role !== 'owner') {
+            const grid = document.createElement('div');
+            grid.className = 'perms-grid';
+            PERM_KEYS.forEach((k) => {
+              const lbl = document.createElement('label');
+              lbl.className = 'perm-item';
+              const cb = document.createElement('input');
+              cb.type = 'checkbox';
+              cb.id = `edit_${x.id}_${k}`;
+              cb.checked = Boolean(p[k]);
+              lbl.appendChild(cb);
+              lbl.appendChild(document.createTextNode(' ' + PERM_LABELS[k]));
+              grid.appendChild(lbl);
+            });
+            d.appendChild(grid);
+
+            const saveBtn = document.createElement('button');
+            saveBtn.type = 'button';
+            saveBtn.className = 'secondary';
+            saveBtn.textContent = 'حفظ صلاحيات العضو';
+            saveBtn.onclick = () => saveMemberPermissions(x.id, `role_${x.id}`);
+            d.appendChild(saveBtn);
+          }
+
+          box.appendChild(d);
+        });
+      } catch (e) {
+        msg('membermsg', e.message, 'err');
+      }
+    }
+
+    function previewImages() {
+      imgs = [];
+      const files = [...document.getElementById('images').files].slice(0, 8);
+      const holder = document.getElementById('pics');
+      holder.innerHTML = '';
+      files.forEach((f) => {
+        if (!f.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          imgs.push({ name: f.name, data: reader.result });
+          const im = document.createElement('img');
+          im.src = reader.result;
+          holder.appendChild(im);
+        };
+        reader.readAsDataURL(f);
+      });
+    }
+
+    async function analyze() {
+      const btn = document.getElementById('btn-analyze');
+      try {
+        const q = val('question');
+        const mode = val('aimode') || 'deep_analysis';
+        if (!q && !imgs.length) {
+          msg('aimsg', 'يرجى كتابة سؤال أو إرفاق صورة واحدة على الأقل.', 'err');
+          return;
+        }
+        if (btn) btn.disabled = true;
+        msg('aimsg', 'جارٍ التحليل الهندسي والتشغيلي...', 'notice');
+        const r = await call('/api/ai', { question: q, mode, images: imgs }, true);
+        const a = document.getElementById('answer');
+        a.textContent = r.answer;
+        a.classList.remove('hidden');
+        msg('aimsg', 'اكتمل التحليل بنجاح.', 'good');
+      } catch (e) {
+        msg('aimsg', e.message, 'err');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    const BIO_CRED_KEY = 'hse_biometric_cred_v1';
+
+    function b64ToBytes(b64) {
+      const bin = atob(String(b64 || ''));
+      const arr = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+      return arr;
+    }
+
+    function bytesToB64(buf) {
+      const arr = new Uint8Array(buf);
+      let bin = '';
+      for (let i = 0; i < arr.length; i++) bin += String.fromCharCode(arr[i]);
+      return btoa(bin);
+    }
+
+    function isBiometricSupported() {
+      return Boolean(
+        window.PublicKeyCredential &&
+        navigator.credentials &&
+        typeof navigator.credentials.create === 'function' &&
+        typeof navigator.credentials.get === 'function' &&
+        window.isSecureContext
+      );
+    }
+
+    function readSavedBiometricProfile() {
+      try {
+        const raw = localStorage.getItem(BIO_CRED_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function refreshBiometricUi() {
+      const supported = isBiometricSupported();
+      const savedBio = readSavedBiometricProfile();
+      const loginBtn = document.getElementById('btn-biometric-login');
+      const hintEl = document.getElementById('biometricStatusHint');
+      const statusEl = document.getElementById('biometricStateText');
+      const enableBtn = document.getElementById('btn-enable-bio');
+      const disableBtn = document.getElementById('btn-disable-bio');
+
+      if (!supported) {
+        if (loginBtn) loginBtn.classList.add('hidden');
+        if (hintEl) hintEl.textContent = 'فتح البصمة يتطلب متصفحاً يدعم WebAuthn عبر اتصال آمن (HTTPS).';
+      } else {
+        if (loginBtn) loginBtn.classList.toggle('hidden', !savedBio);
+        if (hintEl) {
+          hintEl.textContent = savedBio
+            ? ('البصمة مفعلة لحساب: ' + (savedBio.user?.name || savedBio.companyCode || 'مسجل') + ' — اضغط الزر للدخول فوراً.')
+            : 'سجّل الدخول مرة واحدة ثم فعّل البصمة من داخل مساحة العمل.';
+        }
+      }
+
+      if (statusEl) {
+        if (!supported) {
+          statusEl.textContent = 'الجهاز أو المتصفح الحالي لا يدعم البصمة في وضع HTTPS.';
+        } else if (savedBio) {
+          statusEl.textContent = 'مفعّلة لحساب: ' + (savedBio.user?.name || '') + ' (' + (savedBio.companyCode || '') + ')';
+        } else {
+          statusEl.textContent = 'غير مفعّلة بعد على هذا الجهاز.';
+        }
+      }
+
+      if (enableBtn) enableBtn.classList.toggle('hidden', !supported);
+      if (disableBtn) disableBtn.classList.toggle('hidden', !savedBio);
+    }
+
+    async function enrollBiometricForCurrentSession() {
+      if (!isBiometricSupported()) {
+        alert('البصمة غير مدعومة في هذا المتصفح أو السياق.');
+        return;
+      }
+      if (!token || !user) {
+        alert('سجّل الدخول أولاً لتفعيل البصمة.');
+        return;
+      }
+      try {
+        const challenge = crypto.getRandomValues(new Uint8Array(32));
+        const userIdBytes = new TextEncoder().encode(String(user.id || user.name || 'user'));
+        const cred = await navigator.credentials.create({
+          publicKey: {
+            challenge,
+            rp: { name: 'منصة السلامة والصحة المهنية (HSE)' },
+            user: {
+              id: userIdBytes,
+              name: String(user.name || 'user'),
+              displayName: String(user.name || 'مستخدم النظام')
+            },
+            pubKeyCredParams: [
+              { type: 'public-key', alg: -7 },
+              { type: 'public-key', alg: -257 }
+            ],
+            authenticatorSelection: {
+              authenticatorAttachment: 'platform',
+              userVerification: 'required'
+            },
+            timeout: 60000
+          }
+        });
+        if (!cred || !cred.rawId) return;
+        const bioPayload = {
+          credentialIdB64: bytesToB64(cred.rawId),
+          token,
+          user,
+          companyCode,
+          apiBase: activeApiBase,
+          enrolledAt: Date.now()
+        };
+        localStorage.setItem(BIO_CRED_KEY, JSON.stringify(bioPayload));
+        refreshBiometricUi();
+        alert('تم تفعيل الدخول بالبصمة بنجاح على هذا الجهاز ✓');
+      } catch (err) {
+        alert('تعذر تفعيل البصمة: ' + (err && err.message ? err.message : 'تم الإلغاء أو لم تكتمل البصمة'));
+      }
+    }
+
+    function disableBiometricForDevice() {
+      try {
+        localStorage.removeItem(BIO_CRED_KEY);
+      } catch {}
+      refreshBiometricUi();
+      alert('تم إلغاء البصمة من هذا الجهاز.');
+    }
+
+    async function loginWithBiometrics() {
+      if (!isBiometricSupported()) {
+        msg('loginmsg', 'البصمة غير مدعومة في هذا المتصفح.', 'err');
+        return;
+      }
+      const savedBio = readSavedBiometricProfile();
+      if (!savedBio || !savedBio.credentialIdB64) {
+        msg('loginmsg', 'لم يتم تسجيل بصمة مسبقاً على هذا الجهاز. سجّل الدخول أولاً ثم فعّل البصمة.', 'err');
+        return;
+      }
+
+      const bioBtn = document.getElementById('btn-biometric-login');
+      try {
+        if (bioBtn) bioBtn.disabled = true;
+        msg('loginmsg', 'جارٍ التحقق من البصمة...', 'notice');
+
+        const challenge = crypto.getRandomValues(new Uint8Array(32));
+        const assertion = await navigator.credentials.get({
+          publicKey: {
+            challenge,
+            allowCredentials: [
+              {
+                type: 'public-key',
+                id: b64ToBytes(savedBio.credentialIdB64)
+              }
+            ],
+            userVerification: 'required',
+            timeout: 60000
+          }
+        });
+        if (!assertion) {
+          throw new Error('لم يتم تأكيد البصمة.');
+        }
+
+        if (savedBio.apiBase) activeApiBase = savedBio.apiBase;
+
+        if (savedBio.token && savedBio.user && isTokenValid(savedBio.token, parseJwtExp(savedBio.token))) {
+          token = savedBio.token;
+          try {
+            const meCheck = await fetch(activeApiBase + '/api/me', {
+              headers: { Authorization: 'Bearer ' + token }
+            });
+            if (meCheck.ok) {
+              const meData = await meCheck.json().catch(() => ({}));
+              const refreshedUser = {
+                ...savedBio.user,
+                role: meData.role || savedBio.user.role,
+                permissions: meData.permissions || savedBio.user.permissions
+              };
+              savedBio.token = token;
+              savedBio.user = refreshedUser;
+              localStorage.setItem(BIO_CRED_KEY, JSON.stringify(savedBio));
+              activateWorkspace(token, refreshedUser, savedBio.companyCode || refreshedUser.companyCode || '', meData.exp || parseJwtExp(token));
+              return;
+            }
+          } catch {}
+        }
+
+        if (savedBio.companyCode && document.getElementById('code')) {
+          document.getElementById('code').value = savedBio.companyCode;
+        }
+        msg('loginmsg', 'تم التحقق من البصمة؛ أدخل كلمة المرور مرة واحدة لتجديد الجلسة السحابية ثم ستعمل البصمة مباشرة.', 'notice');
+      } catch (err) {
+        msg('loginmsg', 'فشل الدخول بالبصمة: ' + (err && err.message ? err.message : 'تم الإلغاء'), 'err');
+      } finally {
+        if (bioBtn) bioBtn.disabled = false;
+      }
+    }
+
+    const _origActivateWorkspace = activateWorkspace;
+    activateWorkspace = function (tk, usr, codeVal, exp = 0) {
+      _origActivateWorkspace(tk, usr, codeVal, exp);
+      try {
+        const existingBio = readSavedBiometricProfile();
+        if (existingBio && existingBio.user && existingBio.user.id === usr?.id) {
+          existingBio.token = tk;
+          existingBio.user = usr;
+          existingBio.companyCode = codeVal;
+          existingBio.apiBase = activeApiBase;
+          localStorage.setItem(BIO_CRED_KEY, JSON.stringify(existingBio));
+        }
+      } catch {}
+      refreshBiometricUi();
+    };
+
+    refreshBiometricUi();
+
+    (function restoreSession() {
+      try {
+        const raw = localStorage.getItem(SESSION_KEY);
+        if (!raw) return;
+        const saved = JSON.parse(raw);
+        if (saved && saved.token && saved.user && isTokenValid(saved.token, saved.exp)) {
+          if (saved.apiBase) activeApiBase = saved.apiBase;
+          activateWorkspace(saved.token, saved.user, saved.companyCode || saved.user.companyCode || '', saved.exp || 0);
+        } else {
+          clearSession();
+        }
+      } catch {
+        clearSession();
+      }
+    })();
+
+    function togglePasswordRecoveryBox() {
+      const box = document.getElementById('recoveryBox');
+      if (!box) return;
+      box.classList.toggle('hidden');
+      if (!box.classList.contains('hidden')) {
+        const inp = document.getElementById('rec_email');
+        if (inp) inp.focus();
+      }
+    }
+
+    async function sendRecoveryOtp() {
+      const btn = document.getElementById('btn-send-otp');
+      try {
+        const emailVal = val('rec_email').toLowerCase();
+        if (!emailVal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+          msg('recmsg', 'يرجى إدخال البريد الإلكتروني المسجل بشكل صحيح.', 'err');
+          return;
+        }
+        if (btn) btn.disabled = true;
+        msg('recmsg', 'جارٍ التحقق من البريد الإلكتروني وإرسال رمز الاستعادة...', 'notice');
+
+        const r = await call('/api/auth/forgot-password', { email: emailVal });
+        document.getElementById('rec_step2').classList.remove('hidden');
+        if (r.deliveredViaEmail) {
+          msg('recmsg', 'تم إرسال رمز التحقق إلى بريدك الإلكتروني المسجل (' + r.email + '). الرمز صالح لمدة 15 دقيقة.', 'good');
+        } else {
+          msg('recmsg', 'تم توليد رمز التحقق لبريدك (' + r.email + '). الرمز: ' + (r.debugOtp || '') + ' (صالح لمدة 15 دقيقة).', 'good');
+        }
+      } catch (e) {
+        msg('recmsg', e.message, 'err');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+    async function confirmPasswordReset() {
+      const btn = document.getElementById('btn-reset-pass');
+      try {
+        const emailVal = val('rec_email').toLowerCase();
+        const otpVal = val('rec_otp');
+        const newPassVal = val('rec_newpass');
+
+        if (!emailVal || !otpVal || newPassVal.length < 3) {
+          msg('recmsg', 'أدخل البريد الإلكتروني ورمز التحقق وكلمة المرور الجديدة (3 أحرف أو أرقام على الأقل).', 'err');
+          return;
+        }
+        if (btn) btn.disabled = true;
+        msg('recmsg', 'جارٍ تحديث كلمة المرور...', 'notice');
+
+        const r = await call('/api/auth/reset-password', {
+          email: emailVal,
+          otp: otpVal,
+          newPassword: newPassVal
+        });
+        msg('recmsg', r.message || 'تم تحديث كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول.', 'good');
+        if (document.getElementById('loginpass')) {
+          document.getElementById('loginpass').value = newPassVal;
+        }
+      } catch (e) {
+        msg('recmsg', e.message, 'err');
+      } finally {
+        if (btn) btn.disabled = false;
+      }
+    }
+
+  </script>
+</body>
+</html>
