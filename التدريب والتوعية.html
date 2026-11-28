@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التدريب والتوعية</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        if (typeof tailwind !== 'undefined') {
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        fontFamily: { sans: ['Cairo', 'sans-serif'] },
+                        colors: {
+                            emerald: { 50:'#eff8ff',100:'#dbeefe',200:'#bfe0fc',300:'#8fc7f8',400:'#5aa8ef',500:'#3a8be0',600:'#2468c4',700:'#1b4fa0',800:'#173f80',900:'#12306b',950:'#0b2150' },
+                            slate: { 50:'#f4f8fd',100:'#e8f0fa',200:'#d3e0f0',300:'#b3c6de',400:'#8499b8',500:'#5f7497',600:'#475b7e',700:'#2f4468',800:'#16295a',900:'#0d2154',950:'#071538' }
+                        }
+                    }
+                }
+            };
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Cairo', sans-serif; background: linear-gradient(180deg,#f3f9ff 0%,#e6f1fc 100%) fixed; color: #0d2154; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #dbeafe; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 9999px; }
+        .card-shadow { box-shadow: 0 4px 18px rgba(36,104,196,.08); }
+    </style>
+</head>
+<body class="antialiased selection:bg-emerald-500 selection:text-white">
+
+    <div id="toast-container" class="fixed top-4 left-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- الشريط العلوي لوحدة التدريب والتوعية فقط -->
+    <header id="app-header" class="bg-slate-900 text-white sticky top-0 z-20 px-4 sm:px-6 py-3.5 shadow-md">
+        <div class="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-chalkboard-user"></i>
+                </div>
+                <div>
+                    <h1 class="text-base sm:text-lg font-extrabold">التدريب والتوعية</h1>
+                    <p class="text-[11px] text-slate-300">تسجيل جلسات التدريب والتوعية (الموضوع، القائم بالتنفيذ، التاريخ، عدد الحضور، القسم)</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button type="button" onclick="openTrainingModal()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow transition">
+                    <i class="fa-solid fa-plus ml-1"></i>إضافة تدريب أو توعية
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <main id="main-content" class="max-w-5xl mx-auto p-4 sm:p-6"></main>
+
+    <!-- النافذة المنبثقة -->
+    <div id="modal-container" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/65 p-3 sm:p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[92vh] flex flex-col overflow-hidden my-auto">
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
+                <h3 id="modal-title" class="text-base sm:text-lg font-extrabold text-slate-900">عنوان</h3>
+                <button type="button" onclick="closeModal()" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-red-600 flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="modal-body" class="p-5 sm:p-6 overflow-y-auto flex-1"></div>
+        </div>
+    </div>
+
+    <!-- نافذة التأكيد -->
+    <div id="confirm-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/65 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
+            <h3 id="confirm-title" class="text-lg font-extrabold text-slate-900 mb-2">تأكيد</h3>
+            <p id="confirm-message" class="text-sm text-slate-600 mb-6"></p>
+            <div class="flex justify-end gap-2">
+                <button type="button" onclick="closeConfirmModal(false)" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold text-sm">إلغاء</button>
+                <button type="button" onclick="closeConfirmModal(true)" class="px-5 py-2 rounded-xl bg-red-600 text-white font-bold text-sm">تأكيد</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY_TRAININGS = 'ohs_module_trainings_clean_v1';
+
+        function loadTrainingsState() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY_TRAININGS);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    return {
+                        trainings: Array.isArray(parsed.trainings) ? parsed.trainings : []
+                    };
+                }
+            } catch (e) {}
+            return { trainings: [] };
+        }
+
+        let trainingState = loadTrainingsState();
+        let confirmCallback = null;
+
+        function saveTrainingsState() {
+            try {
+                localStorage.setItem(STORAGE_KEY_TRAININGS, JSON.stringify(trainingState));
+            } catch (e) {
+                showToast('تعذر الحفظ المحلي بالمتصفح', 'error');
+            }
+        }
+
+        function escapeHtml(str) {
+            return String(str == null ? '' : str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function showToast(msg, type = 'info') {
+            const c = document.getElementById('toast-container');
+            const bg = type === 'success' ? 'bg-emerald-600' : type === 'error' ? 'bg-red-600' : 'bg-slate-800';
+            const el = document.createElement('div');
+            el.className = `${bg} text-white px-4 py-3 rounded-xl shadow-lg text-xs font-bold flex items-center gap-2 pointer-events-auto`;
+            el.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-info'}"></i><span>${escapeHtml(msg)}</span>`;
+            c.appendChild(el);
+            setTimeout(() => el.remove(), 3500);
+        }
+
+        // ==================== عرض سجل التدريب والتوعية ====================
+        function renderTrainings() {
+            const list = trainingState.trainings;
+            const totalAttendees = list.reduce((sum, item) => sum + (Number(item.attendees) || 0), 0);
+
+            document.getElementById('main-content').innerHTML = `
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                    <div class="bg-white rounded-2xl p-4 border card-shadow flex items-center justify-between">
+                        <div>
+                            <div class="text-xs font-bold text-slate-500">إجمالي جلسات التدريب والتوعية</div>
+                            <div class="text-2xl font-black text-slate-900 mt-1">${list.length}</div>
+                        </div>
+                        <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-chalkboard-user"></i>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-4 border card-shadow flex items-center justify-between">
+                        <div>
+                            <div class="text-xs font-bold text-slate-500">إجمالي عدد الحضور</div>
+                            <div class="text-2xl font-black text-blue-700 mt-1">${totalAttendees}</div>
+                        </div>
+                        <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border card-shadow overflow-hidden">
+                    <div class="p-4 border-b bg-slate-50 flex flex-wrap justify-between items-center gap-2">
+                        <div class="font-extrabold text-sm text-slate-900">سجل التدريب والتوعية (${list.length})</div>
+                        <button type="button" onclick="openTrainingModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-4 py-2 rounded-xl text-xs transition">
+                            <i class="fa-solid fa-plus ml-1"></i>إضافة تدريب أو توعية
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-right text-xs">
+                            <thead class="bg-slate-900 text-white">
+                                <tr>
+                                    <th class="p-3 text-center w-10">م</th>
+                                    <th class="p-3">الموضوع</th>
+                                    <th class="p-3">القائم بالتنفيذ</th>
+                                    <th class="p-3">القسم</th>
+                                    <th class="p-3">التاريخ</th>
+                                    <th class="p-3 text-center">عدد الحضور</th>
+                                    <th class="p-3 text-center">إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y">
+                                ${list.map((t, idx) => `
+                                    <tr class="hover:bg-slate-50/80">
+                                        <td class="p-3 text-center font-bold">${idx + 1}</td>
+                                        <td class="p-3 font-extrabold text-slate-900">${escapeHtml(t.topic)}</td>
+                                        <td class="p-3 font-bold text-slate-800">${escapeHtml(t.presenter)}</td>
+                                        <td class="p-3 font-bold text-blue-900">${escapeHtml(t.department)}</td>
+                                        <td class="p-3 font-mono font-bold">${escapeHtml(t.date)}</td>
+                                        <td class="p-3 text-center">
+                                            <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-900 font-extrabold">${Number(t.attendees) || 0}</span>
+                                        </td>
+                                        <td class="p-3 text-center">
+                                            <div class="flex items-center justify-center gap-1.5">
+                                                <button type="button" onclick="openTrainingModal('${escapeHtml(t.id)}')" title="تعديل" class="px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-800 hover:text-white font-bold transition">
+                                                    <i class="fa-solid fa-pen"></i>
+                                                </button>
+                                                <button type="button" onclick="deleteTraining('${escapeHtml(t.id)}')" title="حذف" class="px-2.5 py-1 rounded-lg bg-red-50 hover:bg-red-600 text-red-600 hover:text-white font-bold transition">
+                                                    <i class="fa-solid fa-trash-can"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `).join('') || `
+                                    <tr>
+                                        <td colspan="7" class="p-10 text-center text-slate-400">
+                                            لا توجد جلسات تدريب أو توعية مسجلة حالياً — اضغط على <strong>"+ إضافة تدريب أو توعية"</strong> للبدء.
+                                        </td>
+                                    </tr>
+                                `}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ==================== نافذة إضافة أو تعديل تدريب / توعية ====================
+        function openTrainingModal(trainingId = null) {
+            const ed = trainingId ? trainingState.trainings.find(x => x.id === trainingId) : null;
+            const today = new Date().toISOString().split('T')[0];
+
+            openModal(ed ? 'تعديل تدريب أو توعية' : 'إضافة تدريب أو توعية جديد', `
+                <form id="tr-form" class="space-y-4 text-xs" dir="rtl">
+                    <div>
+                        <label class="block font-bold mb-1">الموضوع *</label>
+                        <input name="topic" value="${ed ? escapeHtml(ed.topic || '') : ''}" required placeholder="مثال: توعية استخدام مهمات الوقاية / التعامل الآمن مع المخاطر" class="w-full px-3 py-2 bg-slate-50 border rounded-xl font-bold">
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-bold mb-1">القائم بالتنفيذ *</label>
+                            <input name="presenter" value="${ed ? escapeHtml(ed.presenter || '') : ''}" required placeholder="اسم الشخص الذي يقوم بالتدريب أو التوعية" class="w-full px-3 py-2 bg-slate-50 border rounded-xl font-bold">
+                        </div>
+                        <div>
+                            <label class="block font-bold mb-1">القسم *</label>
+                            <input name="department" value="${ed ? escapeHtml(ed.department || '') : ''}" required placeholder="مثال: الإنتاج / المخازن / الصيانة" class="w-full px-3 py-2 bg-slate-50 border rounded-xl font-bold">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block font-bold mb-1">التاريخ *</label>
+                            <input type="date" name="date" value="${ed ? escapeHtml(ed.date || today) : today}" required class="w-full px-3 py-2 bg-slate-50 border rounded-xl font-mono">
+                        </div>
+                        <div>
+                            <label class="block font-bold mb-1">عدد الحضور *</label>
+                            <input type="number" min="1" name="attendees" value="${ed ? Number(ed.attendees) || 1 : 10}" required class="w-full px-3 py-2 bg-slate-50 border rounded-xl font-bold">
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-2 pt-2 border-t">
+                        <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-xl bg-slate-100 font-bold">إلغاء</button>
+                        <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold">
+                            ${ed ? 'حفظ التعديلات ✓' : 'حفظ ✓'}
+                        </button>
+                    </div>
+                </form>
+            `);
+
+            document.getElementById('tr-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const fd = new FormData(e.target);
+                const payload = {
+                    topic: fd.get('topic').trim(),
+                    presenter: fd.get('presenter').trim(),
+                    department: fd.get('department').trim(),
+                    date: fd.get('date') || today,
+                    attendees: Math.max(1, Number(fd.get('attendees')) || 1)
+                };
+
+                if (ed) {
+                    Object.assign(ed, payload);
+                    showToast('تم تعديل سجل التدريب والتوعية ✓', 'success');
+                } else {
+                    trainingState.trainings.unshift({
+                        id: 'TR-' + Date.now(),
+                        ...payload
+                    });
+                    showToast('تم حفظ جلسة التدريب والتوعية ✓', 'success');
+                }
+
+                saveTrainingsState();
+                closeModal();
+                renderTrainings();
+            });
+        }
+
+        function deleteTraining(trainingId) {
+            openConfirmModal('حذف سجل تدريب أو توعية', 'هل تريد حذف هذا السجل نهائياً؟', () => {
+                trainingState.trainings = trainingState.trainings.filter(x => x.id !== trainingId);
+                saveTrainingsState();
+                renderTrainings();
+                showToast('تم حذف السجل', 'info');
+            });
+        }
+
+        // ==================== النوافذ المساعدة ====================
+        function openModal(title, html) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-body').innerHTML = html;
+            const m = document.getElementById('modal-container');
+            m.classList.remove('hidden'); m.classList.add('flex');
+        }
+        function closeModal() {
+            const m = document.getElementById('modal-container');
+            m.classList.add('hidden'); m.classList.remove('flex');
+        }
+        function openConfirmModal(title, msg, cb) {
+            document.getElementById('confirm-title').textContent = title;
+            document.getElementById('confirm-message').textContent = msg;
+            confirmCallback = cb;
+            const m = document.getElementById('confirm-modal');
+            m.classList.remove('hidden'); m.classList.add('flex');
+        }
+        function closeConfirmModal(ok) {
+            const m = document.getElementById('confirm-modal');
+            m.classList.add('hidden'); m.classList.remove('flex');
+            if (ok && typeof confirmCallback === 'function') confirmCallback();
+            confirmCallback = null;
+        }
+
+        window.addEventListener('DOMContentLoaded', renderTrainings);
+    </script>
+
+<script>
+(function () {
+  if (window.__OHS_AI_BRIDGE_READY__) return;
+  window.__OHS_AI_BRIDGE_READY__ = true;
+
+  window.ohsAskHighPrecisionAI = async function (question, options = {}) {
+    let base = 'https://ohs-management.ahmed4qhse.workers.dev';
+    let token = '';
+    try {
+      const raw = localStorage.getItem('hse_session_v2') || localStorage.getItem('hse_session_v1');
+      if (raw) {
+        const s = JSON.parse(raw);
+        if (s.apiBase) base = s.apiBase;
+        if (s.token) token = s.token;
+      }
+    } catch {}
+
+    const res = await fetch(base + '/api/ai', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': 'Bearer ' + token } : {})
+      },
+      body: JSON.stringify({
+        question: String(question || '').trim(),
+        mode: options.mode || 'deep_analysis',
+        images: Array.isArray(options.images) ? options.images : []
+      })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.message ? (data.error + ': ' + data.message) : (data.error || 'تعذر الاتصال بالمساعد الذكي'));
+    }
+    return data.answer || '';
+  };
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الحوادث والبلاغات الوشيكة والتحقيق</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        if (typeof tailwind !== 'undefined') {
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        fontFamily: { sans: ['Cairo', 'sans-serif'] },
+                        colors: {
+                            emerald: { 50:'#eff8ff',100:'#dbeefe',200:'#bfe0fc',300:'#8fc7f8',400:'#5aa8ef',500:'#3a8be0',600:'#2468c4',700:'#1b4fa0',800:'#173f80',900:'#12306b',950:'#0b2150' },
+                            slate: { 50:'#f4f8fd',100:'#e8f0fa',200:'#d3e0f0',300:'#b3c6de',400:'#8499b8',500:'#5f7497',600:'#475b7e',700:'#2f4468',800:'#16295a',900:'#0d2154',950:'#071538' }
+                        }
+                    }
+                }
+            };
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Cairo', sans-serif; background: linear-gradient(180deg,#f3f9ff 0%,#e6f1fc 100%) fixed; color: #0d2154; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #dbeafe; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 9999px; }
+        .card-shadow { box-shadow: 0 4px 18px rgba(36,104,196,.08); }
+    </style>
+</head>
+<body class="antialiased selection:bg-emerald-500 selection:text-white">
+
+    <div id="toast-container" class="fixed top-4 left-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- الشريط العلوي لوحدة الحوادث والبلاغات الوشيكة والتحقيق فقط -->
+    <header id="app-header" class="bg-slate-900 text-white sticky top-0 z-20 px-4 sm:px-6 py-3.5 shadow-md">
+        <div class="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-red-500/20 border border-red-400/40 text-red-300 flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-kit-medical"></i>
+                </div>
+                <div>
+                    <h1 class="text-base sm:text-lg font-extrabold">الحوادث والبلاغات الوشيكة والتحقيق</h1>
+                    <p class="text-[11px] text-slate-300">إرشاد أنواع الحوادث • الجزء المصاب ونموذج تحقيق للحادث الأولي وإصابة العمل • Root Cause + Corrective Action للحادث الوشيك</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button type="button" onclick="openIncidentModal()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow transition">
+                    <i class="fa-solid fa-plus ml-1"></i>تسجيل حادث / بلاغ وشيك
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- المحتوى الرئيسي -->
+    <main id="main-content" class="max-w-5xl mx-auto p-4 sm:p-6"></main>
+
+    <!-- النافذة المنبثقة -->
+    <div id="modal-container" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/65 p-3 sm:p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-3xl max-h-[92vh] flex flex-col overflow-hidden my-auto">
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
+                <h3 id="modal-title" class="text-base sm:text-lg font-extrabold text-slate-900">عنوان</h3>
+                <button type="button" onclick="closeModal()" class="w-9 h-9 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-red-600 flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="modal-body" class="p-5 sm:p-6 overflow-y-auto flex-1"></div>
+        </div>
+    </div>
+
+    <!-- نافذة التأكيد -->
+    <div id="confirm-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/65 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
+            <h3 id="confirm-title" class="text-lg font-extrabold text-slate-900 mb-2">تأكيد</h3>
+            <p id="confirm-message" class="text-sm text-slate-600 mb-6"></p>
+            <div class="flex justify-end gap-2">
+                <button type="button" onclick="closeConfirmModal(false)" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold text-sm">إلغاء</button>
+                <button type="button" onclick="closeConfirmModal(true)" class="px-5 py-2 rounded-xl bg-red-600 text-white font-bold text-sm">تأكيد</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY_INCIDENTS = 'ohs_module_incidents_clean_v2';
+
+        const INCIDENT_TYPES = [
+            'حادث وشيك',
+            'حادث أولي',
+            'إصابة عمل'
+        ];
+
+        const INCIDENT_TYPE_HINTS = {
+            'حادث وشيك': {
+                title: 'ما هو الحادث الوشيك (Near Miss)؟',
+                desc: 'موقف أو حدث غير مخطط كاد أن يسبب إصابة أو ضرراً مادياً ولكن لم تقع إصابة أو خسارة فعلية هذه المرة. يُعالج بتحديد السبب الجذري (Root Cause Analysis) ووضع إجراء تصحيحي (Corrective Action) لتفاديه مستقبلاً.'
+            },
+            'حادث أولي': {
+                title: 'ما هو الحادث الأولي (First Aid)؟',
+                desc: 'إصابة طفيفة أو بسيطة تُعالج بإسعافات أولية فورية في الموقع أو عيادة العمل دون غياب عن العمل أو فقدان أيام عمل، ويُحدد فيها الجزء المصاب ويُستكمل لها نموذج التحقيق لمعرفة ملابساتها ومنع تكرارها.'
+            },
+            'إصابة عمل': {
+                title: 'ما هي إصابة العمل؟',
+                desc: 'إصابة أو ضرر صحي يقع للعامل أثناء تأدية العمل أو بسببه (مثل كسور، جروح عميقة، حروق، أو إصابات تستدعي رعاية طبية متقدمة أو غياباً عن العمل)، ويُحدد فيها الجزء المصاب ويُستكمل لها نموذج التحقيق الكامل.'
+            }
+        };
+
+        function loadIncidentsState() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY_INCIDENTS)
+                    || localStorage.getItem('ohs_module_incidents_clean_v1');
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    return {
+                        incidents: Array.isArray(parsed.incidents) ? parsed.incidents : []
+                    };
+                }
+            } catch (e) {}
+            return { incidents: [] };
+        }
+
+        let incidentState = loadIncidentsState();
+        let confirmCallback = null;
+        let selectedIncidentType = 'حادث وشيك';
+
+        function saveIncidentsState() {
+            try {
+                localStorage.setItem(STORAGE_KEY_INCIDENTS, JSON.stringify(incidentState));
+            } catch (e) {
+                showToast('تعذر الحفظ المحلي بالمتصفح', 'error');
+            }
+        }
+
+        function escapeHtml(str) {
+            return String(str == null ? '' : str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function showToast(msg, type = 'info') {
+            const c = document.getElementById('toast-container');
+            const bg = type === 'success' ? 'bg-emerald-600' : type === 'error' ? 'bg-red-600' : 'bg-slate-800';
+            const el = document.createElement('div');
+            el.className = `${bg} text-white px-4 py-3 rounded-xl shadow-lg text-xs font-bold flex items-center gap-2 pointer-events-auto`;
+            el.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-info'}"></i><span>${escapeHtml(msg)}</span>`;
+            c.appendChild(el);
+            setTimeout(() => el.remove(), 3500);
+        }
+
+        // ==================== عرض قائمة الحوادث والبلاغات الوشيكة ====================
+        function renderIncidents() {
+            const list = incidentState.incidents;
+            const nearMissCount = list.filter(x => x.type === 'حادث وشيك').length;
+            const firstAidCount = list.filter(x => x.type === 'حادث أولي').length;
+            const injuryCount = list.filter(x => x.type === 'إصابة عمل').length;
+
+            document.getElementById('main-content').innerHTML = `
+                <!-- بطاقة تلميح سريعة لأنواع الحوادث الثلاثة -->
+                <div class="bg-white rounded-2xl p-4 border card-shadow mb-4 grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                    <div class="p-3 rounded-xl bg-amber-50/80 border border-amber-200 space-y-1">
+                        <div class="font-extrabold text-amber-950"><i class="fa-solid fa-eye text-amber-600 ml-1"></i>حادث وشيك (${nearMissCount})</div>
+                        <p class="text-slate-700 leading-relaxed">${escapeHtml(INCIDENT_TYPE_HINTS['حادث وشيك'].desc)}</p>
+                    </div>
+                    <div class="p-3 rounded-xl bg-blue-50/80 border border-blue-200 space-y-1">
+                        <div class="font-extrabold text-blue-950"><i class="fa-solid fa-bandage text-blue-600 ml-1"></i>حادث أولي (${firstAidCount})</div>
+                        <p class="text-slate-700 leading-relaxed">${escapeHtml(INCIDENT_TYPE_HINTS['حادث أولي'].desc)}</p>
+                    </div>
+                    <div class="p-3 rounded-xl bg-red-50/80 border border-red-200 space-y-1">
+                        <div class="font-extrabold text-red-950"><i class="fa-solid fa-user-injured text-red-600 ml-1"></i>إصابة عمل (${injuryCount})</div>
+                        <p class="text-slate-700 leading-relaxed">${escapeHtml(INCIDENT_TYPE_HINTS['إصابة عمل'].desc)}</p>
+                    </div>
+                </div>
+
+                <!-- شريط التحكم العلوي -->
+                <div class="bg-white rounded-2xl p-4 border card-shadow mb-4 flex flex-wrap justify-between items-center gap-3">
+                    <div class="text-sm font-extrabold text-slate-800">إجمالي الحوادث والبلاغات المسجلة: ${list.length}</div>
+                    <button type="button" onclick="openIncidentModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-4 py-2 rounded-xl text-xs transition">
+                        <i class="fa-solid fa-plus ml-1"></i>تسجيل حادث / بلاغ وشيك
+                    </button>
+                </div>
+
+                <!-- بطاقات السجلات -->
+                <div class="space-y-3">
+                    ${list.map(inc => {
+                        const isNearMiss = (inc.type === 'حادث وشيك');
+                        const badgeCls = isNearMiss
+                            ? 'bg-amber-100 text-amber-950 border border-amber-300'
+                            : (inc.type === 'حادث أولي')
+                                ? 'bg-blue-100 text-blue-950 border border-blue-300'
+                                : 'bg-red-100 text-red-950 border border-red-300';
+
+                        return `
+                            <div class="bg-white rounded-2xl p-4 sm:p-5 border card-shadow text-xs space-y-3">
+                                <div class="flex flex-wrap justify-between items-center gap-2">
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <span class="font-mono font-extrabold bg-slate-900 text-white px-2.5 py-1 rounded">${escapeHtml(inc.id)}</span>
+                                        <span class="px-2.5 py-1 rounded-full font-extrabold ${badgeCls}">${escapeHtml(inc.type)}</span>
+                                        <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-800 font-bold">القسم: ${escapeHtml(inc.department || '-')}</span>
+                                        ${inc.personName ? `<span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-800 font-bold">المعني: ${escapeHtml(inc.personName)}</span>` : ''}
+                                        ${!isNearMiss && inc.injuredPart ? `<span class="px-2.5 py-1 rounded-full bg-red-50 text-red-800 border border-red-200 font-extrabold"><i class="fa-solid fa-hand-holding-medical ml-1"></i>الجزء المصاب: ${escapeHtml(inc.injuredPart)}</span>` : ''}
+                                    </div>
+                                    <span class="font-mono font-bold text-slate-500">${escapeHtml(inc.date || '')}${inc.time ? ` • ${escapeHtml(inc.time)}` : ''}</span>
+                                </div>
+
+                                <div class="font-bold text-sm text-slate-900 leading-relaxed">
+                                    ${escapeHtml(inc.description)}
+                                </div>
+
+                                ${isNearMiss ? `
+                                    <div class="bg-amber-50/70 rounded-xl p-3 border border-amber-200 space-y-2">
+                                        <div>
+                                            <strong class="text-amber-950">تحليل السبب الجذري (Root Cause Analysis):</strong>
+                                            <span class="font-semibold text-slate-800">${escapeHtml(inc.rootCauseAnalysis || '-')}</span>
+                                        </div>
+                                        <div class="pt-1.5 border-t border-amber-200/80">
+                                            <strong class="text-emerald-900">الإجراء التصحيحي (Corrective Action):</strong>
+                                            <span class="font-semibold text-slate-800">${escapeHtml(inc.correctiveAction || '-')}</span>
+                                        </div>
+                                    </div>
+                                ` : `
+                                    <div class="bg-blue-50/70 rounded-xl p-3 border border-blue-200 space-y-2">
+                                        <div class="font-extrabold text-blue-950"><i class="fa-solid fa-magnifying-glass-chart ml-1 text-blue-600"></i>نموذج التحقيق في الحادث:</div>
+                                        ${inc.injuredPart ? `<div class="text-slate-900 font-extrabold">الجزء المصاب: <span class="text-red-700">${escapeHtml(inc.injuredPart)}</span></div>` : ''}
+                                        <div class="text-slate-800">
+                                            <strong>ملابسات ونتائج التحقيق:</strong>
+                                            <span class="font-semibold">${escapeHtml(inc.investigationFindings || '-')}</span>
+                                        </div>
+                                        ${inc.investigationRootCause ? `
+                                            <div class="text-slate-800 pt-1 border-t border-blue-200/70">
+                                                <strong>السبب الجذري للتحقيق:</strong>
+                                                <span class="font-semibold">${escapeHtml(inc.investigationRootCause)}</span>
+                                            </div>
+                                        ` : ''}
+                                        ${inc.investigationCorrectiveAction ? `
+                                            <div class="text-slate-800 pt-1 border-t border-blue-200/70">
+                                                <strong>الإجراء التصحيحي المتخذ:</strong>
+                                                <span class="font-semibold">${escapeHtml(inc.investigationCorrectiveAction)}</span>
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                `}
+
+                                <div class="flex flex-wrap justify-between items-center gap-2 pt-2 border-t">
+                                    <button type="button" onclick="deleteIncident('${escapeHtml(inc.id)}')" class="px-2.5 py-1.5 rounded-lg bg-red-50 hover:bg-red-600 text-red-600 hover:text-white font-bold transition">
+                                        <i class="fa-solid fa-trash-can ml-1"></i>حذف
+                                    </button>
+                                    <button type="button" onclick="openIncidentModal('${escapeHtml(inc.id)}')" class="px-3.5 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-500 text-amber-900 hover:text-white border border-amber-200 font-bold transition">
+                                        <i class="fa-solid fa-pen-to-square ml-1"></i>تعديل
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('') || `
+                        <div class="bg-white rounded-2xl p-10 text-center text-slate-500 text-xs border card-shadow space-y-3">
+                            <div class="w-12 h-12 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center text-xl mx-auto">
+                                <i class="fa-solid fa-kit-medical"></i>
+                            </div>
+                            <div class="font-extrabold text-sm text-slate-800">لا توجد حوادث أو بلاغات وشيكة مسجلة حالياً</div>
+                            <p>اضغط على <strong>"تسجيل حادث / بلاغ وشيك"</strong> واختر النوع لتظهر لك الإرشادات والنموذج المخصص له.</p>
+                        </div>
+                    `}
+                </div>
+            `;
+        }
+
+        // ==================== تبديل النوع وإظهار التلميح والنموذج المناسب ====================
+        function setIncidentTypeChoice(typeVal) {
+            selectedIncidentType = INCIDENT_TYPES.includes(typeVal) ? typeVal : 'حادث وشيك';
+            renderIncidentDynamicSections();
+        }
+
+        function renderIncidentDynamicSections(existingData = null) {
+            const btnBox = document.getElementById('inc-type-buttons');
+            const hintBox = document.getElementById('inc-type-hint-box');
+            const formBlock = document.getElementById('inc-type-specific-fields');
+            if (!btnBox || !hintBox || !formBlock) return;
+
+            btnBox.innerHTML = INCIDENT_TYPES.map(t => {
+                const active = (selectedIncidentType === t);
+                return `
+                    <button type="button" onclick="setIncidentTypeChoice('${escapeHtml(t)}')" class="py-2.5 px-3 rounded-xl border-2 font-extrabold text-xs transition ${active ? 'bg-slate-900 text-white border-slate-900 shadow' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'}">
+                        ${escapeHtml(t)}
+                    </button>
+                `;
+            }).join('');
+
+            const hInfo = INCIDENT_TYPE_HINTS[selectedIncidentType] || INCIDENT_TYPE_HINTS['حادث وشيك'];
+            hintBox.innerHTML = `
+                <div class="bg-blue-50 border border-blue-200 rounded-2xl p-3.5 text-blue-950 leading-relaxed space-y-1">
+                    <div class="font-extrabold text-xs"><i class="fa-solid fa-circle-info text-blue-600 ml-1"></i>${escapeHtml(hInfo.title)}</div>
+                    <p class="text-[11px] text-slate-800">${escapeHtml(hInfo.desc)}</p>
+                </div>
+            `;
+
+            if (selectedIncidentType === 'حادث وشيك') {
+                formBlock.innerHTML = `
+                    <div class="bg-amber-50/70 p-3.5 rounded-2xl border border-amber-200 space-y-3">
+                        <div class="font-extrabold text-amber-950"><i class="fa-solid fa-microscope ml-1 text-amber-600"></i>تحليل الحادث الوشيك والإجراء التصحيحي:</div>
+                        <div>
+                            <label class="block font-bold mb-1">تحليل السبب الجذري (Root Cause Analysis) *</label>
+                            <textarea name="rootCauseAnalysis" rows="3" required placeholder="حدد السبب الجذري للمشكلة التي أدت لوقوع الحادث الوشيك..." class="w-full px-3 py-2 bg-white border rounded-xl">${existingData ? escapeHtml(existingData.rootCauseAnalysis || '') : ''}</textarea>
+                        </div>
+                        <div>
+                            <label class="block font-bold mb-1">الإجراء التصحيحي (Corrective Action) *</label>
+                            <textarea name="correctiveAction" rows="2" required placeholder="اكتب الإجراء التصحيحي لتفادي تكرار المشكلة بعد كده..." class="w-full px-3 py-2 bg-white border rounded-xl">${existingData ? escapeHtml(existingData.correctiveAction || '') : ''}</textarea>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // حادث أولي أو إصابة عمل -> الجزء المصاب + نموذج التحقيق في الحادث
+                formBlock.innerHTML = `
+                    <div class="bg-slate-50 p-3.5 rounded-2xl border space-y-3">
+                        <div class="font-extrabold text-slate-900"><i class="fa-solid fa-file-lines ml-1 text-blue-600"></i>نموذج التحقيق في الحادث (${escapeHtml(selectedIncidentType)}):</div>
+                        <div>
+                            <label class="block font-bold mb-1">الجزء المصاب *</label>
+                            <input name="injuredPart" value="${existingData ? escapeHtml(existingData.injuredPart || '') : ''}" required placeholder="مثال: اليد اليمنى / إصبع السبابة / العين / القدم / الكتف" class="w-full px-3 py-2 bg-white border rounded-xl font-bold">
+                        </div>
+                        <div>
+                            <label class="block font-bold mb-1">تفاصيل ونتائج التحقيق *</label>
+                            <textarea name="investigationFindings" rows="3" required placeholder="اكتب ما توصل إليه التحقيق حول كيفية وقوع الحادث أو الإصابة..." class="w-full px-3 py-2 bg-white border rounded-xl">${existingData ? escapeHtml(existingData.investigationFindings || '') : ''}</textarea>
+                        </div>
+                        <div>
+                            <label class="block font-bold mb-1">السبب الجذري للتحقيق (اختياري)</label>
+                            <input name="investigationRootCause" value="${existingData ? escapeHtml(existingData.investigationRootCause || '') : ''}" placeholder="السبب الجذري الذي كشفه التحقيق" class="w-full px-3 py-2 bg-white border rounded-xl">
+                        </div>
+                        <div>
+                            <label class="block font-bold mb-1">الإجراء التصحيحي (اختياري)</label>
+                            <input name="investigationCorrectiveAction" value="${existingData ? escapeHtml(existingData.investigationCorrectiveAction || '') : ''}" placeholder="الإجراء التصحيحي لمنع التكرار" class="w-full px-3 py-2 bg-white border rounded-xl">
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // ==================== نافذة تسجيل أو تعديل حادث / بلاغ وشيك ====================
+        function openIncidentModal(incidentId = null) {
+            const ed = incidentId ? incidentState.incidents.find(x => x.id === incidentId) : null;
+            const now = new Date();
+            const todayStr = now.toISOString().split('T')[0];
+            const nowTimeStr = now.toTimeString().slice(0, 5);
+            selectedIncidentType = ed && INCIDENT_TYPES.includes(ed.type) ? ed.type : 'حادث وشيك';
+
+            openModal(ed ? `تعديل السجل (${ed.id})` : 'تسجيل حادث / بلاغ وشيك', `
+                <form id="inc-form" class="space-y-4 text-xs" dir="rtl">
+                    <div class="bg-slate-50 p-3.5 rounded-2xl border space-y-2.5">
+                        <div class="font-extrabold text-slate-900">1. اختر نوع الحالة:</div>
+                        <div id="inc-type-buttons" class="grid grid-cols-3 gap-2"></div>
+                    </div>
+
+                    <div id="inc-type-hint-box"></div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                        <div>
+                            <label class="block font-bold mb-1">القسم *</label>
+                            <input name="department" value="${ed ? escapeHtml(ed.department || '') : ''}" required placeholder="مثال: الإنتاج / الصيانة" class="w-full px-3 py-2 bg-slate-50 border rounded-xl font-bold">
+                        </div>
+                        <div>
+                            <label class="block font-bold mb-1">اسم الشخص المعني (اختياري)</label>
+                            <input name="personName" value="${ed ? escapeHtml(ed.personName || '') : ''}" placeholder="إن وُجد" class="w-full px-3 py-2 bg-slate-50 border rounded-xl">
+                        </div>
+                        <div>
+                            <label class="block font-bold mb-1">التاريخ *</label>
+                            <input type="date" name="date" value="${ed ? escapeHtml(ed.date || todayStr) : todayStr}" required class="w-full px-3 py-2 bg-slate-50 border rounded-xl font-mono">
+                        </div>
+                        <div>
+                            <label class="block font-bold mb-1">الوقت (اختياري)</label>
+                            <input type="time" name="time" value="${ed ? escapeHtml(ed.time || nowTimeStr) : nowTimeStr}" class="w-full px-3 py-2 bg-slate-50 border rounded-xl font-mono">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block font-bold mb-1">وصف الحادث / البلاغ الوشيك *</label>
+                        <textarea name="description" rows="2" required placeholder="اكتب وصفاً واضحاً لما حدث..." class="w-full px-3 py-2 bg-slate-50 border rounded-xl font-semibold">${ed ? escapeHtml(ed.description || '') : ''}</textarea>
+                    </div>
+
+                    <div id="inc-type-specific-fields"></div>
+
+                    <div class="flex justify-end gap-2 pt-2 border-t">
+                        <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-xl bg-slate-100 font-bold">إلغاء</button>
+                        <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold">
+                            ${ed ? 'حفظ التعديلات ✓' : 'حفظ السجل ✓'}
+                        </button>
+                    </div>
+                </form>
+            `);
+
+            renderIncidentDynamicSections(ed);
+
+            document.getElementById('inc-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const fd = new FormData(e.target);
+                const isNearMiss = (selectedIncidentType === 'حادث وشيك');
+
+                const payload = {
+                    type: selectedIncidentType,
+                    department: fd.get('department').trim(),
+                    personName: (fd.get('personName') || '').trim(),
+                    date: fd.get('date') || todayStr,
+                    time: fd.get('time') || '',
+                    description: fd.get('description').trim(),
+                    injuredPart: !isNearMiss ? (fd.get('injuredPart') || '').trim() : '',
+                    rootCauseAnalysis: isNearMiss ? (fd.get('rootCauseAnalysis') || '').trim() : '',
+                    correctiveAction: isNearMiss ? (fd.get('correctiveAction') || '').trim() : '',
+                    investigationFindings: !isNearMiss ? (fd.get('investigationFindings') || '').trim() : '',
+                    investigationRootCause: !isNearMiss ? (fd.get('investigationRootCause') || '').trim() : '',
+                    investigationCorrectiveAction: !isNearMiss ? (fd.get('investigationCorrectiveAction') || '').trim() : ''
+                };
+
+                if (ed) {
+                    Object.assign(ed, payload);
+                    showToast(`تم تحديث السجل (${ed.id}) ✓`, 'success');
+                } else {
+                    const nextNum = incidentState.incidents.length + 1;
+                    incidentState.incidents.unshift({
+                        id: `INC-${String(nextNum).padStart(3, '0')}`,
+                        ...payload
+                    });
+                    showToast('تم حفظ السجل بنجاح ✓', 'success');
+                }
+
+                saveIncidentsState();
+                closeModal();
+                renderIncidents();
+            });
+        }
+
+        function deleteIncident(incidentId) {
+            openConfirmModal('حذف سجل', 'هل تريد حذف هذا السجل نهائياً؟', () => {
+                incidentState.incidents = incidentState.incidents.filter(x => x.id !== incidentId);
+                saveIncidentsState();
+                renderIncidents();
+                showToast('تم حذف السجل', 'info');
+            });
+        }
+
+        // ==================== النوافذ المساعدة ====================
+        function openModal(title, html) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-body').innerHTML = html;
+            const m = document.getElementById('modal-container');
+            m.classList.remove('hidden'); m.classList.add('flex');
+        }
+        function closeModal() {
+            const m = document.getElementById('modal-container');
+            m.classList.add('hidden'); m.classList.remove('flex');
+        }
+        function openConfirmModal(title, msg, cb) {
+            document.getElementById('confirm-title').textContent = title;
+            document.getElementById('confirm-message').textContent = msg;
+            confirmCallback = cb;
+            const m = document.getElementById('confirm-modal');
+            m.classList.remove('hidden'); m.classList.add('flex');
+        }
+        function closeConfirmModal(ok) {
+            const m = document.getElementById('confirm-modal');
+            m.classList.add('hidden'); m.classList.remove('flex');
+            if (ok && typeof confirmCallback === 'function') confirmCallback();
+            confirmCallback = null;
+        }
+
+        window.addEventListener('DOMContentLoaded', renderIncidents);
+    </script>
+
+<script>
+(function () {
+  if (window.__OHS_AI_BRIDGE_READY__) return;
+  window.__OHS_AI_BRIDGE_READY__ = true;
+
+  window.ohsAskHighPrecisionAI = async function (question, options = {}) {
+    let base = 'https://ohs-management.ahmed4qhse.workers.dev';
+    let token = '';
+    try {
+      const raw = localStorage.getItem('hse_session_v2') || localStorage.getItem('hse_session_v1');
+      if (raw) {
+        const s = JSON.parse(raw);
+        if (s.apiBase) base = s.apiBase;
+        if (s.token) token = s.token;
+      }
+    } catch {}
+
+    const res = await fetch(base + '/api/ai', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { 'Authorization': 'Bearer ' + token } : {})
+      },
+      body: JSON.stringify({
+        question: String(question || '').trim(),
+        mode: options.mode || 'deep_analysis',
+        images: Array.isArray(options.images) ? options.images : []
+      })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(data.message ? (data.error + ': ' + data.message) : (data.error || 'تعذر الاتصال بالمساعد الذكي'));
+    }
+    return data.answer || '';
+  };
+})();
+</script>
+
+</body>
+</html>
