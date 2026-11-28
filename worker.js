@@ -1,4 +1,4 @@
-// HSE multi-tenant API for Cloudflare Workers + D1.
+// HSE multi-tenant API for Cloudflare Workers + D1 + Static Assets.
 const cors = (origin) => ({
   'Access-Control-Allow-Origin': origin || '*',
   'Access-Control-Allow-Headers': 'Content-Type,Authorization',
@@ -112,11 +112,11 @@ const SYSTEM =
 
 async function ensurePermissionsColumn(env) {
   try {
-    await env.DB.prepare(
-      "ALTER TABLE memberships ADD COLUMN permissions_json TEXT NOT NULL DEFAULT '{"ai":true,"records":true,"documents":true,"members":false,"delete_records":false}'"
-    ).run();
+    const defaultJson = JSON.stringify(DEFAULT_PERMISSIONS);
+    const sql = `ALTER TABLE memberships ADD COLUMN permissions_json TEXT NOT NULL DEFAULT '${defaultJson}'`;
+    await env.DB.prepare(sql).run();
   } catch {
-    // Column already exists
+    // العمود موجود مسبقاً
   }
 }
 
@@ -150,7 +150,8 @@ export default {
             ok: true,
             service: 'ohs-management',
             dbBound: Boolean(env.DB),
-            aiConfigured: Boolean(env.OPENAI_API_KEY)
+            aiConfigured: Boolean(env.OPENAI_API_KEY),
+            assetsBound: Boolean(env.ASSETS)
           },
           200,
           origin
@@ -226,224 +227,229 @@ export default {
         );
       }
 
-      const session = await auth(req, env);
-      if (!session) return json({ error: 'غير مصرح بالدخول. يرجى تسجيل الدخول أولاً.' }, 401, origin);
+      if (u.pathname.startsWith('/api/')) {
+        const session = await auth(req, env);
+        if (!session) return json({ error: 'غير مصرح بالدخول. يرجى تسجيل الدخول أولاً.' }, 401, origin);
 
-      const canManageMembers = session.role === 'owner' || Boolean(session.permissions.members);
+        const canManageMembers = session.role === 'owner' || Boolean(session.permissions.members);
 
-      if (req.method === 'POST' && u.pathname === '/api/members') {
-        if (!canManageMembers) return json({ error: 'لا تملك صلاحية إضافة أو إدارة أعضاء الفريق.' }, 403, origin);
-        const { name, username, email, password, role = 'member', permissions } = await req.json();
-        if (!name || !username || !email || !password || String(password).length < 3 || !['manager', 'member'].includes(role)) {
-          return json({ error: 'بيانات العضو غير مكتملة أو كلمة المرور أقل من 3 أحرف.' }, 400, origin);
-        }
-        const emailN = String(email).trim().toLowerCase();
-        const userN = String(username).trim().toLowerCase();
-        const existingEmail = await env.DB.prepare('SELECT id FROM users WHERE email=?').bind(emailN).first();
-        if (existingEmail) return json({ error: 'البريد الإلكتروني مستخدم بالفعل.' }, 409, origin);
-        const existingUsername = await env.DB.prepare('SELECT id FROM users WHERE username=?').bind(userN).first();
-        if (existingUsername) return json({ error: 'اسم المستخدم مستخدم بالفعل.' }, 409, origin);
-        const uid = crypto.randomUUID();
-        const salt = crypto.randomUUID();
-        const memberPerms = normalizePermissions(permissions, role);
-        await env.DB.batch([
-          env.DB.prepare('INSERT INTO users(id,email,username,name,password_hash) VALUES(?,?,?,?,?)')
-            .bind(uid, emailN, userN, String(name).trim(), salt + ':' + (await hash(String(password), salt))),
-          env.DB.prepare(
-            'INSERT INTO memberships(id,company_id,user_id,role,permissions_json) VALUES(?,?,?,?,?)'
-          ).bind(crypto.randomUUID(), session.companyId, uid, role, JSON.stringify(memberPerms))
-        ]);
-        return json({ ok: true, id: uid, permissions: memberPerms }, 201, origin);
-      }
-
-      if (req.method === 'GET' && u.pathname === '/api/members') {
-        if (!canManageMembers) return json({ error: 'لا تملك صلاحية عرض أعضاء الفريق.' }, 403, origin);
-        const rows = await env.DB.prepare(
-          'SELECT u.id,u.name,u.username,u.email,m.role,m.permissions_json,m.created_at FROM memberships m JOIN users u ON u.id=m.user_id WHERE m.company_id=?'
-        )
-          .bind(session.companyId)
-          .all();
-        const formatted = (rows.results || []).map((r) => ({
-          id: r.id,
-          name: r.name,
-          username: r.username,
-          email: r.email,
-          role: r.role,
-          permissions: normalizePermissions(r.permissions_json, r.role),
-          created_at: r.created_at
-        }));
-        return json(formatted, 200, origin);
-      }
-
-      if ((req.method === 'PUT' || req.method === 'PATCH') && u.pathname.startsWith('/api/members/')) {
-        if (!canManageMembers) return json({ error: 'لا تملك صلاحية تعديل صلاحيات الأعضاء.' }, 403, origin);
-        const targetUserId = u.pathname.replace('/api/members/', '').trim();
-        if (!targetUserId) return json({ error: 'معرف العضو مطلوب.' }, 400, origin);
-        const target = await env.DB.prepare(
-          'SELECT role, permissions_json FROM memberships WHERE company_id=? AND user_id=?'
-        )
-          .bind(session.companyId, targetUserId)
-          .first();
-        if (!target) return json({ error: 'العضو غير موجود في هذه الشركة.' }, 404, origin);
-        if (target.role === 'owner' && session.role !== 'owner') {
-          return json({ error: 'لا يمكن تعديل صلاحيات مالك الشركة.' }, 403, origin);
-        }
-        const body = await req.json();
-        const nextRole =
-          target.role === 'owner'
-            ? 'owner'
-            : ['manager', 'member'].includes(body.role)
-              ? body.role
-              : target.role;
-        const mergedPerms = normalizePermissions(
-          { ...normalizePermissions(target.permissions_json, target.role), ...(body.permissions || {}) },
-          nextRole
-        );
-        await env.DB.prepare(
-          'UPDATE memberships SET role=?, permissions_json=? WHERE company_id=? AND user_id=?'
-        )
-          .bind(nextRole, JSON.stringify(mergedPerms), session.companyId, targetUserId)
-          .run();
-        return json({ ok: true, userId: targetUserId, role: nextRole, permissions: mergedPerms }, 200, origin);
-      }
-
-      if (req.method === 'POST' && u.pathname === '/api/ai') {
-        if (session.role !== 'owner' && !session.permissions.ai) {
-          return json({ error: 'لا تملك صلاحية استخدام مساعد الذكاء الاصطناعي.' }, 403, origin);
-        }
-        const body = await req.json();
-        const q = String(body.question || '').trim();
-        const mode = String(body.mode || 'flexible').trim();
-        if (!q && !body.images?.length) return json({ error: 'يرجى كتابة سؤال أو إرفاق صورة.' }, 400, origin);
-        if (!env.OPENAI_API_KEY) return json({ error: 'لم يتم إعداد مفتاح OPENAI_API_KEY في الخادم.' }, 503, origin);
-
-        const modeHint =
-          mode === 'deep_analysis'
-            ? 'حلل بعمق متعدد الزوايا وقدم خطة عملية متكاملة وبدائل تطبيقية وأسئلة متابعة.'
-            : mode === 'quick_action'
-              ? 'قدّم خلاصة عملية سريعة ومباشرة بخطوات فورية واضحة مع إمكانية التوسع.'
-              : 'فكّر بمرونة ووضوح عملي، وناقش السيناريوهات والبدائل والافتراضات والخطوات التالية.';
-
-        const content = [
-          {
-            type: 'text',
-            text: `${modeHint}
-
-الطلب / الاستفسار:
-${q || 'حلل الصور المرفقة من منظور السلامة والصحة المهنية بمرونة وعمق.'}`
+        if (req.method === 'POST' && u.pathname === '/api/members') {
+          if (!canManageMembers) return json({ error: 'لا تملك صلاحية إضافة أو إدارة أعضاء الفريق.' }, 403, origin);
+          const { name, username, email, password, role = 'member', permissions } = await req.json();
+          if (!name || !username || !email || !password || String(password).length < 3 || !['manager', 'member'].includes(role)) {
+            return json({ error: 'بيانات العضو غير مكتملة أو كلمة المرور أقل من 3 أحرف.' }, 400, origin);
           }
-        ];
-        for (const img of (body.images || []).slice(0, 8)) {
-          if (/^data:image\/(png|jpeg|jpg|webp|gif);base64,/.test(img.data || '')) {
-            content.push({ type: 'image_url', image_url: { url: img.data } });
+          const emailN = String(email).trim().toLowerCase();
+          const userN = String(username).trim().toLowerCase();
+          const existingEmail = await env.DB.prepare('SELECT id FROM users WHERE email=?').bind(emailN).first();
+          if (existingEmail) return json({ error: 'البريد الإلكتروني مستخدم بالفعل.' }, 409, origin);
+          const existingUsername = await env.DB.prepare('SELECT id FROM users WHERE username=?').bind(userN).first();
+          if (existingUsername) return json({ error: 'اسم المستخدم مستخدم بالفعل.' }, 409, origin);
+          const uid = crypto.randomUUID();
+          const salt = crypto.randomUUID();
+          const memberPerms = normalizePermissions(permissions, role);
+          await env.DB.batch([
+            env.DB.prepare('INSERT INTO users(id,email,username,name,password_hash) VALUES(?,?,?,?,?)')
+              .bind(uid, emailN, userN, String(name).trim(), salt + ':' + (await hash(String(password), salt))),
+            env.DB.prepare(
+              'INSERT INTO memberships(id,company_id,user_id,role,permissions_json) VALUES(?,?,?,?,?)'
+            ).bind(crypto.randomUUID(), session.companyId, uid, role, JSON.stringify(memberPerms))
+          ]);
+          return json({ ok: true, id: uid, permissions: memberPerms }, 201, origin);
+        }
+
+        if (req.method === 'GET' && u.pathname === '/api/members') {
+          if (!canManageMembers) return json({ error: 'لا تملك صلاحية عرض أعضاء الفريق.' }, 403, origin);
+          const rows = await env.DB.prepare(
+            'SELECT u.id,u.name,u.username,u.email,m.role,m.permissions_json,m.created_at FROM memberships m JOIN users u ON u.id=m.user_id WHERE m.company_id=?'
+          )
+            .bind(session.companyId)
+            .all();
+          const formatted = (rows.results || []).map((r) => ({
+            id: r.id,
+            name: r.name,
+            username: r.username,
+            email: r.email,
+            role: r.role,
+            permissions: normalizePermissions(r.permissions_json, r.role),
+            created_at: r.created_at
+          }));
+          return json(formatted, 200, origin);
+        }
+
+        if ((req.method === 'PUT' || req.method === 'PATCH') && u.pathname.startsWith('/api/members/')) {
+          if (!canManageMembers) return json({ error: 'لا تملك صلاحية تعديل صلاحيات الأعضاء.' }, 403, origin);
+          const targetUserId = u.pathname.replace('/api/members/', '').trim();
+          if (!targetUserId) return json({ error: 'معرف العضو مطلوب.' }, 400, origin);
+          const target = await env.DB.prepare(
+            'SELECT role, permissions_json FROM memberships WHERE company_id=? AND user_id=?'
+          )
+            .bind(session.companyId, targetUserId)
+            .first();
+          if (!target) return json({ error: 'العضو غير موجود في هذه الشركة.' }, 404, origin);
+          if (target.role === 'owner' && session.role !== 'owner') {
+            return json({ error: 'لا يمكن تعديل صلاحيات مالك الشركة.' }, 403, origin);
           }
-        }
-        const resp = await fetch('https://api.openai.com/v1/chat/completions', {
-          method: 'POST',
-          headers: { Authorization: 'Bearer ' + env.OPENAI_API_KEY, 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model: env.AI_MODEL || 'gpt-4o-mini',
-            messages: [
-              { role: 'system', content: SYSTEM },
-              { role: 'user', content }
-            ],
-            temperature: 0.45
-          })
-        });
-        const data = await resp.json();
-        if (!resp.ok) return json({ error: data.error?.message || 'تعذر إتمام التحليل من مزود الذكاء الاصطناعي.' }, 502, origin);
-        const answer = data.choices?.[0]?.message?.content || '';
-        const recordId = crypto.randomUUID();
-        await env.DB.prepare('INSERT INTO records(id,company_id,user_id,kind,payload) VALUES(?,?,?,?,?)')
-          .bind(
-            recordId,
-            session.companyId,
-            session.userId,
-            'ai_analysis',
-            JSON.stringify({ question: q, mode, answer, imageCount: body.images?.length || 0 })
+          const body = await req.json();
+          const nextRole =
+            target.role === 'owner'
+              ? 'owner'
+              : ['manager', 'member'].includes(body.role)
+                ? body.role
+                : target.role;
+          const mergedPerms = normalizePermissions(
+            { ...normalizePermissions(target.permissions_json, target.role), ...(body.permissions || {}) },
+            nextRole
+          );
+          await env.DB.prepare(
+            'UPDATE memberships SET role=?, permissions_json=? WHERE company_id=? AND user_id=?'
           )
-          .run();
-        return json({ id: recordId, answer }, 200, origin);
-      }
-
-      if (req.method === 'POST' && u.pathname === '/api/records') {
-        if (session.role !== 'owner' && !session.permissions.records) {
-          return json({ error: 'لا تملك صلاحية إضافة السجلات.' }, 403, origin);
+            .bind(nextRole, JSON.stringify(mergedPerms), session.companyId, targetUserId)
+            .run();
+          return json({ ok: true, userId: targetUserId, role: nextRole, permissions: mergedPerms }, 200, origin);
         }
-        const body = await req.json();
-        const id = crypto.randomUUID();
-        const kind = String(body.kind || 'record').trim();
-        const payload = JSON.stringify(body.payload || {});
-        await env.DB.prepare('INSERT INTO records(id,company_id,user_id,kind,payload) VALUES(?,?,?,?,?)')
-          .bind(id, session.companyId, session.userId, kind, payload)
-          .run();
-        return json({ ok: true, id }, 201, origin);
-      }
 
-      if (req.method === 'GET' && u.pathname === '/api/records') {
-        if (session.role !== 'owner' && !session.permissions.records) {
-          return json({ error: 'لا تملك صلاحية عرض السجلات.' }, 403, origin);
-        }
-        const kind = u.searchParams.get('kind');
-        const rows = kind
-          ? await env.DB.prepare(
-              'SELECT id,kind,payload,created_at FROM records WHERE company_id=? AND kind=? ORDER BY created_at DESC LIMIT 200'
+        if (req.method === 'POST' && u.pathname === '/api/ai') {
+          if (session.role !== 'owner' && !session.permissions.ai) {
+            return json({ error: 'لا تملك صلاحية استخدام مساعد الذكاء الاصطناعي.' }, 403, origin);
+          }
+          const body = await req.json();
+          const q = String(body.question || '').trim();
+          const mode = String(body.mode || 'flexible').trim();
+          if (!q && !body.images?.length) return json({ error: 'يرجى كتابة سؤال أو إرفاق صورة.' }, 400, origin);
+          if (!env.OPENAI_API_KEY) return json({ error: 'لم يتم إعداد مفتاح OPENAI_API_KEY في الخادم.' }, 503, origin);
+
+          const modeHint =
+            mode === 'deep_analysis'
+              ? 'حلل بعمق متعدد الزوايا وقدم خطة عملية متكاملة وبدائل تطبيقية وأسئلة متابعة.'
+              : mode === 'quick_action'
+                ? 'قدّم خلاصة عملية سريعة ومباشرة بخطوات فورية واضحة مع إمكانية التوسع.'
+                : 'فكّر بمرونة ووضوح عملي، وناقش السيناريوهات والبدائل والافتراضات والخطوات التالية.';
+
+          const content = [
+            {
+              type: 'text',
+              text: `${modeHint}\n\nالطلب / الاستفسار:\n${q || 'حلل الصور المرفقة من منظور السلامة والصحة المهنية بمرونة وعمق.'}`
+            }
+          ];
+          for (const img of (body.images || []).slice(0, 8)) {
+            if (/^data:image\/(png|jpeg|jpg|webp|gif);base64,/.test(img.data || '')) {
+              content.push({ type: 'image_url', image_url: { url: img.data } });
+            }
+          }
+          const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: { Authorization: 'Bearer ' + env.OPENAI_API_KEY, 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              model: env.AI_MODEL || 'gpt-4o-mini',
+              messages: [
+                { role: 'system', content: SYSTEM },
+                { role: 'user', content }
+              ],
+              temperature: 0.45
+            })
+          });
+          const data = await resp.json();
+          if (!resp.ok) return json({ error: data.error?.message || 'تعذر إتمام التحليل من مزود الذكاء الاصطناعي.' }, 502, origin);
+          const answer = data.choices?.[0]?.message?.content || '';
+          const recordId = crypto.randomUUID();
+          await env.DB.prepare('INSERT INTO records(id,company_id,user_id,kind,payload) VALUES(?,?,?,?,?)')
+            .bind(
+              recordId,
+              session.companyId,
+              session.userId,
+              'ai_analysis',
+              JSON.stringify({ question: q, mode, answer, imageCount: body.images?.length || 0 })
             )
-              .bind(session.companyId, kind)
-              .all()
-          : await env.DB.prepare(
-              'SELECT id,kind,payload,created_at FROM records WHERE company_id=? ORDER BY created_at DESC LIMIT 200'
+            .run();
+          return json({ id: recordId, answer }, 200, origin);
+        }
+
+        if (req.method === 'POST' && u.pathname === '/api/records') {
+          if (session.role !== 'owner' && !session.permissions.records) {
+            return json({ error: 'لا تملك صلاحية إضافة السجلات.' }, 403, origin);
+          }
+          const body = await req.json();
+          const id = crypto.randomUUID();
+          const kind = String(body.kind || 'record').trim();
+          const payload = JSON.stringify(body.payload || {});
+          await env.DB.prepare('INSERT INTO records(id,company_id,user_id,kind,payload) VALUES(?,?,?,?,?)')
+            .bind(id, session.companyId, session.userId, kind, payload)
+            .run();
+          return json({ ok: true, id }, 201, origin);
+        }
+
+        if (req.method === 'GET' && u.pathname === '/api/records') {
+          if (session.role !== 'owner' && !session.permissions.records) {
+            return json({ error: 'لا تملك صلاحية عرض السجلات.' }, 403, origin);
+          }
+          const kind = u.searchParams.get('kind');
+          const rows = kind
+            ? await env.DB.prepare(
+                'SELECT id,kind,payload,created_at FROM records WHERE company_id=? AND kind=? ORDER BY created_at DESC LIMIT 200'
+              )
+                .bind(session.companyId, kind)
+                .all()
+            : await env.DB.prepare(
+                'SELECT id,kind,payload,created_at FROM records WHERE company_id=? ORDER BY created_at DESC LIMIT 200'
+              )
+                .bind(session.companyId)
+                .all();
+          return json(rows.results || [], 200, origin);
+        }
+
+        if (req.method === 'DELETE' && u.pathname.startsWith('/api/records/')) {
+          if (session.role !== 'owner' && !session.permissions.delete_records) {
+            return json({ error: 'لا تملك صلاحية حذف السجلات.' }, 403, origin);
+          }
+          const id = u.pathname.replace('/api/records/', '').trim();
+          if (!id) return json({ error: 'معرف السجل مطلوب.' }, 400, origin);
+          const res = await env.DB.prepare('DELETE FROM records WHERE id=? AND company_id=?')
+            .bind(id, session.companyId)
+            .run();
+          return json({ ok: true, deleted: res.meta?.changes || 0 }, 200, origin);
+        }
+
+        if (req.method === 'POST' && u.pathname === '/api/documents') {
+          if (session.role !== 'owner' && !session.permissions.documents) {
+            return json({ error: 'لا تملك صلاحية إضافة المستندات.' }, 403, origin);
+          }
+          const body = await req.json();
+          if (!body.name || !body.object_key) {
+            return json({ error: 'بيانات المستند غير مكتملة.' }, 400, origin);
+          }
+          const id = crypto.randomUUID();
+          await env.DB.prepare('INSERT INTO documents(id,company_id,user_id,name,object_key,mime,size) VALUES(?,?,?,?,?,?,?)')
+            .bind(
+              id,
+              session.companyId,
+              session.userId,
+              String(body.name).trim(),
+              String(body.object_key).trim(),
+              String(body.mime || 'application/octet-stream'),
+              Number(body.size || 0)
             )
-              .bind(session.companyId)
-              .all();
-        return json(rows.results || [], 200, origin);
-      }
+            .run();
+          return json({ ok: true, id }, 201, origin);
+        }
 
-      if (req.method === 'DELETE' && u.pathname.startsWith('/api/records/')) {
-        if (session.role !== 'owner' && !session.permissions.delete_records) {
-          return json({ error: 'لا تملك صلاحية حذف السجلات.' }, 403, origin);
-        }
-        const id = u.pathname.replace('/api/records/', '').trim();
-        if (!id) return json({ error: 'معرف السجل مطلوب.' }, 400, origin);
-        const res = await env.DB.prepare('DELETE FROM records WHERE id=? AND company_id=?')
-          .bind(id, session.companyId)
-          .run();
-        return json({ ok: true, deleted: res.meta?.changes || 0 }, 200, origin);
-      }
-
-      if (req.method === 'POST' && u.pathname === '/api/documents') {
-        if (session.role !== 'owner' && !session.permissions.documents) {
-          return json({ error: 'لا تملك صلاحية إضافة المستندات.' }, 403, origin);
-        }
-        const body = await req.json();
-        if (!body.name || !body.object_key) {
-          return json({ error: 'بيانات المستند غير مكتملة.' }, 400, origin);
-        }
-        const id = crypto.randomUUID();
-        await env.DB.prepare('INSERT INTO documents(id,company_id,user_id,name,object_key,mime,size) VALUES(?,?,?,?,?,?,?)')
-          .bind(
-            id,
-            session.companyId,
-            session.userId,
-            String(body.name).trim(),
-            String(body.object_key).trim(),
-            String(body.mime || 'application/octet-stream'),
-            Number(body.size || 0)
+        if (req.method === 'GET' && u.pathname === '/api/documents') {
+          if (session.role !== 'owner' && !session.permissions.documents) {
+            return json({ error: 'لا تملك صلاحية عرض المستندات.' }, 403, origin);
+          }
+          const rows = await env.DB.prepare(
+            'SELECT id,name,object_key,mime,size,created_at FROM documents WHERE company_id=? ORDER BY created_at DESC LIMIT 200'
           )
-          .run();
-        return json({ ok: true, id }, 201, origin);
+            .bind(session.companyId)
+            .all();
+          return json(rows.results || [], 200, origin);
+        }
+
+        return json({ error: 'Not found' }, 404, origin);
       }
 
-      if (req.method === 'GET' && u.pathname === '/api/documents') {
-        if (session.role !== 'owner' && !session.permissions.documents) {
-          return json({ error: 'لا تملك صلاحية عرض المستندات.' }, 403, origin);
-        }
-        const rows = await env.DB.prepare(
-          'SELECT id,name,object_key,mime,size,created_at FROM documents WHERE company_id=? ORDER BY created_at DESC LIMIT 200'
-        )
-          .bind(session.companyId)
-          .all();
-        return json(rows.results || [], 200, origin);
+      if (env.ASSETS) {
+        return env.ASSETS.fetch(req);
       }
 
       return json({ error: 'Not found' }, 404, origin);
