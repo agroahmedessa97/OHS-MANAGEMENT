@@ -298,6 +298,8 @@
       padding: 13px;
       text-decoration: none;
       color: var(--text);
+      cursor: pointer;
+      text-align: right;
       transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
     }
 
@@ -317,6 +319,18 @@
     .module-card span {
       font-size: 0.78rem;
       color: var(--muted);
+    }
+
+    .module-tag {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #0369a1;
+      background: #e0f2fe;
+      padding: 2px 8px;
+      border-radius: 999px;
+      width: fit-content;
     }
 
     .prompts-row {
@@ -430,39 +444,48 @@
       <section class="panel" id="modulesPanel">
         <h2>وحدات وسجلات السلامة والصحة المهنية</h2>
         <div class="modules-grid">
-          <a href="./النماذج القانونيه.html" class="module-card">
+          <div class="module-card" onclick="openModule('النماذج القانونيه.html', 'النماذج القانونية (قانون العمل 14/2025)')">
             <strong>📋 النماذج القانونية</strong>
             <span>قانون العمل 14 لسنة 2025 والقرارات 248 و249 و250 لسنة 2026</span>
-          </a>
-          <a href="./مهام السلامة ومعدل تكرارها.html" class="module-card">
+            <span class="module-tag">اضغط للفتح</span>
+          </div>
+          <div class="module-card" onclick="openModule('مهام السلامة ومعدل تكرارها.html', 'مهام السلامة ومعدل تكرارها')">
             <strong>⚖️ مهام السلامة وتكرارها</strong>
             <span>جدول المهام الأسبوعية والدورية والإشعارات</span>
-          </a>
-          <a href="./مخططات الدفاع المدني.html" class="module-card">
+            <span class="module-tag">اضغط للفتح</span>
+          </div>
+          <div class="module-card" onclick="openModule('مخططات الدفاع المدني.html', 'مخططات الدفاع المدني')">
             <strong>🚒 مخططات الدفاع المدني</strong>
             <span>حساب المضخات والصناديق والرشاشات والكواشف والطفايات</span>
-          </a>
-          <a href="./خطة الطوارئ.html" class="module-card">
+            <span class="module-tag">اضغط للفتح</span>
+          </div>
+          <div class="module-card" onclick="openModule('خطة الطوارئ.html', 'خطة الطوارئ لـ 3 ورديات')">
             <strong>🚨 خطة الطوارئ لـ 3 ورديات</strong>
             <span>فرق الإخلاء والإطفاء والإسعاف وسجل التدريب</span>
-          </a>
-          <a href="./SDS.html" class="module-card">
+            <span class="module-tag">اضغط للفتح</span>
+          </div>
+          <div class="module-card" onclick="openModule('SDS.html', 'صحائف بيانات السلامة SDS')">
             <strong>🧪 صحائف بيانات السلامة SDS</strong>
             <span>تحليل واستخراج بيانات المواد الكيميائية ومهمات الوقاية</span>
-          </a>
-          <a href="./5S.html" class="module-card">
+            <span class="module-tag">اضغط للفتح</span>
+          </div>
+          <div class="module-card" onclick="openModule('5S.html', 'تقييم منهجية 5S')">
             <strong>🧹 تقييم منهجية 5S</strong>
             <span>التقييم التفاعلي وحصر الفجوات وتصدير PDF</span>
-          </a>
-          <a href="./تقييم فريق العمل.html" class="module-card">
+            <span class="module-tag">اضغط للفتح</span>
+          </div>
+          <div class="module-card" onclick="openModule('تقييم فريق العمل.html', 'تقييم فريق السلامة')">
             <strong>⭐ تقييم فريق السلامة</strong>
             <span>تقييم الأداء وحساب المتوسط السنوي</span>
-          </a>
-          <a href="./التدريب والتوعية.html" class="module-card">
+            <span class="module-tag">اضغط للفتح</span>
+          </div>
+          <div class="module-card" onclick="openModule('التدريب والتوعية.html', 'التدريب والتوعية')">
             <strong>🎓 التدريب والتوعية</strong>
             <span>سجل الجلسات التدريبية وعدد الحضور</span>
-          </a>
+            <span class="module-tag">اضغط للفتح</span>
+          </div>
         </div>
+        <div id="modulemsg"></div>
       </section>
 
       <div class="grid">
@@ -546,12 +569,11 @@
           list.push(window.location.origin);
         }
       }
-      list.push('https://ohs-management.agroahmedessa97.workers.dev');
-      list.push('https://hse-multitenant-api.agroahmedessa97.workers.dev');
+      list.push('https://ohs-management.ahmed4qhse.workers.dev');
       return Array.from(new Set(list));
     })();
 
-    const SESSION_KEY = 'hse_session_v1';
+    const SESSION_KEY = 'hse_session_v2';
     const PERM_KEYS = ['ai', 'records', 'documents', 'delete_records', 'members'];
     let activeApiBase = API_CANDIDATES[0];
     let token = '';
@@ -571,11 +593,30 @@
       return el ? el.value.trim() : '';
     }
 
-    function saveSession(tk, usr, codeVal, apiBase) {
+    function parseJwtExp(tk) {
+      try {
+        const body = String(tk || '').split('.')[0];
+        if (!body) return 0;
+        let b = body.replace(/-/g, '+').replace(/_/g, '/');
+        while (b.length % 4) b += '=';
+        const parsed = JSON.parse(atob(b));
+        return Number(parsed.exp || 0);
+      } catch {
+        return 0;
+      }
+    }
+
+    function isTokenValid(tk, explicitExp = 0) {
+      const exp = Number(explicitExp || parseJwtExp(tk));
+      if (!exp) return false;
+      return exp > Math.floor(Date.now() / 1000) + 30;
+    }
+
+    function saveSession(tk, usr, codeVal, apiBase, exp) {
       try {
         localStorage.setItem(
           SESSION_KEY,
-          JSON.stringify({ token: tk, user: usr, companyCode: codeVal, apiBase })
+          JSON.stringify({ token: tk, user: usr, companyCode: codeVal, apiBase, exp: exp || parseJwtExp(tk) })
         );
       } catch {}
     }
@@ -583,6 +624,7 @@
     function clearSession() {
       try {
         localStorage.removeItem(SESSION_KEY);
+        localStorage.removeItem('hse_session_v1');
       } catch {}
     }
 
@@ -621,6 +663,21 @@
       ta.focus();
     }
 
+    async function openModule(fileName, title) {
+      try {
+        const res = await fetch('./' + encodeURIComponent(fileName), { method: 'HEAD' });
+        if (res.ok) {
+          window.location.href = './' + encodeURIComponent(fileName);
+          return;
+        }
+      } catch {}
+      msg(
+        'modulemsg',
+        'وحدة "' + title + '" جاهزة للربط بمجرد رفع ملفها (' + fileName + ') إلى المستودع.',
+        'notice'
+      );
+    }
+
     async function call(path, data, auth = false, methodOverride = null) {
       let lastError = null;
       const orderedBases = [activeApiBase, ...API_CANDIDATES.filter((u) => u !== activeApiBase)];
@@ -639,11 +696,16 @@
           });
 
           const j = await r.json().catch(() => ({}));
+          if (r.status === 401 && auth) {
+            logout();
+            throw new Error(j.error || 'انتهت صلاحية الجلسة. يرجى تسجيل الدخول مرة أخرى.');
+          }
           if (r.status === 404 && j && j.error === 'Not found' && i < orderedBases.length - 1) {
             continue;
           }
           if (!r.ok) {
-            throw new Error(j.error || ('خطأ في الخادم (' + r.status + ')'));
+            const detail = j.message ? (j.error + ': ' + j.message) : (j.error || ('خطأ في الخادم (' + r.status + ')'));
+            throw new Error(detail);
           }
           activeApiBase = base;
           return j;
@@ -658,11 +720,11 @@
       throw lastError || new Error('تعذر الاتصال بالخادم حالياً، يرجى المحاولة مرة أخرى.');
     }
 
-    function activateWorkspace(tk, usr, codeVal) {
+    function activateWorkspace(tk, usr, codeVal, exp = 0) {
       token = tk;
       user = usr;
       companyCode = codeVal;
-      saveSession(token, user, companyCode, activeApiBase);
+      saveSession(token, user, companyCode, activeApiBase, exp);
 
       const perms = getUserPermissions(user);
       document.getElementById('auth').classList.add('hidden');
@@ -733,7 +795,7 @@
         msg('loginmsg', 'جارٍ التحقق وتسجيل الدخول...', 'notice');
 
         const r = await call('/api/login', payload);
-        activateWorkspace(r.token, r.user, r.user.companyCode);
+        activateWorkspace(r.token, r.user, r.user.companyCode, r.expiresAt || 0);
       } catch (e) {
         msg('loginmsg', e.message, 'err');
       } finally {
@@ -936,11 +998,15 @@
         const raw = localStorage.getItem(SESSION_KEY);
         if (!raw) return;
         const saved = JSON.parse(raw);
-        if (saved && saved.token && saved.user) {
+        if (saved && saved.token && saved.user && isTokenValid(saved.token, saved.exp)) {
           if (saved.apiBase) activeApiBase = saved.apiBase;
-          activateWorkspace(saved.token, saved.user, saved.companyCode || saved.user.companyCode || '');
+          activateWorkspace(saved.token, saved.user, saved.companyCode || saved.user.companyCode || '', saved.exp || 0);
+        } else {
+          clearSession();
         }
-      } catch {}
+      } catch {
+        clearSession();
+      }
     })();
   </script>
 </body>
