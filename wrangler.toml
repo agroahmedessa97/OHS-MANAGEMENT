@@ -5,11 +5,12 @@ compatibility_date = "2026-11-27"
 [assets]
 directory = "."
 binding = "ASSETS"
+ignore = [".git/**", ".wrangler/**", "*.zip"]
 
 [[d1_databases]]
 binding = "DB"
 database_name = "hse-saas-db"
-database_id = "7020778ab0a545cbaaa0d1abe3ba4061"
+database_id = "ضع_هنا_Database_ID_الصحيح_من_Cloudflare_D1"
 
 [vars]
 AI_MODEL = "gpt-4o-mini"
