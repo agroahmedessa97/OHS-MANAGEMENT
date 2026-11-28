@@ -452,6 +452,9 @@ ${q || 'حلل الصور المرفقة من منظور السلامة والص
     if (env.ASSETS && !u.pathname.startsWith('/api/')) {
         return env.ASSETS.fetch(req);
       }
+ if (env.ASSETS && !u.pathname.startsWith('/api/')) {
+        return env.ASSETS.fetch(req);
+      }
       return json({ error: 'Not found' }, 404, origin);
     }
   }
